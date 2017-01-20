@@ -1,0 +1,38 @@
+{
+  "development": {
+    "secret": "somethingverysecret",
+    "db": {
+      "username": "username",
+      "password": "passWord!",
+      "database": "libertydev",
+      "host": "localhost",
+      "port": 3306,
+      "dialect": "mariadb",
+      "pool": { "max": 40, "min": 0, "idle": 10000 }
+    }
+  },
+  "test": {
+    "secret": "somethingverysecret",
+    "db": {
+      "username": "username",
+      "password": "passWord!",
+      "database": "libertytest",
+      "host": "localhost",
+      "port": 3306,
+      "dialect": "mariadb",
+      "pool": { "max": 40, "min": 0, "idle": 10000 }
+    }
+  },
+  "production": {
+    "secret": "somethingverysecret",
+    "db": {
+      "username": "username",
+      "password": "passWord!",
+      "database": "libertyproduction",
+      "host": "localhost",
+      "port": 3306,
+      "dialect": "mariadb",
+      "pool": { "max": 40, "min": 0, "idle": 10000 }
+    }
+  }
+}

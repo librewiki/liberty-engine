@@ -1,0 +1,237 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "LibertyEngine",
+    "description": "API documentation of LibertyEngine.",
+    "version": "1.0.0"
+  },
+  "host": "localhost:3001",
+  "basePath": "/",
+  "tags": [
+    {
+      "name": "users",
+      "description": "Operations about user"
+    }
+  ],
+  "schemes": [
+    "http",
+    "https"
+  ],
+  "paths": {
+    "/authentication": {
+      "post": {
+        "description": "login. returns a token for a user",
+        "parameters": [
+          {
+            "name": "userInfo",
+            "in": "body",
+            "schema": {
+              "$ref": "#/definitions/AuthenticationRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Authentication success",
+            "schema": {
+              "$ref": "#/definitions/AuthenticationResponse"
+            }
+          },
+          "401": {
+            "description": "Authentication failure",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/users": {
+      "get": {
+        "description": "get a list of users",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "The maximum number of results",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/UsersResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/articles": {
+      "get": {
+        "description": "get a metadata list of articles",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "maximum number of results",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "fields to be included (use comma(,) to separate)",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ArticlesResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    },
+    "/articles/{fullTitle}": {
+      "get": {
+        "description": "get an article",
+        "parameters": [
+          {
+            "name": "fullTitle",
+            "in": "path",
+            "description": "full title of the article",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "fields",
+            "in": "query",
+            "description": "fields to be included (use comma(,) to separate)",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "schema": {
+              "$ref": "#/definitions/ArticleResponse"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/ServerErrorResponse"
+            }
+          }
+        }
+      }
+    }
+  },
+  "securityDefinitions": {
+    "token": {
+      "type": "apiKey",
+      "name": "token",
+      "in": "header"
+    }
+  },
+  "definitions": {
+    "AuthenticationRequest": {
+      "required": [
+        "username",
+        "password"
+      ],
+      "properties": {
+        "username": {
+          "type": "string"
+        },
+        "password": {
+          "type": "string"
+        }
+      }
+    },
+    "AuthenticationResponse": {
+      "required": [
+        "token"
+      ],
+      "properties": {
+        "token": {
+          "type": "string"
+        }
+      }
+    },
+    "UsersResponse": {
+      "required": [
+        "id"
+      ],
+      "properties": {
+        "id": {
+          "type": "integer"
+        },
+        "username": {
+          "type": "string"
+        }
+      }
+    },
+    "ArticlesResponse": {
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "articles": {
+              "type": "array",
+              "items": {
+                "type": "object"
+              }
+            }
+          }
+        }
+      }
+    },
+    "ArticleResponse": {
+      "required": [
+        "data"
+      ],
+      "properties": {
+        "data": {
+          "type": "object",
+          "properties": {
+            "article": {
+              "type": "object"
+            }
+          }
+        }
+      }
+    },
+    "ServerErrorResponse": {
+      "required": [
+        "message"
+      ],
+      "properties": {
+        "message": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

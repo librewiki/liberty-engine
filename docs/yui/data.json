@@ -1,0 +1,883 @@
+{
+    "project": {
+        "name": "The Foo API",
+        "description": "The Foo API: a library for doing X, Y, and Z",
+        "version": "1.2.1",
+        "url": "http://example.com/"
+    },
+    "files": {
+        "models/Article.js": {
+            "name": "models/Article.js",
+            "modules": {
+                "Article": 1
+            },
+            "classes": {
+                "Article": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/LatestRevision.js": {
+            "name": "models/LatestRevision.js",
+            "modules": {
+                "LatestRevision": 1
+            },
+            "classes": {
+                "LatestRevision": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/Namespace.js": {
+            "name": "models/Namespace.js",
+            "modules": {
+                "Namespace": 1
+            },
+            "classes": {
+                "Namespace": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/Revision.js": {
+            "name": "models/Revision.js",
+            "modules": {
+                "Revision": 1
+            },
+            "classes": {
+                "Revision": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/User.js": {
+            "name": "models/User.js",
+            "modules": {
+                "User": 1
+            },
+            "classes": {
+                "User": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/UserGroup.js": {
+            "name": "models/UserGroup.js",
+            "modules": {
+                "UserGroup": 1
+            },
+            "classes": {
+                "UserGroup": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/UserProperty.js": {
+            "name": "models/UserProperty.js",
+            "modules": {
+                "UserProperty": 1
+            },
+            "classes": {
+                "UserProperty": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/Wikitext.js": {
+            "name": "models/Wikitext.js",
+            "modules": {
+                "Wikitext": 1
+            },
+            "classes": {
+                "Wikitext": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/index.js": {
+            "name": "models/index.js",
+            "modules": {
+                "models": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/recentChanges.js": {
+            "name": "src/recentChanges.js",
+            "modules": {
+                "recentChanges": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        }
+    },
+    "modules": {
+        "models": {
+            "name": "models",
+            "submodules": {
+                "Article": 1,
+                "LatestRevision": 1,
+                "Namespace": 1,
+                "Revision": 1,
+                "User": 1,
+                "UserGroup": 1,
+                "UserProperty": 1,
+                "Wikitext": 1
+            },
+            "elements": {},
+            "classes": {
+                "Article": 1,
+                "LatestRevision": 1,
+                "Namespace": 1,
+                "Revision": 1,
+                "User": 1,
+                "UserGroup": 1,
+                "UserProperty": 1,
+                "Wikitext": 1
+            },
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "models/Wikitext.js",
+            "line": 16,
+            "description": "Provides models of Sequelize ORM."
+        },
+        "Article": {
+            "name": "Article",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Article": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/Article.js",
+            "line": 12,
+            "description": "Provides Article model."
+        },
+        "LatestRevision": {
+            "name": "LatestRevision",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "LatestRevision": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/LatestRevision.js",
+            "line": 10,
+            "description": "Provides LatestRevision model."
+        },
+        "Namespace": {
+            "name": "Namespace",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Namespace": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/Namespace.js",
+            "line": 10,
+            "description": "Provides Namespace model."
+        },
+        "Revision": {
+            "name": "Revision",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Revision": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/Revision.js",
+            "line": 12,
+            "description": "Provides Revision model."
+        },
+        "User": {
+            "name": "User",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "User": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/User.js",
+            "line": 17,
+            "description": "Provides User model."
+        },
+        "UserGroup": {
+            "name": "UserGroup",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "UserGroup": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/UserGroup.js",
+            "line": 10,
+            "description": "Provides UserGroup model."
+        },
+        "UserProperty": {
+            "name": "UserProperty",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "UserProperty": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/UserProperty.js",
+            "line": 10,
+            "description": "Provides UserProperty model."
+        },
+        "Wikitext": {
+            "name": "Wikitext",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Wikitext": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/Wikitext.js",
+            "line": 16,
+            "description": "Provides Wikitext model."
+        },
+        "recentChanges": {
+            "name": "recentChanges",
+            "submodules": {},
+            "elements": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/recentChanges.js",
+            "line": 1,
+            "description": "Cache and provides recent changes."
+        }
+    },
+    "classes": {
+        "Article": {
+            "name": "Article",
+            "shortname": "Article",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "Article",
+            "namespace": "",
+            "file": "models/Article.js",
+            "line": 12,
+            "description": "Model representing articles."
+        },
+        "LatestRevision": {
+            "name": "LatestRevision",
+            "shortname": "LatestRevision",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "LatestRevision",
+            "namespace": "",
+            "file": "models/LatestRevision.js",
+            "line": 10,
+            "description": "Bridge Model between Article and Revision.\nRepresents latest revision of each article."
+        },
+        "Namespace": {
+            "name": "Namespace",
+            "shortname": "Namespace",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "Namespace",
+            "namespace": "",
+            "file": "models/Namespace.js",
+            "line": 10,
+            "description": "Model representing namespaces."
+        },
+        "Revision": {
+            "name": "Revision",
+            "shortname": "Revision",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "Revision",
+            "namespace": "",
+            "file": "models/Revision.js",
+            "line": 12,
+            "description": "Model representing revisions."
+        },
+        "User": {
+            "name": "User",
+            "shortname": "User",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "User",
+            "namespace": "",
+            "file": "models/User.js",
+            "line": 17,
+            "description": "Model representing users."
+        },
+        "UserGroup": {
+            "name": "UserGroup",
+            "shortname": "UserGroup",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "UserGroup",
+            "namespace": "",
+            "file": "models/UserGroup.js",
+            "line": 10,
+            "description": "Model representing usergroups."
+        },
+        "UserProperty": {
+            "name": "UserProperty",
+            "shortname": "UserProperty",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "UserProperty",
+            "namespace": "",
+            "file": "models/UserProperty.js",
+            "line": 10,
+            "description": "Model representing properties of users."
+        },
+        "Wikitext": {
+            "name": "Wikitext",
+            "shortname": "Wikitext",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "Wikitext",
+            "namespace": "",
+            "file": "models/Wikitext.js",
+            "line": 16,
+            "description": "Model representing wikitexts."
+        }
+    },
+    "elements": {},
+    "classitems": [
+        {
+            "file": "models/Article.js",
+            "line": 40,
+            "description": "Describes association.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Model[]"
+                }
+            ],
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 53,
+            "description": "Create a new article.",
+            "itemtype": "method",
+            "name": "createNew",
+            "static": 1,
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "fullTitle",
+                            "description": "full title of an article.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "author",
+                            "description": "user writing this.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "wikitext",
+                            "description": "wikitext.",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Returns a promise of new article.",
+                "type": "Promise<Article>"
+            },
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 78,
+            "description": "Get the latest revision.",
+            "itemtype": "method",
+            "name": "getLatestRevision",
+            "return": {
+                "description": "",
+                "type": "Promise<Revision>"
+            },
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 36,
+            "description": "Loads all namespaces and caches the instances of Namespace.\nIt should be called when the app starts.",
+            "itemtype": "method",
+            "name": "initialize",
+            "static": 1,
+            "return": {
+                "description": "Returns a promise.",
+                "type": "Promise"
+            },
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 55,
+            "description": "Returns an instance of Namespace. Each object is unique across app.",
+            "itemtype": "method",
+            "name": "getById",
+            "static": 1,
+            "params": [
+                {
+                    "name": "id",
+                    "description": "id of the namespace.",
+                    "type": "Number"
+                }
+            ],
+            "return": {
+                "description": "Returns an instance of Namespace. If not exists, returns null.",
+                "type": "Namespace"
+            },
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 71,
+            "description": "Returns an instance of Namespace. Each object is unique across app.",
+            "itemtype": "method",
+            "name": "getByName",
+            "static": 1,
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name of the namespace.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns an instance of Namespace. If not exists, returns null.",
+                "type": "Namespace"
+            },
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 87,
+            "description": "Split full title into namespace instance and title",
+            "itemtype": "method",
+            "name": "splitFullTitle",
+            "static": 1,
+            "params": [
+                {
+                    "name": "fullTitle",
+                    "description": "full title of an article.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns a promise.",
+                "type": "Promise"
+            },
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Revision.js",
+            "line": 56,
+            "description": "Create a new revision and make it latest revision of an article.",
+            "itemtype": "method",
+            "name": "createNew",
+            "static": 1,
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "article",
+                            "description": "an article to change.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "author",
+                            "description": "user writing this.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "wikitext",
+                            "description": "wikitext.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "status",
+                            "description": "one of 'new', 'normal', 'moved', or 'deleted'.",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Returns a promise of new revision.",
+                "type": "Promise<Revision>"
+            },
+            "class": "Revision",
+            "module": "models",
+            "submodule": "Revision"
+        },
+        {
+            "file": "models/User.js",
+            "line": 58,
+            "description": "Describes association.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Model[]"
+                }
+            ],
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 69,
+            "description": "Finds a user by username.",
+            "itemtype": "method",
+            "name": "findByUsername",
+            "static": 1,
+            "params": [
+                {
+                    "name": "username",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns a promise of user or null if not exists.",
+                "type": "Promise<User, null>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 84,
+            "description": "Verifies a json web token (jwt). If it valid, returns decoded data of it.",
+            "itemtype": "method",
+            "name": "verifyToken",
+            "static": 1,
+            "params": [
+                {
+                    "name": "token",
+                    "description": "jwt of a user.",
+                    "type": "String"
+                }
+            ],
+            "throws": {
+                "description": "if the token is invalid.",
+                "type": "Error"
+            },
+            "return": {
+                "description": "Returns a promise of decoded token data.",
+                "type": "Promise<Object>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 105,
+            "description": "Returns whether given password is correct.",
+            "itemtype": "method",
+            "name": "authenticate",
+            "params": [
+                {
+                    "name": "password",
+                    "description": "password of this user",
+                    "type": "String"
+                }
+            ],
+            "throws": {
+                "description": "if the token is invalid.",
+                "type": "Error"
+            },
+            "return": {
+                "description": "Returns a promise that has true (correct) or false (incorrect).",
+                "type": "Promise<Bool>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 116,
+            "description": "Issues a json web token (jwt). If it valid, returns decoded data of it.",
+            "itemtype": "method",
+            "name": "issueToken",
+            "params": [
+                {
+                    "name": "token",
+                    "description": "jwt of a user.",
+                    "type": "String"
+                }
+            ],
+            "throws": {
+                "description": "if the token is invalid.",
+                "type": "Error"
+            },
+            "return": {
+                "description": "Returns a promise of decoded token data.",
+                "type": "Promise<Object>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 138,
+            "description": "Sets a property of this user.",
+            "itemtype": "method",
+            "name": "setProperty",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name of property.",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "value of property.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns a promise of new user property.",
+                "type": "Promise<UserProperty>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 152,
+            "description": "Returns specified property value.",
+            "itemtype": "method",
+            "name": "getProperty",
+            "params": [
+                {
+                    "name": "name",
+                    "description": "name of property.",
+                    "type": "String"
+                },
+                {
+                    "name": "value",
+                    "description": "value of property.",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Returns a promise of new user property or null if not exists.",
+                "type": "Promise<String, null>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 170,
+            "description": "Returns signature of this user.",
+            "itemtype": "method",
+            "name": "getSignature",
+            "return": {
+                "description": "Returns a promise of signature of this user.",
+                "type": "Promise<String>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 194,
+            "description": "Indicates the full title of userpage of this user.",
+            "itemtype": "attribute",
+            "name": "userPageFullTitle",
+            "readonly": "",
+            "type": "String",
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/Wikitext.js",
+            "line": 36,
+            "description": "Replace wikitext when it is saved.",
+            "itemtype": "method",
+            "name": "replaceOnSave",
+            "static": 1,
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "article",
+                            "description": "an article to change.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "author",
+                            "description": "user writing this.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "wikitext",
+                            "description": "wikitext.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "status",
+                            "description": "one of 'new', 'normal', 'moved', or 'deleted'.",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Returns a replaced wikitext.",
+                "type": "Promise<String>"
+            },
+            "class": "Wikitext",
+            "module": "models",
+            "submodule": "Wikitext"
+        },
+        {
+            "file": "src/recentChanges.js",
+            "line": 12,
+            "description": "Replace wikitext when it is saved.",
+            "itemtype": "method",
+            "name": "get",
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "filter",
+                            "description": "function to filter results.",
+                            "type": "Function",
+                            "optional": true
+                        },
+                        {
+                            "name": "limit",
+                            "description": "maximum number of results.",
+                            "type": "Number",
+                            "optional": true,
+                            "optdefault": "10"
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Returns a replaced wikitext.",
+                "type": "Promise<String>"
+            },
+            "class": "",
+            "module": "recentChanges"
+        }
+    ],
+    "warnings": []
+}

@@ -25,6 +25,11 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
+    },
     username: {
       type: DataTypes.STRING(128),
       allowNull: false,
@@ -46,11 +51,18 @@ module.exports = function(sequelize, DataTypes) {
     email: {
       type: DataTypes.STRING(128),
       allowNull: true,
-      isEmail: true,
+      validate: {
+        isEmail: true
+      },
       defaultValue: null
+    },
+    isAnonymous: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue('id') === null;
+      }
     }
   }, {
-    tableName: 'user',
     classMethods: {
       /**
        * Describes associations.
@@ -97,8 +109,14 @@ module.exports = function(sequelize, DataTypes) {
             }
           });
         });
+      },
+      initialize() {
+        this.anonymous = this.build({
+          id: null,
+          username: '(anonymous)',
+          email: null,
+        });
       }
-
     },
     instanceMethods: {
       /**
@@ -146,6 +164,16 @@ module.exports = function(sequelize, DataTypes) {
             return `[[${this.userPageFullTitle}]]`;
           }
         });
+      },
+
+      /**
+       * Returns which this user has permission to do an action.
+       * @method hasPermissionTo
+       * @param {String} actionName
+       * @return {Promise<Bool>} Resolves which this user has permission
+       */
+      hasPermissionTo(actionName) {
+        return Promise.resolve(true);
       }
     },
     getterMethods: {

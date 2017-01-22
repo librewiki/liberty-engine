@@ -38,27 +38,56 @@ router.get('/',
   }
 );
 
-router.get('/:fullTitle',
+router.get('/full-title/:fullTitle(*)',
   (req, res, next) => {
     const fields = req.queryData.fields || ['namespaceId', 'title', 'createdAt', 'updatedAt'];
     return Article.findByFullTitle(req.params.fullTitle)
     .then((article) => {
-      if (req.queryData.fields.includes('html')) {
-        return article.render()
-        .then((renderResult) => {
-          return _.pick(_.merge({}, article, { html: renderResult.html }), fields);
-        });
-      } else {
-        return _.pick(article, fields);
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
       }
-    })
-    .then((article) => {
-      new Response.Success({ article }).send(res);
-    }, (err) => {
-      next(err);
+      return Promise.resolve()
+      .then(() => {
+        if (req.queryData.fields.includes('html')) {
+          return article.render()
+          .then((renderResult) => {
+            return _.merge({}, _.pick(article, fields), { html: renderResult.html });
+          });
+        } else {
+          return _.pick(article, fields);
+        }
+      })
+      .then((article) => {
+        new Response.Success({ article }).send(res);
+      }, (err) => {
+        next(err);
+      });
     });
+
   }
 );
 
+router.get('/full-title-ci/:fullTitle(*)',
+  (req, res, next) => {
+    return Article.findByFullTitle(req.params.fullTitle)
+    .then((article) => {
+      if (article) {
+        new Response.Success({ isExact: true, fullTitle: article.fullTitle }).send(res);
+      } else {
+        return Article.findByFullTitleCaseInsensitive(req.params.fullTitle)
+        .then((article) => {
+          if (article) {
+            new Response.Success({ isExact: false, fullTitle: article.fullTitle }).send(res);
+          } else {
+            new Response.ResourceNotFound().send(res);
+          }
+        });
+      }
+    })
+    .catch(() => {
+      new Response.ServerError().send(res);
+    });
+  }
+);
 
 module.exports = router;

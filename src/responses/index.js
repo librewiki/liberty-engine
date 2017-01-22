@@ -45,6 +45,15 @@ class BadRequest extends Response {
   }
 }
 
+class ResourceNotFound extends Response {
+  constructor() {
+    super();
+    this.status = 'failure';
+    this.code = 404;
+    this.message = 'Cannot find the resource.';
+  }
+}
+
 class Unauthorized extends Response {
   constructor(message) {
     super();
@@ -63,6 +72,7 @@ class ApiNotFound extends Response {
   }
 }
 
+
 class ServerError extends Response {
   constructor(message) {
     super();
@@ -78,5 +88,6 @@ module.exports.Created = Created;
 module.exports.Failure = Failure;
 module.exports.BadRequest = BadRequest;
 module.exports.Unauthorized = Unauthorized;
+module.exports.ResourceNotFound = ResourceNotFound;
 module.exports.ApiNotFound = ApiNotFound;
 module.exports.ServerError = ServerError;

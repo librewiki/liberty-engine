@@ -27,11 +27,12 @@ router.put('/',
     });
   },
   (req, res, next) => {
-    let frontPage = publicSettings.get('front-page');
-    if (!frontPage) {
-      frontPage = 'front page';
+    if (typeof req.body.data.frontPage === 'string') {
+      let frontPage = publicSettings.set('front-page', req.body.data.frontPage);
+      new Response.Success({ frontPage }).send(res);
+    } else {
+      new Response.BadRequest().send(res);
     }
-    new Response.Success({ frontPage }).send(res);
   }
 );
 module.exports = router;

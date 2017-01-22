@@ -1,0 +1,4 @@
+<p>
+<a class="external" href="magnet:www.asdf">1</a>
+<a class="external" href="//www.asdf.com">//www.asdf.com</a>
+</p>

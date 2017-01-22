@@ -7,6 +7,7 @@
 
 'use strict';
 
+const ip = require('ip');
 const models = require('./');
 
 /**
@@ -27,7 +28,18 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: 0
     },
     status: {
-      type: DataTypes.ENUM('new', 'updated', 'renamed', 'deleted')
+      type: DataTypes.ENUM('new', 'updated', 'renamed', 'deleted'),
+      allowNull: false
+    },
+    ipAddress: {
+      type: 'VARBINARY(16)',
+      allowNull: false,
+      set(ipAddress) {
+        this.setDataValue('ipAddress', ip.toBuffer(ipAddress));
+      },
+      get() {
+        return ip.toString(this.getDataValue('ipAddress'));
+      }
     }
   }, {
     classMethods: {
@@ -61,11 +73,12 @@ module.exports = function(sequelize, DataTypes) {
        * @param {User} option.article an article to change.
        * @param {User} option.author user writing this.
        * @param {String} option.text text.
+       * @param {String} option.ipAddress IP address of request.
        * @param {String} option.status one of 'new', 'updated', 'renamed', or 'deleted'.
        * @param {String} option.destinationFullTitle full title to rename.
        * @return {Promise<Revision>} Returns a promise of new revision.
        */
-      createNew({ article, author, text, status, destinationFullTitle }) {
+      createNew({ article, author, ipAddress, text, status, destinationFullTitle }) {
         return Promise.resolve()
         .then(() => {
           switch (status) {
@@ -79,6 +92,7 @@ module.exports = function(sequelize, DataTypes) {
                     articleId: article.id,
                     wikitextId: wikitext.id,
                     changedLength: wikitext.text.length,
+                    ipAddress: ipAddress,
                     status: status
                   });
                 });
@@ -96,6 +110,7 @@ module.exports = function(sequelize, DataTypes) {
                       articleId: article.id,
                       wikitextId: wikitext.id,
                       changedLength: wikitext.text.length - baseRevision.wikitext.text.length,
+                      ipAddress: ipAddress,
                       status: status
                     });
                   });
@@ -104,7 +119,6 @@ module.exports = function(sequelize, DataTypes) {
             }
             case 'renamed': {
               const { namespace, title } = models.Namespace.splitFullTitle(destinationFullTitle);
-              console.log(article.title);
               return article.getLatestRevision({ includeWikitext: false })
               .then((baseRevision) => {
                 return this.create({
@@ -112,6 +126,7 @@ module.exports = function(sequelize, DataTypes) {
                   changedLength: 0,
                   wikitextId: baseRevision.wikitextId,
                   articleId: article.id,
+                  ipAddress: ipAddress,
                   status: status,
                   renameLog: {
                     sourceNamespaceId: article.namespaceId,
@@ -132,6 +147,7 @@ module.exports = function(sequelize, DataTypes) {
                   changedLength: -baseRevision.wikitext.text.length,
                   wikitextId: null,
                   articleId: article.id,
+                  ipAddress: ipAddress,
                   status: status
                 });
               });

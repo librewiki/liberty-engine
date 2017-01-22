@@ -50,6 +50,8 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false
     },
 
+    lowercaseTitle: 'VARCHAR(128) AS (lower(`title`)) PERSISTENT',
+
     /**
      * Full title of this article.
      *
@@ -75,9 +77,13 @@ module.exports = function(sequelize, DataTypes) {
     }
 
   }, {
+    charset: 'utf8mb4',
+    collate: 'utf8mb4_bin',
     paranoid: true,
     indexes: [{
       unique: true, fields: ['namespaceId', 'title']
+    }, {
+      fields: ['lowercaseTitle']
     }],
     classMethods: {
       /**
@@ -103,14 +109,14 @@ module.exports = function(sequelize, DataTypes) {
        * @example
        *   Aritcle.createNew({ fullTitle: 'ns:title', author: 'author', wikitext: 'sample [[wikitext]]' });
        */
-      createNew({ fullTitle, author, text }) {
+      createNew({ fullTitle, ipAddress, author, text }) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
         return this.create({
           namespaceId: namespace.id,
           title: title
         })
         .then((article) => {
-          return models.Revision.createNew({ article, author, text, status: 'new' });
+          return models.Revision.createNew({ article, ipAddress, author, text, status: 'new' });
         });
       },
 
@@ -118,15 +124,27 @@ module.exports = function(sequelize, DataTypes) {
       findByFullTitle(fullTitle) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
         return this.findOne({
-          namespaceId: namespace.id,
-          title: title
+          where: {
+            namespaceId: namespace.id,
+            title: title
+          }
+        });
+      },
+
+      findByFullTitleCaseInsensitive(fullTitle) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        return this.findOne({
+          where: {
+            namespaceId: namespace.id,
+            lowercaseTitle: title.toLowerCase()
+          }
         });
       },
 
       randomQueryString: `SELECT r1.id, r1.namespaceId, r1.title
           FROM articles r1
-          JOIN (SELECT CEIL(RAND() * (SELECT MAX(id) FROM article)) AS id) r2
-          WHERE r1.id >= r2.id and namespace_id = 0
+          JOIN (SELECT CEIL(RAND() * (SELECT MAX(id) FROM articles)) AS id) r2
+          WHERE r1.id >= r2.id and namespaceId = 0
           ORDER BY r1.id ASC
           LIMIT :limit`,
 
@@ -163,20 +181,20 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.text wikitext.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      edit({ author, text }) {
-        return models.Revision.createNew({ article: this, author, text, status: 'updated' });
+      edit({ ipAddress, author, text }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, text, status: 'updated' });
       },
 
-      rename({ author, fullTitle }) {
+      rename({ ipAddress, author, fullTitle }) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
-        return models.Revision.createNew({ article: this, author, status: 'renamed', destinationFullTitle: fullTitle })
+        return models.Revision.createNew({ article: this, ipAddress, author, status: 'renamed', destinationFullTitle: fullTitle })
         .then(() => {
           return this.update({ namespaceId: namespace.id, title: title });
         });
       },
 
-      delete({ author }) {
-        return models.Revision.createNew({ article: this, author, status: 'deleted' })
+      delete({ ipAddress, author }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, status: 'deleted' })
         .then(() => {
           return this.destroy();
         });

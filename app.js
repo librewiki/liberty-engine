@@ -46,6 +46,7 @@ app.use((req, res, next) => {
       next(err);
     });
   } else {
+    req.user = models.User.anonymous;
     next();
   }
 });

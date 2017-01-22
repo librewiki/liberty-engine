@@ -58,7 +58,7 @@ module.exports = function(sequelize, DataTypes) {
         });
         Revision.belongsTo(models.User, {
           as: 'author',
-          foreignKey: { allowNull: false }
+          foreignKey: { allowNull: true }
         });
         Revision.hasOne(models.RenameLog, {
           onDelete: 'CASCADE', onUpdate: 'CASCADE'

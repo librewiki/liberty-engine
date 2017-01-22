@@ -63,13 +63,19 @@ models.setDefaultInstances = function() {
       return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'qqQq', author: user, text: '--~~~~' });
     })
     .then((article) => {
-      return article.delete({ ipAddress: '192.111.23.4', author: user });
+      return models.Redirection.create({ sourceNamespaceId: 0, sourceTitle: 'xxx', destinationArticleId: article.id, user: user })
+      .then(() => {
+        return article.delete({ ipAddress: '192.111.23.4', author: user });
+      });
     })
     .then(() => {
       return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: '뷁뷀⏰', author: user, text: '--~~~~' });
     })
     .then((article) => {
-      return article.edit({ ipAddress: 'ffff:adda:0011:1111:0000:1111:2200:1131', author: user, text: 'asdfsdfdf!!!! --~~~~' });
+      return article.edit({ ipAddress: 'ffff:adda:0011:1111:0000:1111:2200:1131', author: models.User.anonymous, text: 'asdfsdfdf!!!! --~~~~' });
+    })
+    .then(() => {
+      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'aaAAA', author: user, text: '--~~~~' });
     })
     .then(() => {
       return models.Revision.findById(3);

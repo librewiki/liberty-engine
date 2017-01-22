@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { Article } = require('../models');
+const { sequelize, Article, Namespace } = require('../models');
 const Response = require('../src/responses');
 
 const _ = require('lodash');
@@ -67,27 +67,67 @@ router.get('/full-title/:fullTitle(*)',
   }
 );
 
+const findQuery = `(
+	SELECT namespaceId, title, 0 as priority
+	FROM articles
+	WHERE namespaceId = :namespaceId AND title = :title AND deletedAt IS NULL
+)
+UNION ALL
+(
+	SELECT articles.namespaceId, articles.title, 1 as priority
+	FROM redirections, articles
+	WHERE sourceNamespaceId = :namespaceId AND sourceTitle = :title AND destinationArticleId = articles.id
+)
+UNION ALL
+(
+	SELECT namespaceId, title, 2 as priority
+	FROM articles
+	WHERE namespaceId = :namespaceId AND lowercaseTitle = :lowercaseTitle AND deletedAt IS NULL
+)
+UNION ALL
+(
+	SELECT articles.namespaceId, articles.title, 3 as priority
+	FROM redirections, articles
+	WHERE sourceNamespaceId = :namespaceId AND lowercaseSourceTitle = :lowercaseTitle AND destinationArticleId = articles.id
+)
+ORDER BY priority LIMIT 1`;
+
 router.get('/full-title-ci/:fullTitle(*)',
   (req, res, next) => {
-    return Article.findByFullTitle(req.params.fullTitle)
-    .then((article) => {
-      if (article) {
-        new Response.Success({ isExact: true, fullTitle: article.fullTitle }).send(res);
-      } else {
-        return Article.findByFullTitleCaseInsensitive(req.params.fullTitle)
-        .then((article) => {
-          if (article) {
-            new Response.Success({ isExact: false, fullTitle: article.fullTitle }).send(res);
-          } else {
-            new Response.ResourceNotFound().send(res);
-          }
-        });
-      }
+    const { namespace, title } = Namespace.splitFullTitle(req.params.fullTitle);
+
+    return sequelize.query(findQuery, {
+      replacements: {
+        namespaceId: namespace.id,
+        title: title,
+        lowercaseTitle: title.toLowerCase()
+      }, type: sequelize.QueryTypes.SELECT
     })
-    .catch(() => {
-      new Response.ServerError().send(res);
+    .then(([result]) => {
+      if (result) {
+        const fullTitle = Namespace.joinNamespaceIdTitle(result.namespaceId, result.title);
+        switch (result.priority) {
+          case 0:
+            new Response.Success({ type: 'EXACT', fullTitle }).send(res);
+            break;
+          case 1:
+            new Response.Success({ type: 'REDIRECTION', fullTitle }).send(res);
+            break;
+          case 2:
+            new Response.Success({ type: 'CASE_INSENSITIVE', fullTitle }).send(res);
+            break;
+          case 3:
+            new Response.Success({ type: 'CASE_INSENSITIVE_REDIRECTION', fullTitle }).send(res);
+            break;
+          default:
+            throw new Error();
+        }
+      } else {
+        new Response.ResourceNotFound().send(res);
+      }
     });
   }
 );
+
 
 module.exports = router;

@@ -77,8 +77,6 @@ module.exports = function(sequelize, DataTypes) {
     }
 
   }, {
-    charset: 'utf8mb4',
-    collate: 'utf8mb4_bin',
     paranoid: true,
     indexes: [{
       unique: true, fields: ['namespaceId', 'title']
@@ -95,6 +93,7 @@ module.exports = function(sequelize, DataTypes) {
       associate(models) {
         Article.belongsTo(models.Namespace, { foreignKey: 'namespaceId' });
         Article.hasMany(models.Revision, { as: 'histories' });
+        Article.hasMany(models.Redirection, { foreignKey: 'destinationArticleId' });
       },
 
       /**

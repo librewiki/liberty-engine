@@ -1,8 +1,14 @@
 'use strict';
 const stringReplaceAsync = require('string-replace-async');
-const Namespace = require(global.moduledir + '/Namespace');
-const WikiDocument = require(global.moduledir + '/WikiDocument');
-const Interwiki = require(global.moduledir + '/Interwiki');
+const models = require(global.root + '/models');
+
+//@TODO
+let Interwiki = {
+  parse() {
+    return false;
+  }
+};
+
 module.exports = function(wikitext, parsingData) {
   return Promise.resolve(wikitext)
   .then((intermediate) => doInternalLink(intermediate, parsingData))
@@ -25,14 +31,15 @@ function doInternalLink(wikitext, parsingData) {
       return Promise.resolve(`<a ${interwikiInfo.isInternal? '' : ' external '}href="${interwikiInfo.url}">${textToShow}</a>`);
     }
 
-    let [namespaceId] = Namespace.splitIntoIdTitle(textToLink);
-    if (caseByNamespaceId[namespaceId]) {
-      return caseByNamespaceId[namespaceId](textToLink, rest, parsingData);
+    let { namespace } = models.Namespace.splitFullTitle(textToLink);
+    if (caseByNamespaceId[namespace.id]) {
+      return caseByNamespaceId[namespace.id](textToLink, rest, parsingData);
     } else {
       return caseByNamespaceId[0](textToLink, rest, parsingData);
     }
   });
 }
+
 const externalLinkRegex = /\[\s*((?:(?:http|https|ftp|sftp|gopher|telnet|news|mailto|ed2k|irc|ssh):|magnet:|\/\/).+?)\]/;
 function doExternalLink(wikitext, parsingData) {
   return stringReplaceAsync.seq(wikitext, externalLinkRegex, ($0, $1) => {
@@ -56,19 +63,19 @@ function doAutoLink(wikitext, parsingData) {
   });
 }
 
-const doFile = require('./doFile');
+// const doFile = require('./doFile');
 
 const caseByNamespaceId = {
   0: function normalCase(textToLink, rest, parsingData) {
-    let [namespaceId, title] = Namespace.splitIntoIdTitle(textToLink);
-    parsingData.structureData.link.normals.add({ namespaceId, title });
+    let { namespace, title } = models.Namespace.splitFullTitle(textToLink);
+    parsingData.structureData.link.normals.add({ namespaceId: namespace.id, title });
     let textToShow;
     if (rest.length) {
       textToShow = rest.join('|');
     } else {
       textToShow = textToLink;
     }
-    return WikiDocument.exists(textToLink)
+    return models.Article.exists(textToLink)
     .then((exists) => {
       if (exists) {
         return `<a href="${textToLink}">${textToShow}</a>`;
@@ -78,12 +85,12 @@ const caseByNamespaceId = {
     });
   },
 
-  2: doFile,
+  // 2: doFile,
 
   3: function categoryCase(textToLink, rest, parsingData) {
-    return WikiDocument.exists(textToLink)
+    return models.Article.exists(textToLink)
     .then((exists) => {
-      let title = Namespace.splitIntoIdTitle(textToLink)[1];
+      let { title } = models.Namespace.splitFullTitle(textToLink);
       parsingData.structureData.link.categories.add({ title, exists });
       return '';
     });

@@ -1,7 +1,7 @@
 'use strict';
 
-const DocumentParser = require('./src/Parser/DocumentParser');
+const ArticleParser = require('./src/Parser/ArticleParser');
 const WikitextParser = require('./src/Parser/WikitextParser');
 
-module.exports.documentParser = new DocumentParser();
+module.exports.articleParser = new ArticleParser();
 module.exports.wikitextParser = new WikitextParser();

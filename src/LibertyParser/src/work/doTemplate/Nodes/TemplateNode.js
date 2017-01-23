@@ -1,10 +1,10 @@
 'use strict';
 const Node = require('./Node.js');
 const MagicWord = require('../MagicWord');
-const Namespace = require(global.moduledir + '/Namespace');
+const { Namespace } = require('../../.././../../../models');
 const doXml = require('../../doXml');
 const doPartial = require('../../doPartial');
-const ArrayMap = require(global.moduledir + '/utilities').ArrayMap;
+const ArrayMap = require('../../../ArrayMap');
 
 
 class TemplateNode extends Node {
@@ -99,7 +99,7 @@ class TemplateNode extends Node {
     })
     .catch((err) => {
       switch (err.name) {
-        case 'NoDocumentError':
+        case 'NoArticleError':
           return `<span class="error"> no such template: ${this.templateFullTitle} </span>`;
         default:
           console.log(err);

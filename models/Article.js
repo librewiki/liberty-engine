@@ -8,7 +8,7 @@
 'use strict';
 
 const models = require('./');
-
+const { articleParser } = require('../src/LibertyParser');
 /**
  * Model representing articles.
  *
@@ -151,6 +151,46 @@ module.exports = function(sequelize, DataTypes) {
         return sequelize.query(this.randomQueryString, {
           replacements: { limit }, type: sequelize.QueryTypes.SELECT, model: this
         });
+      },
+
+      exists(fullTitle) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+
+        let findQuery = `(
+        	SELECT namespaceId, title, 0 as priority
+        	FROM articles
+        	WHERE namespaceId = :namespaceId AND title = :title AND deletedAt IS NULL
+        )
+        UNION ALL
+        (
+        	SELECT articles.namespaceId, articles.title, 1 as priority
+        	FROM redirections, articles
+        	WHERE sourceNamespaceId = :namespaceId AND sourceTitle = :title AND destinationArticleId = articles.id
+        )
+        UNION ALL
+        (
+        	SELECT namespaceId, title, 2 as priority
+        	FROM articles
+        	WHERE namespaceId = :namespaceId AND lowercaseTitle = :lowercaseTitle AND deletedAt IS NULL
+        )
+        UNION ALL
+        (
+        	SELECT articles.namespaceId, articles.title, 3 as priority
+        	FROM redirections, articles
+        	WHERE sourceNamespaceId = :namespaceId AND lowercaseSourceTitle = :lowercaseTitle AND destinationArticleId = articles.id
+        )
+        ORDER BY priority LIMIT 1`;
+
+        return sequelize.query(findQuery, {
+          replacements: {
+            namespaceId: namespace.id,
+            title: title,
+            lowercaseTitle: title.toLowerCase()
+          }, type: sequelize.QueryTypes.SELECT
+        })
+        .then(([result]) => {
+          return !!result;
+        });
       }
 
     },
@@ -162,7 +202,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.includeWikitext include wikitext instance.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      getLatestRevision({ includeWikitext }) {
+      getLatestRevision({ includeWikitext } = {}) {
         if (includeWikitext) {
           return models.Revision.findById(this.latestRevisionId, {
             include: [models.Wikitext]
@@ -204,13 +244,10 @@ module.exports = function(sequelize, DataTypes) {
        * @return {Promise<RenderResult>} Resolves result of rendering.
        */
       render() {
-        return Promise.resolve({
-          html: 'a<a class="new" href="asdf">asdf</a>vvvv'
+        return articleParser.parseRender({ article: this })
+        .then((result) => {
+          return result;
         });
-        // return this.getLatestRevision()
-        // .then((revision) => {
-        //   return revision.render();
-        // });
       }
 
     }

@@ -4,12 +4,12 @@ class ParsingData {
   /**
    * constructor
    *
-   * @param  {Object} documentMetadata
+   * @param  {Object} articleMetadata
    * @param  {Object} wikiMetadata
    * @return {DataForParsing}
    */
-  constructor(documentMetadata, wikiMetadata, parserSupporter) {
-    this.documentMetadata = documentMetadata;
+  constructor(articleMetadata, wikiMetadata, parserSupporter) {
+    this.articleMetadata = articleMetadata;
     this.wikiMetadata = wikiMetadata;
     this.parserSupporter = parserSupporter;
     this.structureData = {

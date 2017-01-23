@@ -1,19 +1,18 @@
 'use strict';
 
 const TemplateTextGetter = require('./TemplateTextGetter');
-const WikiDocument = require(global.moduledir + '/WikiDocument');
+const { Article } = require('../../../../../models');
 
 class LibertyTemplateTextGetter extends TemplateTextGetter {
+  // @TODO redirect template
   get(fullTitle, recursive = true) {
-    return WikiDocument.getByFullTitle(fullTitle)
-    .then((wikiDocument) => wikiDocument.getVersion())
-    .then((version) => {
-      let redirect = version.getRedirectingDestination();
-      if (redirect && recursive) {
-        return this.get(redirect, false);
-      } else {
-        return version.wikitext;
-      }
+    return Article.getByFullTitle(fullTitle)
+    .then((article) => article.getLatestRevision())
+    .then((revision) => {
+      return revision.getWikitext();
+    })
+    .then((wikitext) => {
+      return wikitext.text;
     });
   }
 }

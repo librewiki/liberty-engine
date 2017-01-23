@@ -1,6 +1,6 @@
 'use strict';
 const Parser = require('./parser.js').Parser;
-const ArrayMap = require(global.moduledir + '/utilities').ArrayMap;
+const ArrayMap = require('../../ArrayMap');
 
 module.exports = function(wikitext, parsingData, option = { templateRecursionNumber: 0, templateParams: new ArrayMap() }) {
   let parsed = parser.parse(wikitext);

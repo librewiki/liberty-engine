@@ -31,7 +31,7 @@ module.exports = function(wikitext, parsingData) {
   .then((html) => {
     return {
       html: html,
-      fullTitle: parsingData.documentMetadata.fullTitle,
+      fullTitle: parsingData.articleMetadata.fullTitle,
       link: parsingData.structureData.link
     };
   });

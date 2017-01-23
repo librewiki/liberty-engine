@@ -1,7 +1,7 @@
 'use strict';
 
 const MagicWord = require('../');
-const currentWeekNumber = require('current-week-number');
+const moment = require('moment');
 
 new MagicWord('CURRENTYEAR', false, (parsingData, params) => {
   return String(new Date().getFullYear());
@@ -32,5 +32,5 @@ new MagicWord('CURRENTMONTHABBREV', false, (parsingData, params) => {
 });
 
 new MagicWord('CURRENTWEEK', false, (parsingData, params) => {
-  return String(currentWeekNumber());
+  return String(moment().week());
 });

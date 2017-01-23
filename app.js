@@ -11,9 +11,6 @@ const models = require('./models');
 
 models.initialize({ force: true })
 .then(() => {
-  return models.initialize();
-})
-.then(() => {
   return models.setDefaultInstances();
 })
 .catch((err) => {

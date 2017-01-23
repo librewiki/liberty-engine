@@ -3,7 +3,7 @@
 const MagicWord = require('../');
 
 new MagicWord('SITENAME', false, (parsingData, params) => {
-  return parsingData.wikiMetadata.SITE_NAME;
+  return parsingData.wikiMetadata.WIKI_NAME;
 });
 
 new MagicWord('SERVER', false, (parsingData, params) => {

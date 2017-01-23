@@ -16,7 +16,7 @@
     "arrow-spacing": [2, {"before": true, "after": true}],
     "space-before-function-paren": [2, "never"],
     "no-confusing-arrow": [1],
-    "no-unused-vars": [1, {"argsIgnorePattern": "req|res|next|err|lexeme|params"}],
+    "no-unused-vars": [1, {"argsIgnorePattern": "req|res|next|err|lexeme|params|parsingData"}],
     "no-console": [0],
     "brace-style": [2],
     "camelcase": [0],

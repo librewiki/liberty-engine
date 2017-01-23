@@ -1,11 +1,13 @@
 'use strict';
 
 process.env.NODE_ENV = 'test';
-
-const models = require('../../models');
+global.LIBERTY_VERSION = '0.0.1';
+const path = require('path');
+global.rootdir = path.join(__dirname, '/../..');
+const models = require(global.rootdir + '/models');
 const chai = require('chai');
 const should = chai.should();
-const handlers = require('../../routes/users/handlers');
+
 describe('Users', () => {
   beforeEach(() => {
     return models.sequelize.sync({ force: true });

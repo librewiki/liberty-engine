@@ -1,10 +1,12 @@
 'use strict';
 
 process.env.NODE_ENV = 'test';
-
+global.LIBERTY_VERSION = '0.0.1';
+const path = require('path');
+global.rootdir = path.join(__dirname, '/../..');
+const models = require(global.rootdir + '/models');
 const chai = require('chai');
 const should = chai.should();
-const models = require('../../models');
 
 describe('User', () => {
   before(() => {
@@ -24,10 +26,10 @@ describe('User', () => {
         user.username.should.eql('test1');
         user.email.should.eql('tester@testmail.com');
         should.not.exist(user.password);
-        return user.authenticate('wrongPass')
+        return user.verifyPassword('wrongPass')
         .then((res) => {
           res.should.eql(false);
-          return user.authenticate('testpAsSword!');
+          return user.verifyPassword('testpAsSword!');
         })
         .then((res) => {
           res.should.eql(true);

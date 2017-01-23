@@ -9,12 +9,9 @@ const helmet = require('helmet');
 
 const models = require('./models');
 
-models.sequelize.query('SET FOREIGN_KEY_CHECKS = 0;')
+models.initialize({ force: true })
 .then(() => {
-  return models.sequelize.sync({ force: true });
-})
-.then(() => {
-  return models.sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
+  return models.initialize();
 })
 .then(() => {
   return models.setDefaultInstances();

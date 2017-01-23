@@ -32,13 +32,23 @@ Object.keys(models).forEach((modelName) => {
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 
-models.setDefaultInstances = function() {
+models.initialize = function({ force = false } = {}) {
   return Promise.resolve()
   .then(() => {
-    return models.User.initialize();
+    if (force) {
+      return models.sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
+    }
   })
   .then(() => {
-    return models.User.create({ username: 'Admin001', password: 'password', email: 'asdf@gmail.com' });
+    return models.sequelize.sync({ force });
+  })
+  .then(() => {
+    if (force) {
+      return models.sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
+    }
+  })
+  .then(() => {
+    return models.User.initialize();
   })
   .then(() => {
     return models.Namespace.create({
@@ -48,6 +58,14 @@ models.setDefaultInstances = function() {
   })
   .then(() => {
     return models.Namespace.initialize();
+  });
+};
+
+
+models.setDefaultInstances = function() {
+  return Promise.resolve()
+  .then(() => {
+    return models.User.create({ username: 'Admin001', password: 'password', email: 'asdf@gmail.com' });
   })
   .then(() => {
     let user;

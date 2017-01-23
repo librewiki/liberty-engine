@@ -1,6 +1,6 @@
 'use strict';
 const stringReplaceAsync = require('string-replace-async');
-const models = require(global.root + '/models');
+const models = require(global.rootdir + '/models');
 
 //@TODO
 let Interwiki = {
@@ -30,7 +30,6 @@ function doInternalLink(wikitext, parsingData) {
       parsingData.structureData.link.interwikis.add(interwikiInfo);
       return Promise.resolve(`<a ${interwikiInfo.isInternal? '' : ' external '}href="${interwikiInfo.url}">${textToShow}</a>`);
     }
-
     let { namespace } = models.Namespace.splitFullTitle(textToLink);
     if (caseByNamespaceId[namespace.id]) {
       return caseByNamespaceId[namespace.id](textToLink, rest, parsingData);

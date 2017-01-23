@@ -2,7 +2,7 @@
 'use strict';
 global.LIBERTY_VERSION = '0.0.1';
 const path = require('path');
-global.root = path.join(__dirname, '/..');
+global.rootdir = path.join(__dirname, '/..');
 
 /**
  * Module dependencies.

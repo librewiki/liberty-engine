@@ -46,6 +46,8 @@ module.exports = function(sequelize, DataTypes) {
         let date = moment().format();
         let nowikiArr = [];
         let newText = text
+        .replace(/\r\n/g, '\n')
+        .replace(/\r/g, '\n')
         .replace(nowikiRegex1,'\\Nowiki\\')
         .replace(nowikiRegex2, ($0) => {
           let x = nowikiArr.push($0);

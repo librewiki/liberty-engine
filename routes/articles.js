@@ -40,25 +40,52 @@ router.get('/',
 
 router.get('/full-title/:fullTitle(*)',
   (req, res, next) => {
-    const fields = req.queryData.fields || ['namespaceId', 'title', 'createdAt', 'updatedAt'];
+    const fields = req.queryData.fields || ['namespaceId', 'title', 'updatedAt'];
     return Article.findByFullTitle(req.params.fullTitle)
     .then((article) => {
+      const result = {};
       if (!article) {
         return new Response.ResourceNotFound().send(res);
       }
       return Promise.resolve()
       .then(() => {
-        if (req.queryData.fields.includes('html')) {
-          return article.render()
-          .then((renderResult) => {
-            return _.merge({}, _.pick(article, fields), { html: renderResult.html });
-          });
-        } else {
-          return _.pick(article, fields);
+        const promises = [];
+        if (fields.includes('namespaceId')) {
+          result.namespaceId = article.namespaceId;
         }
+        if (fields.includes('title')) {
+          result.title = article.title;
+        }
+        if (fields.includes('updatedAt')) {
+          result.updatedAt = article.updatedAt;
+        }
+        if (fields.includes('fullTitle')) {
+          result.fullTitle = article.fullTitle;
+        }
+        if (fields.includes('latestRevisionId')) {
+          result.latestRevisionId = article.latestRevisionId;
+        }
+        if (fields.includes('wikitext')) {
+          promises.push(
+            article.getLatestRevision({ includeWikitext: true })
+            .then((revision) => {
+              result.wikitext = revision.wikitext.text;
+            })
+          );
+        }
+        if (fields.includes('html')) {
+          promises.push(
+            article.render()
+            .then((renderResult) => {
+              result.html = renderResult.html;
+            })
+          );
+        }
+        return Promise.all(promises);
       })
-      .then((article) => {
-        new Response.Success({ article }).send(res);
+      .then(() => {
+        console.log(result);
+        new Response.Success({ article: result }).send(res);
       }, (err) => {
         next(err);
       });

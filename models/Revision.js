@@ -31,6 +31,11 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.ENUM('new', 'updated', 'renamed', 'deleted'),
       allowNull: false
     },
+    summary: {
+      type: DataTypes.STRING(200),
+      allowNull: false,
+      defaultValue: ''
+    },
     ipAddress: {
       type: 'VARBINARY(16)',
       allowNull: false,

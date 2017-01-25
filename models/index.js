@@ -75,7 +75,7 @@ models.setDefaultInstances = function() {
       return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'asfd', author: user, text: '--~~~~' });
     })
     .then((article) => {
-      return article.rename({ ipAddress: '192.111.23.4', fullTitle: 'aaaAA', author: user });
+      return article.rename({ ipAddress: '192.111.23.4', newFullTitle: 'aaaAA', author: user });
     })
     .then(() => {
       return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'qqQq', author: user, text: '--~~~~' });

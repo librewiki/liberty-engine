@@ -5,8 +5,6 @@ const router = express.Router();
 const { sequelize, Article, Namespace } = require('../models');
 const Response = require('../src/responses');
 
-const _ = require('lodash');
-
 router.post('/',
   (req, res, next) => {
   }
@@ -32,7 +30,6 @@ router.get('/',
     .then((articles) => {
       new Response.Success({ articles }).send(res);
     }, (err) => {
-      console.log(err);
       next(err);
     });
   }
@@ -84,15 +81,35 @@ router.get('/full-title/:fullTitle(*)',
         return Promise.all(promises);
       })
       .then(() => {
-        console.log(result);
         new Response.Success({ article: result }).send(res);
       }, (err) => {
         next(err);
       });
     });
-
   }
 );
+
+router.post('/full-title/:fullTitle(*)/revisions',
+  (req, res, next) => {
+    //@TODO Permission
+    return Article.findByFullTitle(req.params.fullTitle)
+    .then((article) => {
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      return article.edit({
+        ipAddress: req.ip,
+        author: req.user,
+        text: req.body.wikitext,
+        summary: req.body.summary
+      })
+      .then(() => {
+        new Response.Success().send(res);
+      });
+    });
+  }
+);
+
 
 const findQuery = `(
 	SELECT namespaceId, title, 0 as priority

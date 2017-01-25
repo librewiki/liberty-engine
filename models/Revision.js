@@ -83,7 +83,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.destinationFullTitle full title to rename.
        * @return {Promise<Revision>} Returns a promise of new revision.
        */
-      createNew({ article, author, ipAddress, text, status, destinationFullTitle }) {
+      createNew({ article, author, ipAddress, text, status, newFullTitle, summary }) {
         return Promise.resolve()
         .then(() => {
           switch (status) {
@@ -97,8 +97,9 @@ module.exports = function(sequelize, DataTypes) {
                     articleId: article.id,
                     wikitextId: wikitext.id,
                     changedLength: wikitext.text.length,
-                    ipAddress: ipAddress,
-                    status: status
+                    ipAddress,
+                    status,
+                    summary
                   });
                 });
               });
@@ -115,15 +116,16 @@ module.exports = function(sequelize, DataTypes) {
                       articleId: article.id,
                       wikitextId: wikitext.id,
                       changedLength: wikitext.text.length - baseRevision.wikitext.text.length,
-                      ipAddress: ipAddress,
-                      status: status
+                      ipAddress,
+                      status,
+                      summary
                     });
                   });
                 });
               });
             }
             case 'renamed': {
-              const { namespace, title } = models.Namespace.splitFullTitle(destinationFullTitle);
+              const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
               return article.getLatestRevision({ includeWikitext: false })
               .then((baseRevision) => {
                 return this.create({
@@ -131,13 +133,14 @@ module.exports = function(sequelize, DataTypes) {
                   changedLength: 0,
                   wikitextId: baseRevision.wikitextId,
                   articleId: article.id,
-                  ipAddress: ipAddress,
-                  status: status,
+                  ipAddress,
+                  status,
+                  summary,
                   renameLog: {
-                    sourceNamespaceId: article.namespaceId,
-                    sourceTitle: article.title,
-                    destinationNamespaceId: namespace.id,
-                    destinationTitle: title
+                    oldNamespaceId: article.namespaceId,
+                    oldTitle: article.title,
+                    newNamespaceId: namespace.id,
+                    newTitle: title
                   }
                 }, {
                   include: [models.RenameLog]
@@ -152,8 +155,9 @@ module.exports = function(sequelize, DataTypes) {
                   changedLength: -baseRevision.wikitext.text.length,
                   wikitextId: null,
                   articleId: article.id,
-                  ipAddress: ipAddress,
-                  status: status
+                  ipAddress,
+                  status,
+                  summary
                 });
               });
             }

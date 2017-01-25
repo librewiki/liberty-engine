@@ -104,18 +104,19 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.fullTitle full title of an article.
        * @param {User} option.author user writing this.
        * @param {String} option.text wikitext.
+       * @param {String} [option.summary] summary.
        * @return {Promise<Article>} Resolves new article.
        * @example
        *   Aritcle.createNew({ fullTitle: 'ns:title', author: 'author', wikitext: 'sample [[wikitext]]' });
        */
-      createNew({ fullTitle, ipAddress, author, text }) {
+      createNew({ fullTitle, ipAddress, author, text, summary = '' }) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
         return this.create({
           namespaceId: namespace.id,
           title: title
         })
         .then((article) => {
-          return models.Revision.createNew({ article, ipAddress, author, text, status: 'new' });
+          return models.Revision.createNew({ article, ipAddress, author, text, status: 'new', summary: 'new: ' + summary });
         });
       },
 
@@ -214,26 +215,47 @@ module.exports = function(sequelize, DataTypes) {
 
       /**
        * Update with new revision and wikitext.
-       * @method getLatestRevision
+       * @method edit
        * @param {Object} option
-       * @param {User} option.text author.
+       * @param {String} option.ipAddress ip address.
+       * @param {User} option.author author.
        * @param {String} option.text wikitext.
+       * @param {String} [option.summary] summary.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      edit({ ipAddress, author, text }) {
-        return models.Revision.createNew({ article: this, ipAddress, author, text, status: 'updated' });
+      edit({ ipAddress, author, text, summary = '' }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, text, status: 'updated', summary });
       },
 
-      rename({ ipAddress, author, fullTitle }) {
-        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
-        return models.Revision.createNew({ article: this, ipAddress, author, status: 'renamed', destinationFullTitle: fullTitle })
+      /**
+       * Rename this article and add a new revision.
+       * @method rename
+       * @param {Object} option
+       * @param {String} option.ipAddress ip address.
+       * @param {User} option.author author.
+       * @param {String} option.newFullTitle full title to change into.
+       * @param {String} [option.summary] summary.
+       * @return {Promise<Revision>} Resolves latest revision.
+       */
+      rename({ ipAddress, author, newFullTitle, summary = '' }) {
+        const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
+        return models.Revision.createNew({ article: this, ipAddress, author, status: 'renamed', newFullTitle, summary })
         .then(() => {
           return this.update({ namespaceId: namespace.id, title: title });
         });
       },
 
-      delete({ ipAddress, author }) {
-        return models.Revision.createNew({ article: this, ipAddress, author, status: 'deleted' })
+      /**
+       * Remove this article.
+       * @method delete
+       * @param {Object} option
+       * @param {String} option.ipAddress ip address.
+       * @param {User} option.author author.
+       * @param {String} [option.summary] summary.
+       * @return {Promise<Revision>} Resolves latest revision.
+       */
+      delete({ ipAddress, author, summary }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, status: 'deleted', summary })
         .then(() => {
           return this.destroy();
         });

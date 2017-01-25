@@ -26,22 +26,22 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
 
-    sourceNamespaceId: {
+    oldNamespaceId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
 
-    sourceTitle: {
+    oldTitle: {
       type: DataTypes.STRING,
       allowNull: false
     },
 
-    destinationNamespaceId: {
+    newNamespaceId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
 
-    destinationTitle: {
+    newTitle: {
       type: DataTypes.STRING,
       allowNull: false
     }
@@ -55,8 +55,8 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} models
        */
       associate(models) {
-        RenameLog.belongsTo(models.Namespace, { as: 'sourceNamespace' });
-        RenameLog.belongsTo(models.Namespace, { as: 'destinationNamespace' });
+        RenameLog.belongsTo(models.Namespace, { as: 'oldNamespace' });
+        RenameLog.belongsTo(models.Namespace, { as: 'newNamespace' });
         RenameLog.belongsTo(models.Revision, {
           onDelete: 'CASCADE', onUpdate: 'CASCADE'
         });

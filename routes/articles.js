@@ -97,14 +97,23 @@ router.post('/full-title/:fullTitle(*)/revisions',
       if (!article) {
         return new Response.ResourceNotFound().send(res);
       }
-      return article.edit({
-        ipAddress: req.ip,
-        author: req.user,
-        text: req.body.wikitext,
-        summary: req.body.summary
-      })
-      .then(() => {
-        new Response.Success().send(res);
+      return article.getLatestRevision({ includeWikitext: true })
+      .then((latestRevision) => {
+        if (!req.body.latestRevisionId || latestRevision.id > req.body.latestRevisionId) {
+          return new Response.BadRequest({ name: 'EditConflictError', message: 'edit conflict' }).send(res);
+        }
+        if (req.body.wikitext === latestRevision.wikitext.text) {
+          return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
+        }
+        return article.edit({
+          ipAddress: req.ip,
+          author: req.user,
+          text: req.body.wikitext,
+          summary: req.body.summary
+        })
+        .then(() => {
+          new Response.Success().send(res);
+        });
       });
     });
   }

@@ -37,10 +37,11 @@ class Failure extends Response {
 }
 
 class BadRequest extends Response {
-  constructor(message) {
+  constructor({ name, message } = {}) {
     super();
     this.status = 'failure';
     this.code = 400;
+    this.name = name || 'BadRequestError';
     this.message = message || 'bad request.';
   }
 }

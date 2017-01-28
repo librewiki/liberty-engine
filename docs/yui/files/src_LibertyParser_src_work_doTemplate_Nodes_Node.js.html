@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>User - The Foo API</title>
+    <title>src/LibertyParser/src/work/doTemplate/Nodes/Node.js - The Foo API</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -98,39 +98,66 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>User Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: src/LibertyParser/src/work/doTemplate/Nodes/Node.js</h1>
+
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * Bass class representing a markup node
+ * @module modules/WikiRenderer/Nodes/Node.js
+ */
+
+&#x27;use strict&#x27;;
+/**
+ * Bass class representing a wiki node
+ * @abstract
+ */
+class Node {
+  /**
+   * Create a node.
+   */
+  constructor() {
+    this.type = &#x27;abstract&#x27;;
+    this.children = [];
+  }
+
+  /**
+   * Render this node into HTML.
+   * @abstract
+   * @return {string} the result HTML.
+   */
+  render(parsingData, option) {
+    throw new Error(&#x27;Should be overridden.&#x27;);
+  }
+
+  /**
+   * Set children.
+   * @param {Node[]|Node} an array of nodes or a node.
+   */
+  setChildren(children) {
+    if (Array.isArray(children)) {
+      children.map(child =&gt; this.children.push(child));
+    } else if (children instanceof Node) {
+      this.children.push(children);
+    }
+  }
+
+  renderChildren(parsingData, option) {
+    return Promise.all(this.children.map(child =&gt; child.render(parsingData, option)))
+    .then((results) =&gt; {
+      return results.join(&#x27;&#x27;);
+    });
+  }
+
+  static indent(str) {
+    return str.split(&#x27;\n&#x27;).map(line =&gt; &#x27;\t&#x27; + line).join(&#x27;\n&#x27;);
+  }
+}
 
 
-        <div class="foundat">
-            Defined in: <a href="../files/models_User.js.html#l16"><code>models&#x2F;User.js:16</code></a>
-        </div>
+module.exports = Node;
 
-</div>
-
-
-<div class="box intro">
-    <p>Provides User model.</p>
-
-</div>
-
-
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-            <p>This module provides the following classes:</p>
-
-            <ul class="module-classes">
-                <li class="module-class">
-                    <a href="../classes/User.html">
-                        User
-                    </a>
-                </li>
-            </ul>
-    </div>
-
-
-    <div class="yui3-u-1-2">
-    </div>
+    </pre>
 </div>
                     </div>
                 </div>

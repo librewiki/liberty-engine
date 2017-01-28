@@ -88,7 +88,7 @@ module.exports = function(sequelize, DataTypes) {
         .then(() => {
           switch (status) {
             case 'new': {
-              return models.Wikitext.replaceOnSave({ article, author, text, status })
+              return models.Wikitext.replaceOnSave({ ipAddress, article, author, text, status })
               .then((replacedText) => {
                 return models.Wikitext.create({ text: replacedText })
                 .then((wikitext) => {
@@ -105,7 +105,7 @@ module.exports = function(sequelize, DataTypes) {
               });
             }
             case 'updated': {
-              return models.Wikitext.replaceOnSave({ article, author, text, status })
+              return models.Wikitext.replaceOnSave({ ipAddress, article, author, text, status })
               .then((replacedText) => {
                 return article.getLatestRevision({ includeWikitext: true })
                 .then((baseRevision) => {

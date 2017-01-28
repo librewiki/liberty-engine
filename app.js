@@ -27,6 +27,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: 'http://localhost:3000' }));
 
 app.use((req, res, next) => {
+  req.ipAddress = req.ip.replace(/^::ffff:/, '');
   const token = req.headers['x-access-token'];
   if (token) {
     return models.User.verifyToken(token)

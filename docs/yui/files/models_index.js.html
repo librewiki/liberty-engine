@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -119,7 +124,7 @@ fs.readdirSync(__dirname)
 })
 .forEach((file) =&gt; {
   let model = sequelize.import(path.join(__dirname, file));
-  models[model.name] = model;
+  models[model.name.charAt(0).toUpperCase() + model.name.slice(1)] = model;
 });
 
 Object.keys(models).forEach((modelName) =&gt; {
@@ -131,14 +136,23 @@ Object.keys(models).forEach((modelName) =&gt; {
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 
-models.setDefaultInstances = function() {
-  return models.User.create({ username: &#x27;Admin001&#x27;, password: &#x27;password&#x27;, email: &#x27;ads@ddd.com&#x27; })
-  .then((user) =&gt; {
-    return models.UserProperty.create({
-      userId: user.id,
-      name: &#x27;asdf&#x27;,
-      value: &#x27;가나다&#x27;
-    });
+models.initialize = function({ force = false } = {}) {
+  return Promise.resolve()
+  .then(() =&gt; {
+    if (force) {
+      return models.sequelize.query(&#x27;SET FOREIGN_KEY_CHECKS = 0;&#x27;);
+    }
+  })
+  .then(() =&gt; {
+    return models.sequelize.sync({ force });
+  })
+  .then(() =&gt; {
+    if (force) {
+      return models.sequelize.query(&#x27;SET FOREIGN_KEY_CHECKS = 1;&#x27;);
+    }
+  })
+  .then(() =&gt; {
+    return models.User.initialize();
   })
   .then(() =&gt; {
     return models.Namespace.create({
@@ -148,12 +162,50 @@ models.setDefaultInstances = function() {
   })
   .then(() =&gt; {
     return models.Namespace.initialize();
+  });
+};
+
+
+models.setDefaultInstances = function() {
+  return Promise.resolve()
+  .then(() =&gt; {
+    return models.User.create({ username: &#x27;Admin001&#x27;, password: &#x27;password&#x27;, email: &#x27;asdf@gmail.com&#x27; });
   })
   .then(() =&gt; {
-    return models.User.findById(1);
-  })
-  .then((user) =&gt; {
-    return models.Article.createNew({ fullTitle: &#x27;asfd&#x27;, author: user, wikitext: &#x27;--~~~~&#x27; });
+    let user;
+    return models.User.findById(1)
+    .then((user1) =&gt; {
+      user = user1;
+      return models.Article.createNew({ ipAddress: &#x27;192.111.23.4&#x27;, fullTitle: &#x27;asfd&#x27;, author: user, text: &#x27;--~~~~&#x27; });
+    })
+    .then((article) =&gt; {
+      return article.rename({ ipAddress: &#x27;192.111.23.4&#x27;, newFullTitle: &#x27;aaaAA&#x27;, author: user });
+    })
+    .then(() =&gt; {
+      return models.Article.createNew({ ipAddress: &#x27;192.111.23.4&#x27;, fullTitle: &#x27;qqQq&#x27;, author: user, text: &#x27;--~~~~&#x27; });
+    })
+    .then((article) =&gt; {
+      return models.Redirection.create({ sourceNamespaceId: 0, sourceTitle: &#x27;xxx&#x27;, destinationArticleId: article.id, user: user })
+      .then(() =&gt; {
+        return article.delete({ ipAddress: &#x27;192.111.23.4&#x27;, author: user });
+      });
+    })
+    .then(() =&gt; {
+      return models.Article.createNew({ ipAddress: &#x27;192.111.23.4&#x27;, fullTitle: &#x27;뷁뷀⏰&#x27;, author: user, text: &#x27;--~~~~&#x27; });
+    })
+    .then((article) =&gt; {
+      return article.edit({ ipAddress: &#x27;ffff:adda:0011:1111:0000:1111:2200:1131&#x27;, author: models.User.anonymous, text: &#x27;asdfsdfdf!!!! --~~~~&#x27; });
+    })
+    .then(() =&gt; {
+      return models.Article.createNew({ ipAddress: &#x27;192.111.23.4&#x27;, fullTitle: &#x27;aaAAA&#x27;, author: user, text: &#x27;--~~~~&#x27; });
+    })
+    .then(() =&gt; {
+      return models.Revision.findById(3);
+    })
+    .then((rev) =&gt; {
+      console.log(rev);
+      console.log(rev.ipAddress);
+    });
   });
 };
 

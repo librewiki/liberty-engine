@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -112,25 +117,63 @@
  * @class Namespace
  */
 module.exports = function(sequelize, DataTypes) {
-  const Namespace = sequelize.define(&#x27;Namespace&#x27;, {
+  const Namespace = sequelize.define(&#x27;namespace&#x27;, {
+    /**
+     * Primary key.
+     *
+     * @property id
+     * @type Number
+     */
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true
     },
+
+    /**
+     * Name of namespace.
+     *
+     * @property name
+     * @type String
+     */
     name: {
       type: DataTypes.STRING(128),
       allowNull: false,
       unique: true
     }
   }, {
-    tableName: &#x27;namespace&#x27;,
-    underscored: true,
     classMethods: {
-      _idKeyMap: new Map(),
-      _nameKeyMap: new Map(),
-      associate: function(models) {
+      /**
+       * Describes associations.
+       * @method associate
+       * @static
+       * @param {Object} models
+       */
+      associate(models) {
         Namespace.hasMany(models.Article);
       },
+
+      /**
+       * Map holding id as a key and namespace as a value.
+       *
+       * @property _idKeyMap
+       * @static
+       * @private
+       * @type Map&lt;Namespace&gt;
+       * @default Map{}
+       */
+      _idKeyMap: new Map(),
+
+      /**
+       * Map holding name as a key and namespace as a value.
+       *
+       * @property _idKeyMap
+       * @static
+       * @private
+       * @type Map&lt;Namespace&gt;
+       * @default Map{}
+       */
+      _nameKeyMap: new Map(),
+
 
       /**
        * Loads all namespaces and caches the instances of Namespace.
@@ -139,7 +182,7 @@ module.exports = function(sequelize, DataTypes) {
        * @static
        * @return {Promise} Returns a promise.
        */
-      initialize: function() {
+      initialize() {
         this._idKeyMap.clear();
         this._nameKeyMap.clear();
         return this.findAll()
@@ -158,7 +201,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Number} id id of the namespace.
        * @return {Namespace} Returns an instance of Namespace. If not exists, returns null.
        */
-      getById: function(id) {
+      getById(id) {
         const namespace = this._idKeyMap.get(id);
         if (namespace) {
           return namespace;
@@ -174,7 +217,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} name name of the namespace.
        * @return {Namespace} Returns an instance of Namespace. If not exists, returns null.
        */
-      getByName: function(name) {
+      getByName(name) {
         const namespace = this._nameKeyMap.get(name);
         if (namespace) {
           return namespace;
@@ -190,7 +233,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} fullTitle full title of an article.
        * @return {Promise} Returns a promise.
        */
-      splitFullTitle: function(fullTitle) {
+      splitFullTitle(fullTitle) {
         let [first, ...rest] = fullTitle.split(&#x27;:&#x27;);
         let namespace = this.getByName(first);
         if (namespace) {
@@ -204,6 +247,13 @@ module.exports = function(sequelize, DataTypes) {
             title: fullTitle
           };
         }
+      },
+
+      joinNamespaceIdTitle(id, title) {
+        if (id === 0) {
+          return title;
+        }
+        return this.getById(id).name + &#x27;:&#x27; + title;
       }
     }
   });

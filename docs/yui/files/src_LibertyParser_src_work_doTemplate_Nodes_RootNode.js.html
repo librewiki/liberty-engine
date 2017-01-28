@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>User - The Foo API</title>
+    <title>src/LibertyParser/src/work/doTemplate/Nodes/RootNode.js - The Foo API</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -98,39 +98,30 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>User Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: src/LibertyParser/src/work/doTemplate/Nodes/RootNode.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+/**
+ * Class representing a root node of tree.
+ */
 
-        <div class="foundat">
-            Defined in: <a href="../files/models_User.js.html#l16"><code>models&#x2F;User.js:16</code></a>
-        </div>
+&#x27;use strict&#x27;;
+const Node = require(&#x27;./Node.js&#x27;);
 
-</div>
+class RootNode extends Node {
+  constructor() {
+    super();
+    this.type = &#x27;root&#x27;;
+  }
 
+  render(parsingData, option) {
+    return this.renderChildren(parsingData, option);
+  }
+}
+module.exports = RootNode;
 
-<div class="box intro">
-    <p>Provides User model.</p>
-
-</div>
-
-
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-            <p>This module provides the following classes:</p>
-
-            <ul class="module-classes">
-                <li class="module-class">
-                    <a href="../classes/User.html">
-                        User
-                    </a>
-                </li>
-            </ul>
-    </div>
-
-
-    <div class="yui3-u-1-2">
-    </div>
+    </pre>
 </div>
                     </div>
                 </div>

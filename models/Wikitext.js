@@ -36,13 +36,14 @@ module.exports = function(sequelize, DataTypes) {
        * @method replaceOnSave
        * @static
        * @param {Object} option
+       * @param {User} option.ipAddress ip.
        * @param {User} option.article an article to change.
        * @param {User} option.author user writing this.
        * @param {String} option.wikitext wikitext.
        * @param {String} option.status one of 'new', 'normal', 'moved', or 'deleted'.
        * @return {Promise<String>} Returns a replaced wikitext.
        */
-      replaceOnSave({ article, author, text, status }) {
+      replaceOnSave({ ipAddress, article, author, text, status }) {
         let date = moment().format();
         let nowikiArr = [];
         let newText = text
@@ -57,7 +58,7 @@ module.exports = function(sequelize, DataTypes) {
           let x = nowikiArr.push($0);
           return '\\nowiki\\_' + (x - 1) + '_\\nowiki\\';
         });
-        return author.getSignature()
+        return author.getSignature(ipAddress)
         .then((signature) => {
           return newText.replace(/~~~~~/g, date)
           .replace(/~~~~/g, signature + ' ' + date)

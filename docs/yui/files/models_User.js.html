@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -111,7 +116,6 @@ const saltRounds = 10;
 const jwt = require(&#x27;jsonwebtoken&#x27;);
 const env = process.env.NODE_ENV || &#x27;development&#x27;;
 const secret = require(&#x27;../config/config.json&#x27;)[env].secret;
-const models = require(&#x27;./&#x27;);
 
 /**
  * Model representing users.
@@ -119,11 +123,16 @@ const models = require(&#x27;./&#x27;);
  * @class User
  */
 module.exports = function(sequelize, DataTypes) {
-  const User = sequelize.define(&#x27;User&#x27;, {
+  const User = sequelize.define(&#x27;user&#x27;, {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
+    },
+    active: {
+      type: DataTypes.BOOLEAN,
+      allowNull: false,
+      defaultValue: false
     },
     username: {
       type: DataTypes.STRING(128),
@@ -135,8 +144,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     passwordHash: {
-      type: DataTypes.STRING(128),
-      field: &#x27;password_hash&#x27;
+      type: DataTypes.STRING(128)
     },
     password: {
       type: DataTypes.VIRTUAL,
@@ -147,22 +155,30 @@ module.exports = function(sequelize, DataTypes) {
     email: {
       type: DataTypes.STRING(128),
       allowNull: true,
-      isEmail: true,
+      validate: {
+        isEmail: true
+      },
       defaultValue: null
+    },
+    isAnonymous: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return this.getDataValue(&#x27;id&#x27;) === null;
+      }
     }
   }, {
-    tableName: &#x27;user&#x27;,
-    underscored: true,
     classMethods: {
       /**
-       * Describes association.
+       * Describes associations.
        * @method associate
        * @static
-       * @param {Model[]} models
+       * @param {Object} models
        */
       associate(models) {
-        User.belongsToMany(models.UserGroup, { through: &#x27;user_group_user&#x27; });
-        User.hasMany(models.UserProperty, { foreignKey: &#x27;userId&#x27; });
+        User.belongsToMany(models.UserGroup, { through: &#x27;userUserGroups&#x27; });
+        User.hasOne(models.UserSignature, {
+          onDelete: &#x27;CASCADE&#x27;, onUpdate: &#x27;CASCADE&#x27;
+        });
       },
 
       /**
@@ -185,8 +201,7 @@ module.exports = function(sequelize, DataTypes) {
        * @method verifyToken
        * @static
        * @param {String} token jwt of a user.
-       * @throws {Error} if the token is invalid.
-       * @return {Promise&lt;Object&gt;} Returns a promise of decoded token data.
+       * @return {Promise&lt;String, Error&gt;} Resolves decoded token data or rejects if it invalid.
        */
       verifyToken(token) {
         return new Promise((resolve, reject) =&gt; {
@@ -198,32 +213,37 @@ module.exports = function(sequelize, DataTypes) {
             }
           });
         });
+      },
+      initialize() {
+        this.anonymous = this.build({
+          id: null,
+          username: &#x27;(anonymous)&#x27;,
+          email: null,
+        });
       }
     },
     instanceMethods: {
       /**
        * Returns whether given password is correct.
-       * @method authenticate
+       * @method verifyPassword
        * @param {String} password password of this user
-       * @throws {Error} if the token is invalid.
        * @return {Promise&lt;Bool&gt;} Returns a promise that has true (correct) or false (incorrect).
        */
-      authenticate(password) {
+      verifyPassword(password) {
         return bcrypt.compare(password, this.passwordHash);
       },
 
       /**
-       * Issues a json web token (jwt). If it valid, returns decoded data of it.
+       * Issues a json web token (jwt). You must call verifyPassword() to check password before issue it to the user.
        * @method issueToken
-       * @param {String} token jwt of a user.
-       * @throws {Error} if the token is invalid.
-       * @return {Promise&lt;Object&gt;} Returns a promise of decoded token data.
+       * @return {Promise&lt;String&gt;} Resolves new jwt.
        */
       issueToken() {
         return new Promise((resolve, reject) =&gt; {
           jwt.sign({
             id: this.id,
-            username: this.username
+            username: this.username,
+            email: this.email
           }, secret, { expiresIn: &#x27;1h&#x27; }, (err, token) =&gt; {
             if (err) {
               reject(err);
@@ -235,63 +255,37 @@ module.exports = function(sequelize, DataTypes) {
       },
 
       /**
-       * Sets a property of this user.
-       * @method setProperty
-       * @param {String} name name of property.
-       * @param {String} value value of property.
-       * @return {Promise&lt;UserProperty&gt;} Returns a promise of new user property.
-       */
-      setProperty(name, value) {
-        return models.UserProperty.upsert({
-          userId: this.id,
-          name, value
-        });
-      },
-
-      /**
-       * Returns specified property value.
-       * @method getProperty
-       * @param {String} name name of property.
-       * @param {String} value value of property.
-       * @return {Promise&lt;String, null&gt;} Returns a promise of new user property or null if not exists.
-       */
-      getProperty(name) {
-        return this.getUserProperties({ where: { name } })
-        .then(([property]) =&gt; {
-          if (property) {
-            return property.value;
-          } else {
-            return null;
-          }
-        });
-      },
-
-      /**
        * Returns signature of this user.
        * @method getSignature
        * @return {Promise&lt;String&gt;} Returns a promise of signature of this user.
        */
-      getSignature() {
-        return this.getProperty(&#x27;signature&#x27;)
+      getSignature(ipAddress) {
+        if (this.isAnonymous) {
+          return Promise.resolve(&#x60;[[사용자:${ipAddress}]]&#x60;);
+        }
+        return this.getUserSignature()
         .then((signature) =&gt; {
           if (signature) {
-            return this.getProperty(&#x27;wikitext-sign&#x27;)
-            .then((wikitextsign) =&gt; {
-              if (wikitextsign === null || wikitextsign === &#x27;0&#x27;) {
-                return &#x60;[[${this.userPageFullTitle}|${signature}]]&#x60;;
-              } else {
-                return signature;
-              }
-            });
+            return signature.text;
           } else {
             return &#x60;[[${this.userPageFullTitle}]]&#x60;;
           }
         });
+      },
+
+      /**
+       * Returns which this user has permission to do an action.
+       * @method hasPermissionTo
+       * @param {String} actionName
+       * @return {Promise&lt;Bool&gt;} Resolves which this user has permission
+       */
+      hasPermissionTo(actionName) {
+        return Promise.resolve(true);
       }
     },
     getterMethods: {
       /**
-       * Indicates the full title of userpage of this user.
+       * Indicates the full title of user page of this user.
        *
        * @attribute userPageFullTitle
        * @readOnly

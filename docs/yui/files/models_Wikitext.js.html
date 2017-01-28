@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -118,35 +123,36 @@ const moment = require(&#x27;moment&#x27;);
  * @class Wikitext
  */
 module.exports = function(sequelize, DataTypes) {
-  const Wikitext = sequelize.define(&#x27;Wikitext&#x27;, {
+  const Wikitext = sequelize.define(&#x27;wikitext&#x27;, {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
-    wikitext: {
+    text: {
       type: DataTypes.STRING(128),
       allowNull: false
     }
   }, {
-    tableName: &#x27;wikitext&#x27;,
-    underscored: true,
     classMethods: {
       /**
        * Replace wikitext when it is saved.
        * @method replaceOnSave
        * @static
        * @param {Object} option
+       * @param {User} option.ipAddress ip.
        * @param {User} option.article an article to change.
        * @param {User} option.author user writing this.
        * @param {String} option.wikitext wikitext.
        * @param {String} option.status one of &#x27;new&#x27;, &#x27;normal&#x27;, &#x27;moved&#x27;, or &#x27;deleted&#x27;.
        * @return {Promise&lt;String&gt;} Returns a replaced wikitext.
        */
-      replaceOnSave({ article, author, wikitext, status }) {
+      replaceOnSave({ ipAddress, article, author, text, status }) {
         let date = moment().format();
         let nowikiArr = [];
-        let newText = wikitext
+        let newText = text
+        .replace(/\r\n/g, &#x27;\n&#x27;)
+        .replace(/\r/g, &#x27;\n&#x27;)
         .replace(nowikiRegex1,&#x27;\\Nowiki\\&#x27;)
         .replace(nowikiRegex2, ($0) =&gt; {
           let x = nowikiArr.push($0);
@@ -156,7 +162,7 @@ module.exports = function(sequelize, DataTypes) {
           let x = nowikiArr.push($0);
           return &#x27;\\nowiki\\_&#x27; + (x - 1) + &#x27;_\\nowiki\\&#x27;;
         });
-        return author.getSignature()
+        return author.getSignature(ipAddress)
         .then((signature) =&gt; {
           return newText.replace(/~~~~~/g, date)
           .replace(/~~~~/g, signature + &#x27; &#x27; + date)

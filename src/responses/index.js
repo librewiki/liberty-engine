@@ -51,6 +51,7 @@ class ResourceNotFound extends Response {
     super();
     this.status = 'failure';
     this.code = 404;
+    this.name = 'ResourceNotFoundError';
     this.message = 'Cannot find the resource.';
   }
 }

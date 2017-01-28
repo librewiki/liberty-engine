@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -118,6 +123,7 @@
         <li class="api-class-tab index"><a href="#index">Index</a></li>
 
             <li class="api-class-tab methods"><a href="#methods">Methods</a></li>
+            <li class="api-class-tab properties"><a href="#properties">Properties</a></li>
     </ul>
 
     <div>
@@ -139,12 +145,50 @@
                                     <span class="flag static">static</span>
                             </li>
                             <li class="index-item method">
+                                <a href="#method_delete">delete</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_edit">edit</a>
+
+                            </li>
+                            <li class="index-item method">
                                 <a href="#method_getLatestRevision">getLatestRevision</a>
+
+                            </li>
+                            <li class="index-item method">
+                                <a href="#method_rename">rename</a>
 
                             </li>
                     </ul>
                 </div>
 
+                <div class="index-section properties">
+                    <h3>Properties</h3>
+
+                    <ul class="index-list properties">
+                            <li class="index-item property">
+                                <a href="#property_id">id</a>
+
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_namespaceId">namespaceId</a>
+
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_title">title</a>
+
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_title">title</a>
+
+                            </li>
+                            <li class="index-item property">
+                                <a href="#property_title">title</a>
+
+                            </li>
+                    </ul>
+                </div>
 
 
         </div>
@@ -174,7 +218,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/models_Article.js.html#l40"><code>models&#x2F;Article.js:40</code></a>
+        <a href="../files/models_Article.js.html#l87"><code>models&#x2F;Article.js:87</code></a>
         </p>
 
 
@@ -182,7 +226,7 @@
     </div>
 
     <div class="description">
-        <p>Describes association.</p>
+        <p>Describes associations.</p>
 
     </div>
 
@@ -192,7 +236,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">models</code>
-                        <span class="type">Model</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">
@@ -231,7 +275,7 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/models_Article.js.html#l53"><code>models&#x2F;Article.js:53</code></a>
+        <a href="../files/models_Article.js.html#l99"><code>models&#x2F;Article.js:99</code></a>
         </p>
 
 
@@ -249,7 +293,7 @@
             <ul class="params-list">
                 <li class="param">
                         <code class="param-name">option</code>
-                        <span class="type">Object</span>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
 
 
                     <div class="param-description">
@@ -259,7 +303,7 @@
                         <ul class="params-list">
                             <li class="param">
                                     <code class="param-name">fullTitle</code>
-                                    <span class="type">String</span>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
                                 <div class="param-description">
                                     <p>full title of an article.</p>
@@ -278,11 +322,22 @@
 
                             </li>
                             <li class="param">
-                                    <code class="param-name">wikitext</code>
-                                    <span class="type">String</span>
+                                    <code class="param-name">text</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
 
                                 <div class="param-description">
                                     <p>wikitext.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name optional">[summary]</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+
+                                <div class="param-description">
+                                    <p>summary.</p>
 
                                 </div>
 
@@ -297,17 +352,31 @@
 
             <div class="returns-description">
                         <span class="type">Promise<Article></span>:
-                    <p>Returns a promise of new article.</p>
+                    <p>Resolves new article.</p>
 
             </div>
         </div>
 
 
-</div>
-<div id="method_getLatestRevision" class="method item">
-    <h3 class="name"><code>getLatestRevision</code></h3>
+        <div class="example">
+            <h4>Example:</h4>
 
-        <span class="paren">()</span>
+            <div class="example-content">
+                <p>Aritcle.createNew({ fullTitle: 'ns:title', author: 'author', wikitext: 'sample [[wikitext]]' });</p>
+
+            </div>
+        </div>
+</div>
+<div id="method_delete" class="method item">
+    <h3 class="name"><code>delete</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>option</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
 
         <span class="returns-inline">
             <span class="type">Promise<Revision></span>
@@ -322,7 +391,213 @@
     <div class="meta">
                 <p>
                 Defined in
-        <a href="../files/models_Article.js.html#l78"><code>models&#x2F;Article.js:78</code></a>
+        <a href="../files/models_Article.js.html#l248"><code>models&#x2F;Article.js:248</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Remove this article.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">option</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                        <ul class="params-list">
+                            <li class="param">
+                                    <code class="param-name">ipAddress</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+                                <div class="param-description">
+                                    <p>ip address.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name">author</code>
+                                    <span class="type"><a href="../classes/User.html" class="crosslink">User</a></span>
+
+                                <div class="param-description">
+                                    <p>author.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name optional">[summary]</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+
+                                <div class="param-description">
+                                    <p>summary.</p>
+
+                                </div>
+
+                            </li>
+                        </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Promise<Revision></span>:
+                    <p>Resolves latest revision.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_edit" class="method item">
+    <h3 class="name"><code>edit</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>option</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Promise<Revision></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l216"><code>models&#x2F;Article.js:216</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Update with new revision and wikitext.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">option</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                        <ul class="params-list">
+                            <li class="param">
+                                    <code class="param-name">ipAddress</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+                                <div class="param-description">
+                                    <p>ip address.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name">author</code>
+                                    <span class="type"><a href="../classes/User.html" class="crosslink">User</a></span>
+
+                                <div class="param-description">
+                                    <p>author.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name">text</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+                                <div class="param-description">
+                                    <p>wikitext.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name optional">[summary]</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+
+                                <div class="param-description">
+                                    <p>summary.</p>
+
+                                </div>
+
+                            </li>
+                        </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Promise<Revision></span>:
+                    <p>Resolves latest revision.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_getLatestRevision" class="method item">
+    <h3 class="name"><code>getLatestRevision</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>option</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Promise<Revision></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l199"><code>models&#x2F;Article.js:199</code></a>
         </p>
 
 
@@ -334,12 +609,150 @@
 
     </div>
 
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">option</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                        <ul class="params-list">
+                            <li class="param">
+                                    <code class="param-name">includeWikitext</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+                                <div class="param-description">
+                                    <p>include wikitext instance.</p>
+
+                                </div>
+
+                            </li>
+                        </ul>
+                </li>
+            </ul>
+        </div>
 
         <div class="returns">
             <h4>Returns:</h4>
 
             <div class="returns-description">
                         <span class="type">Promise<Revision></span>:
+                    <p>Resolves latest revision.</p>
+
+            </div>
+        </div>
+
+
+</div>
+<div id="method_rename" class="method item">
+    <h3 class="name"><code>rename</code></h3>
+
+        <div class="args">
+            <span class="paren">(</span><ul class="args-list inline commas">
+                <li class="arg">
+                        <code>option</code>
+                </li>
+            </ul><span class="paren">)</span>
+        </div>
+
+        <span class="returns-inline">
+            <span class="type">Promise<Revision></span>
+        </span>
+
+
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l230"><code>models&#x2F;Article.js:230</code></a>
+        </p>
+
+
+
+    </div>
+
+    <div class="description">
+        <p>Rename this article and add a new revision.</p>
+
+    </div>
+
+        <div class="params">
+            <h4>Parameters:</h4>
+
+            <ul class="params-list">
+                <li class="param">
+                        <code class="param-name">option</code>
+                        <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object" class="crosslink external" target="_blank">Object</a></span>
+
+
+                    <div class="param-description">
+                         
+                    </div>
+
+                        <ul class="params-list">
+                            <li class="param">
+                                    <code class="param-name">ipAddress</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+                                <div class="param-description">
+                                    <p>ip address.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name">author</code>
+                                    <span class="type"><a href="../classes/User.html" class="crosslink">User</a></span>
+
+                                <div class="param-description">
+                                    <p>author.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name">newFullTitle</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+                                <div class="param-description">
+                                    <p>full title to change into.</p>
+
+                                </div>
+
+                            </li>
+                            <li class="param">
+                                    <code class="param-name optional">[summary]</code>
+                                    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+                                    <span class="flag optional" title="This parameter is optional.">optional</span>
+
+                                <div class="param-description">
+                                    <p>summary.</p>
+
+                                </div>
+
+                            </li>
+                        </ul>
+                </li>
+            </ul>
+        </div>
+
+        <div class="returns">
+            <h4>Returns:</h4>
+
+            <div class="returns-description">
+                        <span class="type">Promise<Revision></span>:
+                    <p>Resolves latest revision.</p>
+
             </div>
         </div>
 
@@ -347,6 +760,135 @@
 </div>
             </div>
 
+            <div id="properties" class="api-class-tabpanel">
+                <h2 class="off-left">Properties</h2>
+
+<div id="property_id" class="property item">
+    <h3 class="name"><code>id</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l19"><code>models&#x2F;Article.js:19</code></a>
+        </p>
+
+
+    </div>
+
+    <div class="description">
+        <p>Primary key.</p>
+
+    </div>
+
+
+
+</div>
+<div id="property_namespaceId" class="property item">
+    <h3 class="name"><code>namespaceId</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Number" class="crosslink external" target="_blank">Number</a></span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l31"><code>models&#x2F;Article.js:31</code></a>
+        </p>
+
+
+    </div>
+
+    <div class="description">
+        <p>ID of namespace it belongs to.</p>
+
+    </div>
+
+
+
+</div>
+<div id="property_title" class="property item">
+    <h3 class="name"><code>title</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l42"><code>models&#x2F;Article.js:42</code></a>
+        </p>
+
+
+    </div>
+
+    <div class="description">
+        <p>The title of this article.</p>
+
+    </div>
+
+
+
+</div>
+<div id="property_title" class="property item">
+    <h3 class="name"><code>title</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l55"><code>models&#x2F;Article.js:55</code></a>
+        </p>
+
+
+    </div>
+
+    <div class="description">
+        <p>Full title of this article.</p>
+
+    </div>
+
+
+
+</div>
+<div id="property_title" class="property item">
+    <h3 class="name"><code>title</code></h3>
+    <span class="type"><a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/String" class="crosslink external" target="_blank">String</a></span>
+
+
+
+
+
+    <div class="meta">
+                <p>
+                Defined in
+        <a href="../files/models_Article.js.html#l68"><code>models&#x2F;Article.js:68</code></a>
+        </p>
+
+
+    </div>
+
+    <div class="description">
+        <p>Id  of latest revision.</p>
+
+    </div>
+
+
+
+</div>
+            </div>
 
 
     </div>

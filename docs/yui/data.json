@@ -17,17 +17,6 @@
             "fors": {},
             "namespaces": {}
         },
-        "models/LatestRevision.js": {
-            "name": "models/LatestRevision.js",
-            "modules": {
-                "LatestRevision": 1
-            },
-            "classes": {
-                "LatestRevision": 1
-            },
-            "fors": {},
-            "namespaces": {}
-        },
         "models/Namespace.js": {
             "name": "models/Namespace.js",
             "modules": {
@@ -35,6 +24,28 @@
             },
             "classes": {
                 "Namespace": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/Redirection.js": {
+            "name": "models/Redirection.js",
+            "modules": {
+                "Redirection": 1
+            },
+            "classes": {
+                "Redirection": 1
+            },
+            "fors": {},
+            "namespaces": {}
+        },
+        "models/RenameLog.js": {
+            "name": "models/RenameLog.js",
+            "modules": {
+                "RenameLog": 1
+            },
+            "classes": {
+                "RenameLog": 1
             },
             "fors": {},
             "namespaces": {}
@@ -72,13 +83,13 @@
             "fors": {},
             "namespaces": {}
         },
-        "models/UserProperty.js": {
-            "name": "models/UserProperty.js",
+        "models/UserSignature.js": {
+            "name": "models/UserSignature.js",
             "modules": {
-                "UserProperty": 1
+                "UserSignature": 1
             },
             "classes": {
-                "UserProperty": 1
+                "UserSignature": 1
             },
             "fors": {},
             "namespaces": {}
@@ -103,6 +114,61 @@
             "fors": {},
             "namespaces": {}
         },
+        "src/LibertyParser/src/ParserSupporter/TemplateTextGetter/TemplateTextGetter.js": {
+            "name": "src/LibertyParser/src/ParserSupporter/TemplateTextGetter/TemplateTextGetter.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LibertyParser/src/work/doTemplate/Nodes/Node.js": {
+            "name": "src/LibertyParser/src/work/doTemplate/Nodes/Node.js",
+            "modules": {
+                "modules/WikiRenderer/Nodes/Node.js": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LibertyParser/src/work/doTemplate/Nodes/NodeList.js": {
+            "name": "src/LibertyParser/src/work/doTemplate/Nodes/NodeList.js",
+            "modules": {
+                "modules/WikiRenderer/Preprocessor/Nodes/NodeList.js": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LibertyParser/src/work/doTemplate/Nodes/RootNode.js": {
+            "name": "src/LibertyParser/src/work/doTemplate/Nodes/RootNode.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LibertyParser/src/work/doTemplate/Nodes/TextNode.js": {
+            "name": "src/LibertyParser/src/work/doTemplate/Nodes/TextNode.js",
+            "modules": {
+                "modules/WikiRenderer/Nodes/TextNode.js": 1
+            },
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LibertyParser/src/work/doXml/index.js": {
+            "name": "src/LibertyParser/src/work/doXml/index.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
+        "src/LibertyParser/src/ParsingData.js": {
+            "name": "src/LibertyParser/src/ParsingData.js",
+            "modules": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {}
+        },
         "src/recentChanges.js": {
             "name": "src/recentChanges.js",
             "modules": {
@@ -118,23 +184,25 @@
             "name": "models",
             "submodules": {
                 "Article": 1,
-                "LatestRevision": 1,
                 "Namespace": 1,
+                "Redirection": 1,
+                "RenameLog": 1,
                 "Revision": 1,
                 "User": 1,
                 "UserGroup": 1,
-                "UserProperty": 1,
+                "UserSignature": 1,
                 "Wikitext": 1
             },
             "elements": {},
             "classes": {
                 "Article": 1,
-                "LatestRevision": 1,
                 "Namespace": 1,
+                "Redirection": 1,
+                "RenameLog": 1,
                 "Revision": 1,
                 "User": 1,
                 "UserGroup": 1,
-                "UserProperty": 1,
+                "UserSignature": 1,
                 "Wikitext": 1
             },
             "fors": {},
@@ -160,22 +228,6 @@
             "line": 12,
             "description": "Provides Article model."
         },
-        "LatestRevision": {
-            "name": "LatestRevision",
-            "submodules": {},
-            "elements": {},
-            "classes": {
-                "LatestRevision": 1
-            },
-            "fors": {},
-            "is_submodule": 1,
-            "namespaces": {},
-            "module": "models",
-            "namespace": "",
-            "file": "models/LatestRevision.js",
-            "line": 10,
-            "description": "Provides LatestRevision model."
-        },
         "Namespace": {
             "name": "Namespace",
             "submodules": {},
@@ -192,6 +244,38 @@
             "line": 10,
             "description": "Provides Namespace model."
         },
+        "Redirection": {
+            "name": "Redirection",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "Redirection": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/Redirection.js",
+            "line": 10,
+            "description": "Provides Redirection model."
+        },
+        "RenameLog": {
+            "name": "RenameLog",
+            "submodules": {},
+            "elements": {},
+            "classes": {
+                "RenameLog": 1
+            },
+            "fors": {},
+            "is_submodule": 1,
+            "namespaces": {},
+            "module": "models",
+            "namespace": "",
+            "file": "models/RenameLog.js",
+            "line": 10,
+            "description": "Provides RenameLog model."
+        },
         "Revision": {
             "name": "Revision",
             "submodules": {},
@@ -205,7 +289,7 @@
             "module": "models",
             "namespace": "",
             "file": "models/Revision.js",
-            "line": 12,
+            "line": 13,
             "description": "Provides Revision model."
         },
         "User": {
@@ -221,7 +305,7 @@
             "module": "models",
             "namespace": "",
             "file": "models/User.js",
-            "line": 17,
+            "line": 16,
             "description": "Provides User model."
         },
         "UserGroup": {
@@ -240,21 +324,21 @@
             "line": 10,
             "description": "Provides UserGroup model."
         },
-        "UserProperty": {
-            "name": "UserProperty",
+        "UserSignature": {
+            "name": "UserSignature",
             "submodules": {},
             "elements": {},
             "classes": {
-                "UserProperty": 1
+                "UserSignature": 1
             },
             "fors": {},
             "is_submodule": 1,
             "namespaces": {},
             "module": "models",
             "namespace": "",
-            "file": "models/UserProperty.js",
+            "file": "models/UserSignature.js",
             "line": 10,
-            "description": "Provides UserProperty model."
+            "description": "Provides UserSignature model."
         },
         "Wikitext": {
             "name": "Wikitext",
@@ -271,6 +355,42 @@
             "file": "models/Wikitext.js",
             "line": 16,
             "description": "Provides Wikitext model."
+        },
+        "modules/WikiRenderer/Nodes/Node.js": {
+            "name": "modules/WikiRenderer/Nodes/Node.js",
+            "submodules": {},
+            "elements": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/Node.js",
+            "line": 1,
+            "description": "Bass class representing a markup node"
+        },
+        "modules/WikiRenderer/Preprocessor/Nodes/NodeList.js": {
+            "name": "modules/WikiRenderer/Preprocessor/Nodes/NodeList.js",
+            "submodules": {},
+            "elements": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/NodeList.js",
+            "line": 1,
+            "description": "List of node clases used for prerendering."
+        },
+        "modules/WikiRenderer/Nodes/TextNode.js": {
+            "name": "modules/WikiRenderer/Nodes/TextNode.js",
+            "submodules": {},
+            "elements": {},
+            "classes": {},
+            "fors": {},
+            "namespaces": {},
+            "tag": "module",
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/TextNode.js",
+            "line": 1,
+            "description": "Class representing a text node."
         },
         "recentChanges": {
             "name": "recentChanges",
@@ -301,21 +421,6 @@
             "line": 12,
             "description": "Model representing articles."
         },
-        "LatestRevision": {
-            "name": "LatestRevision",
-            "shortname": "LatestRevision",
-            "classitems": [],
-            "plugins": [],
-            "extensions": [],
-            "plugin_for": [],
-            "extension_for": [],
-            "module": "models",
-            "submodule": "LatestRevision",
-            "namespace": "",
-            "file": "models/LatestRevision.js",
-            "line": 10,
-            "description": "Bridge Model between Article and Revision.\nRepresents latest revision of each article."
-        },
         "Namespace": {
             "name": "Namespace",
             "shortname": "Namespace",
@@ -331,6 +436,36 @@
             "line": 10,
             "description": "Model representing namespaces."
         },
+        "Redirection": {
+            "name": "Redirection",
+            "shortname": "Redirection",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "Redirection",
+            "namespace": "",
+            "file": "models/Redirection.js",
+            "line": 10,
+            "description": "Model representing namespaces."
+        },
+        "RenameLog": {
+            "name": "RenameLog",
+            "shortname": "RenameLog",
+            "classitems": [],
+            "plugins": [],
+            "extensions": [],
+            "plugin_for": [],
+            "extension_for": [],
+            "module": "models",
+            "submodule": "RenameLog",
+            "namespace": "",
+            "file": "models/RenameLog.js",
+            "line": 10,
+            "description": "Model representing renaming logs."
+        },
         "Revision": {
             "name": "Revision",
             "shortname": "Revision",
@@ -343,7 +478,7 @@
             "submodule": "Revision",
             "namespace": "",
             "file": "models/Revision.js",
-            "line": 12,
+            "line": 13,
             "description": "Model representing revisions."
         },
         "User": {
@@ -358,7 +493,7 @@
             "submodule": "User",
             "namespace": "",
             "file": "models/User.js",
-            "line": 17,
+            "line": 16,
             "description": "Model representing users."
         },
         "UserGroup": {
@@ -376,20 +511,20 @@
             "line": 10,
             "description": "Model representing usergroups."
         },
-        "UserProperty": {
-            "name": "UserProperty",
-            "shortname": "UserProperty",
+        "UserSignature": {
+            "name": "UserSignature",
+            "shortname": "UserSignature",
             "classitems": [],
             "plugins": [],
             "extensions": [],
             "plugin_for": [],
             "extension_for": [],
             "module": "models",
-            "submodule": "UserProperty",
+            "submodule": "UserSignature",
             "namespace": "",
-            "file": "models/UserProperty.js",
+            "file": "models/UserSignature.js",
             "line": 10,
-            "description": "Model representing properties of users."
+            "description": "Model representing signatures."
         },
         "Wikitext": {
             "name": "Wikitext",
@@ -411,8 +546,63 @@
     "classitems": [
         {
             "file": "models/Article.js",
-            "line": 40,
-            "description": "Describes association.",
+            "line": 19,
+            "description": "Primary key.",
+            "itemtype": "property",
+            "name": "id",
+            "type": "Number",
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 31,
+            "description": "ID of namespace it belongs to.",
+            "itemtype": "property",
+            "name": "namespaceId",
+            "type": "Number",
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 42,
+            "description": "The title of this article.",
+            "itemtype": "property",
+            "name": "title",
+            "type": "String",
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 55,
+            "description": "Full title of this article.",
+            "itemtype": "property",
+            "name": "title",
+            "type": "String",
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 68,
+            "description": "Id  of latest revision.",
+            "itemtype": "property",
+            "name": "title",
+            "type": "String",
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 87,
+            "description": "Describes associations.",
             "itemtype": "method",
             "name": "associate",
             "static": 1,
@@ -420,7 +610,7 @@
                 {
                     "name": "models",
                     "description": "",
-                    "type": "Model[]"
+                    "type": "Object"
                 }
             ],
             "class": "Article",
@@ -429,7 +619,7 @@
         },
         {
             "file": "models/Article.js",
-            "line": 53,
+            "line": 99,
             "description": "Create a new article.",
             "itemtype": "method",
             "name": "createNew",
@@ -451,29 +641,52 @@
                             "type": "User"
                         },
                         {
-                            "name": "wikitext",
+                            "name": "text",
                             "description": "wikitext.",
                             "type": "String"
+                        },
+                        {
+                            "name": "summary",
+                            "description": "summary.",
+                            "type": "String",
+                            "optional": true
                         }
                     ]
                 }
             ],
             "return": {
-                "description": "Returns a promise of new article.",
+                "description": "Resolves new article.",
                 "type": "Promise<Article>"
             },
+            "example": [
+                "\n  Aritcle.createNew({ fullTitle: 'ns:title', author: 'author', wikitext: 'sample [[wikitext]]' });"
+            ],
             "class": "Article",
             "module": "models",
             "submodule": "Article"
         },
         {
             "file": "models/Article.js",
-            "line": 78,
+            "line": 199,
             "description": "Get the latest revision.",
             "itemtype": "method",
             "name": "getLatestRevision",
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "includeWikitext",
+                            "description": "include wikitext instance.",
+                            "type": "String"
+                        }
+                    ]
+                }
+            ],
             "return": {
-                "description": "",
+                "description": "Resolves latest revision.",
                 "type": "Promise<Revision>"
             },
             "class": "Article",
@@ -481,8 +694,217 @@
             "submodule": "Article"
         },
         {
+            "file": "models/Article.js",
+            "line": 216,
+            "description": "Update with new revision and wikitext.",
+            "itemtype": "method",
+            "name": "edit",
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "ipAddress",
+                            "description": "ip address.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "author",
+                            "description": "author.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "text",
+                            "description": "wikitext.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "summary",
+                            "description": "summary.",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Resolves latest revision.",
+                "type": "Promise<Revision>"
+            },
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 230,
+            "description": "Rename this article and add a new revision.",
+            "itemtype": "method",
+            "name": "rename",
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "ipAddress",
+                            "description": "ip address.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "author",
+                            "description": "author.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "newFullTitle",
+                            "description": "full title to change into.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "summary",
+                            "description": "summary.",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Resolves latest revision.",
+                "type": "Promise<Revision>"
+            },
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 248,
+            "description": "Remove this article.",
+            "itemtype": "method",
+            "name": "delete",
+            "params": [
+                {
+                    "name": "option",
+                    "description": "",
+                    "type": "Object",
+                    "props": [
+                        {
+                            "name": "ipAddress",
+                            "description": "ip address.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "author",
+                            "description": "author.",
+                            "type": "User"
+                        },
+                        {
+                            "name": "summary",
+                            "description": "summary.",
+                            "type": "String",
+                            "optional": true
+                        }
+                    ]
+                }
+            ],
+            "return": {
+                "description": "Resolves latest revision.",
+                "type": "Promise<Revision>"
+            },
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
+            "file": "models/Article.js",
+            "line": 264,
+            "description": "Render its latest wikitext to HTML.",
+            "return": {
+                "description": "Resolves result of rendering.",
+                "type": "Promise<RenderResult>"
+            },
+            "class": "Article",
+            "module": "models",
+            "submodule": "Article"
+        },
+        {
             "file": "models/Namespace.js",
-            "line": 36,
+            "line": 17,
+            "description": "Primary key.",
+            "itemtype": "property",
+            "name": "id",
+            "type": "Number",
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 28,
+            "description": "Name of namespace.",
+            "itemtype": "property",
+            "name": "name",
+            "type": "String",
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 41,
+            "description": "Describes associations.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 51,
+            "description": "Map holding id as a key and namespace as a value.",
+            "itemtype": "property",
+            "name": "_idKeyMap",
+            "static": 1,
+            "access": "private",
+            "tagname": "",
+            "type": "Map<Namespace>",
+            "default": "Map{}",
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 62,
+            "description": "Map holding name as a key and namespace as a value.",
+            "itemtype": "property",
+            "name": "_idKeyMap",
+            "static": 1,
+            "access": "private",
+            "tagname": "",
+            "type": "Map<Namespace>",
+            "default": "Map{}",
+            "class": "Namespace",
+            "module": "models",
+            "submodule": "Namespace"
+        },
+        {
+            "file": "models/Namespace.js",
+            "line": 74,
             "description": "Loads all namespaces and caches the instances of Namespace.\nIt should be called when the app starts.",
             "itemtype": "method",
             "name": "initialize",
@@ -497,7 +919,7 @@
         },
         {
             "file": "models/Namespace.js",
-            "line": 55,
+            "line": 93,
             "description": "Returns an instance of Namespace. Each object is unique across app.",
             "itemtype": "method",
             "name": "getById",
@@ -519,7 +941,7 @@
         },
         {
             "file": "models/Namespace.js",
-            "line": 71,
+            "line": 109,
             "description": "Returns an instance of Namespace. Each object is unique across app.",
             "itemtype": "method",
             "name": "getByName",
@@ -541,7 +963,7 @@
         },
         {
             "file": "models/Namespace.js",
-            "line": 87,
+            "line": 125,
             "description": "Split full title into namespace instance and title",
             "itemtype": "method",
             "name": "splitFullTitle",
@@ -562,8 +984,140 @@
             "submodule": "Namespace"
         },
         {
+            "file": "models/Redirection.js",
+            "line": 17,
+            "description": "Primary key.",
+            "itemtype": "property",
+            "name": "id",
+            "type": "Number",
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/Redirection.js",
+            "line": 29,
+            "description": "Name of namespace.",
+            "itemtype": "property",
+            "name": "sourceNamespaceId",
+            "type": "String",
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/Redirection.js",
+            "line": 41,
+            "description": "Name of namespace.",
+            "itemtype": "property",
+            "name": "sourceTitle",
+            "type": "String",
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/Redirection.js",
+            "line": 53,
+            "description": "lowercased source title.",
+            "itemtype": "property",
+            "name": "lowercaseSourceTitle",
+            "readonly": "",
+            "type": "String",
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/Redirection.js",
+            "line": 62,
+            "description": "Name of namespace.",
+            "itemtype": "property",
+            "name": "destinationArticleId",
+            "type": "String",
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/Redirection.js",
+            "line": 73,
+            "description": "Id of user who make this redirection.",
+            "itemtype": "property",
+            "name": "userId",
+            "type": "String",
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/Redirection.js",
+            "line": 90,
+            "description": "Describes associations.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "Redirection",
+            "module": "models",
+            "submodule": "Redirection"
+        },
+        {
+            "file": "models/RenameLog.js",
+            "line": 17,
+            "description": "Id of the revision. Used as primary key.",
+            "itemtype": "property",
+            "name": "revisionId",
+            "type": "Number",
+            "class": "RenameLog",
+            "module": "models",
+            "submodule": "RenameLog"
+        },
+        {
+            "file": "models/RenameLog.js",
+            "line": 51,
+            "description": "Describes associations.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "RenameLog",
+            "module": "models",
+            "submodule": "RenameLog"
+        },
+        {
             "file": "models/Revision.js",
-            "line": 56,
+            "line": 51,
+            "description": "Describes associations.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "Revision",
+            "module": "models",
+            "submodule": "Revision"
+        },
+        {
+            "file": "models/Revision.js",
+            "line": 73,
             "description": "Create a new revision and make it latest revision of an article.",
             "itemtype": "method",
             "name": "createNew",
@@ -585,13 +1139,23 @@
                             "type": "User"
                         },
                         {
-                            "name": "wikitext",
-                            "description": "wikitext.",
+                            "name": "text",
+                            "description": "text.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "ipAddress",
+                            "description": "IP address of request.",
                             "type": "String"
                         },
                         {
                             "name": "status",
-                            "description": "one of 'new', 'normal', 'moved', or 'deleted'.",
+                            "description": "one of 'new', 'updated', 'renamed', or 'deleted'.",
+                            "type": "String"
+                        },
+                        {
+                            "name": "destinationFullTitle",
+                            "description": "full title to rename.",
                             "type": "String"
                         }
                     ]
@@ -607,8 +1171,8 @@
         },
         {
             "file": "models/User.js",
-            "line": 58,
-            "description": "Describes association.",
+            "line": 67,
+            "description": "Describes associations.",
             "itemtype": "method",
             "name": "associate",
             "static": 1,
@@ -616,7 +1180,7 @@
                 {
                     "name": "models",
                     "description": "",
-                    "type": "Model[]"
+                    "type": "Object"
                 }
             ],
             "class": "User",
@@ -625,7 +1189,7 @@
         },
         {
             "file": "models/User.js",
-            "line": 69,
+            "line": 80,
             "description": "Finds a user by username.",
             "itemtype": "method",
             "name": "findByUsername",
@@ -647,7 +1211,7 @@
         },
         {
             "file": "models/User.js",
-            "line": 84,
+            "line": 95,
             "description": "Verifies a json web token (jwt). If it valid, returns decoded data of it.",
             "itemtype": "method",
             "name": "verifyToken",
@@ -659,13 +1223,9 @@
                     "type": "String"
                 }
             ],
-            "throws": {
-                "description": "if the token is invalid.",
-                "type": "Error"
-            },
             "return": {
-                "description": "Returns a promise of decoded token data.",
-                "type": "Promise<Object>"
+                "description": "Resolves decoded token data or rejects if it invalid.",
+                "type": "Promise<String, Error>"
             },
             "class": "User",
             "module": "models",
@@ -673,10 +1233,10 @@
         },
         {
             "file": "models/User.js",
-            "line": 105,
+            "line": 122,
             "description": "Returns whether given password is correct.",
             "itemtype": "method",
-            "name": "authenticate",
+            "name": "verifyPassword",
             "params": [
                 {
                     "name": "password",
@@ -684,10 +1244,6 @@
                     "type": "String"
                 }
             ],
-            "throws": {
-                "description": "if the token is invalid.",
-                "type": "Error"
-            },
             "return": {
                 "description": "Returns a promise that has true (correct) or false (incorrect).",
                 "type": "Promise<Bool>"
@@ -698,24 +1254,13 @@
         },
         {
             "file": "models/User.js",
-            "line": 116,
-            "description": "Issues a json web token (jwt). If it valid, returns decoded data of it.",
+            "line": 132,
+            "description": "Issues a json web token (jwt). You must call verifyPassword() to check password before issue it to the user.",
             "itemtype": "method",
             "name": "issueToken",
-            "params": [
-                {
-                    "name": "token",
-                    "description": "jwt of a user.",
-                    "type": "String"
-                }
-            ],
-            "throws": {
-                "description": "if the token is invalid.",
-                "type": "Error"
-            },
             "return": {
-                "description": "Returns a promise of decoded token data.",
-                "type": "Promise<Object>"
+                "description": "Resolves new jwt.",
+                "type": "Promise<String>"
             },
             "class": "User",
             "module": "models",
@@ -723,59 +1268,7 @@
         },
         {
             "file": "models/User.js",
-            "line": 138,
-            "description": "Sets a property of this user.",
-            "itemtype": "method",
-            "name": "setProperty",
-            "params": [
-                {
-                    "name": "name",
-                    "description": "name of property.",
-                    "type": "String"
-                },
-                {
-                    "name": "value",
-                    "description": "value of property.",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Returns a promise of new user property.",
-                "type": "Promise<UserProperty>"
-            },
-            "class": "User",
-            "module": "models",
-            "submodule": "User"
-        },
-        {
-            "file": "models/User.js",
-            "line": 152,
-            "description": "Returns specified property value.",
-            "itemtype": "method",
-            "name": "getProperty",
-            "params": [
-                {
-                    "name": "name",
-                    "description": "name of property.",
-                    "type": "String"
-                },
-                {
-                    "name": "value",
-                    "description": "value of property.",
-                    "type": "String"
-                }
-            ],
-            "return": {
-                "description": "Returns a promise of new user property or null if not exists.",
-                "type": "Promise<String, null>"
-            },
-            "class": "User",
-            "module": "models",
-            "submodule": "User"
-        },
-        {
-            "file": "models/User.js",
-            "line": 170,
+            "line": 153,
             "description": "Returns signature of this user.",
             "itemtype": "method",
             "name": "getSignature",
@@ -789,8 +1282,29 @@
         },
         {
             "file": "models/User.js",
-            "line": 194,
-            "description": "Indicates the full title of userpage of this user.",
+            "line": 172,
+            "description": "Returns which this user has permission to do an action.",
+            "itemtype": "method",
+            "name": "hasPermissionTo",
+            "params": [
+                {
+                    "name": "actionName",
+                    "description": "",
+                    "type": "String"
+                }
+            ],
+            "return": {
+                "description": "Resolves which this user has permission",
+                "type": "Promise<Bool>"
+            },
+            "class": "User",
+            "module": "models",
+            "submodule": "User"
+        },
+        {
+            "file": "models/User.js",
+            "line": 183,
+            "description": "Indicates the full title of user page of this user.",
             "itemtype": "attribute",
             "name": "userPageFullTitle",
             "readonly": "",
@@ -800,8 +1314,55 @@
             "submodule": "User"
         },
         {
-            "file": "models/Wikitext.js",
+            "file": "models/UserGroup.js",
+            "line": 29,
+            "description": "Describes associations.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "UserGroup",
+            "module": "models",
+            "submodule": "UserGroup"
+        },
+        {
+            "file": "models/UserSignature.js",
+            "line": 17,
+            "description": "Owner's id. Used as primary key.",
+            "itemtype": "property",
+            "name": "userId",
+            "type": "Number",
+            "class": "UserSignature",
+            "module": "models",
+            "submodule": "UserSignature"
+        },
+        {
+            "file": "models/UserSignature.js",
             "line": 36,
+            "description": "Describes associations.",
+            "itemtype": "method",
+            "name": "associate",
+            "static": 1,
+            "params": [
+                {
+                    "name": "models",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "class": "UserSignature",
+            "module": "models",
+            "submodule": "UserSignature"
+        },
+        {
+            "file": "models/Wikitext.js",
+            "line": 34,
             "description": "Replace wikitext when it is saved.",
             "itemtype": "method",
             "name": "replaceOnSave",
@@ -812,6 +1373,11 @@
                     "description": "",
                     "type": "Object",
                     "props": [
+                        {
+                            "name": "ipAddress",
+                            "description": "ip.",
+                            "type": "User"
+                        },
                         {
                             "name": "article",
                             "description": "an article to change.",
@@ -842,6 +1408,108 @@
             "class": "Wikitext",
             "module": "models",
             "submodule": "Wikitext"
+        },
+        {
+            "file": "src/LibertyParser/src/ParserSupporter/TemplateTextGetter/TemplateTextGetter.js",
+            "line": 5,
+            "description": "Class representing Template Text Getter.",
+            "abstract": "",
+            "class": "",
+            "module": "models"
+        },
+        {
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/Node.js",
+            "line": 7,
+            "description": "Bass class representing a wiki node",
+            "abstract": "",
+            "class": "",
+            "module": "modules/WikiRenderer/Nodes/Node.js"
+        },
+        {
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/Node.js",
+            "line": 12,
+            "description": "Create a node.",
+            "class": "",
+            "module": "modules/WikiRenderer/Nodes/Node.js"
+        },
+        {
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/Node.js",
+            "line": 20,
+            "description": "Render this node into HTML.",
+            "abstract": "",
+            "return": {
+                "description": "the result HTML.",
+                "type": "String"
+            },
+            "class": "",
+            "module": "modules/WikiRenderer/Nodes/Node.js"
+        },
+        {
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/Node.js",
+            "line": 29,
+            "description": "Set children.",
+            "params": [
+                {
+                    "name": "an",
+                    "description": "array of nodes or a node.",
+                    "type": "Node[]|Node"
+                }
+            ],
+            "class": "",
+            "module": "modules/WikiRenderer/Nodes/Node.js"
+        },
+        {
+            "file": "src/LibertyParser/src/work/doTemplate/Nodes/RootNode.js",
+            "line": 1,
+            "description": "Class representing a root node of tree.",
+            "class": "",
+            "module": "modules/WikiRenderer/Preprocessor/Nodes/NodeList.js"
+        },
+        {
+            "file": "src/LibertyParser/src/work/doXml/index.js",
+            "line": 29,
+            "params": [
+                {
+                    "name": "type",
+                    "description": "",
+                    "type": "Number"
+                },
+                {
+                    "name": "selector",
+                    "description": "",
+                    "type": "String"
+                },
+                {
+                    "name": "hook",
+                    "description": "",
+                    "type": "Function"
+                }
+            ],
+            "class": "",
+            "module": "modules/WikiRenderer/Nodes/TextNode.js"
+        },
+        {
+            "file": "src/LibertyParser/src/ParsingData.js",
+            "line": 4,
+            "description": "constructor",
+            "params": [
+                {
+                    "name": "articleMetadata",
+                    "description": "",
+                    "type": "Object"
+                },
+                {
+                    "name": "wikiMetadata",
+                    "description": "",
+                    "type": "Object"
+                }
+            ],
+            "return": {
+                "description": "",
+                "type": "DataForParsing"
+            },
+            "class": "",
+            "module": "modules/WikiRenderer/Nodes/TextNode.js"
         },
         {
             "file": "src/recentChanges.js",
@@ -879,5 +1547,54 @@
             "module": "recentChanges"
         }
     ],
-    "warnings": []
+    "warnings": [
+        {
+            "message": "unknown tag: abstract",
+            "line": " src/LibertyParser/src/ParserSupporter/TemplateTextGetter/TemplateTextGetter.js:5"
+        },
+        {
+            "message": "unknown tag: abstract",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/Node.js:7"
+        },
+        {
+            "message": "unknown tag: abstract",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/Node.js:20"
+        },
+        {
+            "message": "Missing item type\nRender its latest wikitext to HTML.",
+            "line": " models/Article.js:264"
+        },
+        {
+            "message": "Missing item type\nClass representing Template Text Getter.",
+            "line": " src/LibertyParser/src/ParserSupporter/TemplateTextGetter/TemplateTextGetter.js:5"
+        },
+        {
+            "message": "Missing item type\nBass class representing a wiki node",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/Node.js:7"
+        },
+        {
+            "message": "Missing item type\nCreate a node.",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/Node.js:12"
+        },
+        {
+            "message": "Missing item type\nRender this node into HTML.",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/Node.js:20"
+        },
+        {
+            "message": "Missing item type\nSet children.",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/Node.js:29"
+        },
+        {
+            "message": "Missing item type\nClass representing a root node of tree.",
+            "line": " src/LibertyParser/src/work/doTemplate/Nodes/RootNode.js:1"
+        },
+        {
+            "message": "Missing item type",
+            "line": " src/LibertyParser/src/work/doXml/index.js:29"
+        },
+        {
+            "message": "Missing item type\nconstructor",
+            "line": " src/LibertyParser/src/ParsingData.js:4"
+        }
+    ]
 }

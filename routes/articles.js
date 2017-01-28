@@ -7,6 +7,19 @@ const Response = require('../src/responses');
 
 router.post('/',
   (req, res, next) => {
+    return Article.createNew({
+      ipAddress: req.ipAddress,
+      fullTitle: req.body.fullTitle,
+      author: req.user,
+      text: req.body.wikitext,
+      summary: req.body.summary
+    })
+    .then(() => {
+      new Response.Created().send(res);
+    })
+    .catch((err) => {
+      next(err);
+    });
   }
 );
 
@@ -106,7 +119,7 @@ router.post('/full-title/:fullTitle(*)/revisions',
           return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
         }
         return article.edit({
-          ipAddress: req.ip,
+          ipAddress: req.ipAddress,
           author: req.user,
           text: req.body.wikitext,
           summary: req.body.summary
@@ -115,6 +128,9 @@ router.post('/full-title/:fullTitle(*)/revisions',
           new Response.Success().send(res);
         });
       });
+    })
+    .catch((err) => {
+      next(err);
     });
   }
 );

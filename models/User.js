@@ -155,7 +155,10 @@ module.exports = function(sequelize, DataTypes) {
        * @method getSignature
        * @return {Promise<String>} Returns a promise of signature of this user.
        */
-      getSignature() {
+      getSignature(ipAddress) {
+        if (this.isAnonymous) {
+          return Promise.resolve(`[[사용자:${ipAddress}]]`);
+        }
         return this.getUserSignature()
         .then((signature) => {
           if (signature) {

@@ -92,7 +92,7 @@ module.exports = function(sequelize, DataTypes) {
        */
       associate(models) {
         Article.belongsTo(models.Namespace, { foreignKey: 'namespaceId' });
-        Article.hasMany(models.Revision, { as: 'histories' });
+        Article.hasMany(models.Revision);
         Article.hasMany(models.Redirection, { foreignKey: 'destinationArticleId' });
       },
 
@@ -154,7 +154,7 @@ module.exports = function(sequelize, DataTypes) {
         });
       },
 
-      exists(fullTitle) {
+      existsCaseInsensitive(fullTitle) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
 
         let findQuery = `(

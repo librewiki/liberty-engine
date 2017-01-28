@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>models/UserProperty.js - The Foo API</title>
+    <title>src/LibertyParser/src/ParsingData.js - The Foo API</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -93,52 +98,48 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1 class="file-heading">File: models/UserProperty.js</h1>
+<h1 class="file-heading">File: src/LibertyParser/src/ParsingData.js</h1>
 
 <div class="file">
     <pre class="code prettyprint linenums">
-/**
- * Provides UserProperty model.
- *
- * @module models
- * @submodule UserProperty
- */
-
 &#x27;use strict&#x27;;
 
-/**
- * Model representing properties of users.
- *
- * @class UserProperty
- */
-module.exports = function(sequelize, DataTypes) {
-  const UserProperty = sequelize.define(&#x27;UserProperty&#x27;, {
-    userId: {
-      type: DataTypes.INTEGER,
-      field: &#x27;user_id&#x27;,
-      primaryKey: true,
-      allowNull: false
-    },
-    name: {
-      type: DataTypes.STRING(128),
-      primaryKey: true,
-      allowNull: false
-    },
-    value: {
-      type: DataTypes.STRING,
-      allowNull: true
-    }
-  }, {
-    tableName: &#x27;user_property&#x27;,
-    underscored: true,
-    classMethods: {
-      associate(models) {
-        UserProperty.belongsTo(models.User, { foreignKey: &#x27;userId&#x27; });
-      }
-    },
-  });
-  return UserProperty;
-};
+class ParsingData {
+  /**
+   * constructor
+   *
+   * @param  {Object} articleMetadata
+   * @param  {Object} wikiMetadata
+   * @return {DataForParsing}
+   */
+  constructor(articleMetadata, wikiMetadata, parserSupporter) {
+    this.articleMetadata = articleMetadata;
+    this.wikiMetadata = wikiMetadata;
+    this.parserSupporter = parserSupporter;
+    this.structureData = {
+      nowikiTexts: [],
+      section: {
+        title: &#x27;(root)&#x27;,
+        relativeLevel: -1,
+        absoluteLevel: -1,
+        subsections: []
+      },
+      tocSerialNumber: 0,
+      numOfHeadings: 0,
+      link: {
+        categories: new Set(),
+        normals: new Set(),
+        files: new Set(),
+        templates: new Set(),
+        interwikis: new Set(),
+      },
+      numOfExternalLinks: 0,
+      templateRecursionNumber: 0
+    };
+  }
+}
+
+module.exports = ParsingData;
 
     </pre>
 </div>

@@ -39,26 +39,31 @@
                         <div id="api-tabview-panel">
                             <ul id="api-classes" class="apis classes">
                                 <li><a href="../classes/Article.html">Article</a></li>
-                                <li><a href="../classes/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../classes/Namespace.html">Namespace</a></li>
+                                <li><a href="../classes/Redirection.html">Redirection</a></li>
+                                <li><a href="../classes/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../classes/Revision.html">Revision</a></li>
                                 <li><a href="../classes/User.html">User</a></li>
                                 <li><a href="../classes/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../classes/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../classes/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../classes/Wikitext.html">Wikitext</a></li>
                             </ul>
                 
                 
                             <ul id="api-modules" class="apis modules">
                                 <li><a href="../modules/Article.html">Article</a></li>
-                                <li><a href="../modules/LatestRevision.html">LatestRevision</a></li>
                                 <li><a href="../modules/models.html">models</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_Node.js.html">modules/WikiRenderer/Nodes/Node.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Nodes_TextNode.js.html">modules/WikiRenderer/Nodes/TextNode.js</a></li>
+                                <li><a href="../modules/modules_WikiRenderer_Preprocessor_Nodes_NodeList.js.html">modules/WikiRenderer/Preprocessor/Nodes/NodeList.js</a></li>
                                 <li><a href="../modules/Namespace.html">Namespace</a></li>
                                 <li><a href="../modules/recentChanges.html">recentChanges</a></li>
+                                <li><a href="../modules/Redirection.html">Redirection</a></li>
+                                <li><a href="../modules/RenameLog.html">RenameLog</a></li>
                                 <li><a href="../modules/Revision.html">Revision</a></li>
                                 <li><a href="../modules/User.html">User</a></li>
                                 <li><a href="../modules/UserGroup.html">UserGroup</a></li>
-                                <li><a href="../modules/UserProperty.html">UserProperty</a></li>
+                                <li><a href="../modules/UserSignature.html">UserSignature</a></li>
                                 <li><a href="../modules/Wikitext.html">Wikitext</a></li>
                             </ul>
                         </div>
@@ -107,46 +112,92 @@
 &#x27;use strict&#x27;;
 
 const models = require(&#x27;./&#x27;);
-
+const { articleParser } = require(&#x27;../src/LibertyParser&#x27;);
 /**
  * Model representing articles.
  *
  * @class Article
  */
 module.exports = function(sequelize, DataTypes) {
-  const Article = sequelize.define(&#x27;Article&#x27;, {
+  const Article = sequelize.define(&#x27;article&#x27;, {
+    /**
+     * Primary key.
+     *
+     * @property id
+     * @type Number
+     */
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true
     },
+
+    /**
+     * ID of namespace it belongs to.
+     *
+     * @property namespaceId
+     * @type Number
+     */
     namespaceId: {
       type: DataTypes.INTEGER,
-      field: &#x27;namespace_id&#x27;,
       allowNull: false
     },
+
+    /**
+     * The title of this article.
+     *
+     * @property title
+     * @type String
+     */
     title: {
       type: DataTypes.STRING(128),
       allowNull: false
+    },
+
+    lowercaseTitle: &#x27;VARCHAR(128) AS (lower(&#x60;title&#x60;)) PERSISTENT&#x27;,
+
+    /**
+     * Full title of this article.
+     *
+     * @property title
+     * @type String
+     */
+    fullTitle: {
+      type: DataTypes.VIRTUAL,
+      get() {
+        return models.Namespace.joinNamespaceIdTitle(this.getDataValue(&#x27;namespaceId&#x27;), this.getDataValue(&#x27;title&#x27;));
+      }
+    },
+
+    /**
+     * Id  of latest revision.
+     *
+     * @property title
+     * @type String
+     */
+    latestRevisionId: {
+      type: DataTypes.INTEGER,
+      allowNull: true
     }
+
   }, {
-    tableName: &#x27;article&#x27;,
-    underscored: true,
+    paranoid: true,
     indexes: [{
-      unique: true, fields: [&#x27;namespace_id&#x27;, &#x27;title&#x27;]
+      unique: true, fields: [&#x27;namespaceId&#x27;, &#x27;title&#x27;]
+    }, {
+      fields: [&#x27;lowercaseTitle&#x27;]
     }],
     classMethods: {
       /**
-       * Describes association.
+       * Describes associations.
        * @method associate
        * @static
-       * @param {Model[]} models
+       * @param {Object} models
        */
       associate(models) {
         Article.belongsTo(models.Namespace, { foreignKey: &#x27;namespaceId&#x27; });
-        Article.hasMany(models.Revision, { as: &#x27;Histories&#x27; });
-        // to avoid circular reference
-        Article.belongsToMany(models.Revision, { through: &#x27;latest_revision&#x27;, as: &#x27;LatestRevisions&#x27; });
+        Article.hasMany(models.Revision);
+        Article.hasMany(models.Redirection, { foreignKey: &#x27;destinationArticleId&#x27; });
       },
 
       /**
@@ -156,35 +207,175 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} option
        * @param {String} option.fullTitle full title of an article.
        * @param {User} option.author user writing this.
-       * @param {String} option.wikitext wikitext.
-       * @return {Promise&lt;Article&gt;} Returns a promise of new article.
+       * @param {String} option.text wikitext.
+       * @param {String} [option.summary] summary.
+       * @return {Promise&lt;Article&gt;} Resolves new article.
+       * @example
+       *   Aritcle.createNew({ fullTitle: &#x27;ns:title&#x27;, author: &#x27;author&#x27;, wikitext: &#x27;sample [[wikitext]]&#x27; });
        */
-      createNew({ fullTitle, author, wikitext }) {
+      createNew({ fullTitle, ipAddress, author, text, summary = &#x27;&#x27; }) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
         return this.create({
           namespaceId: namespace.id,
           title: title
         })
         .then((article) =&gt; {
-          return models.Revision.createNew({ article, author, wikitext, status: &#x27;new&#x27; })
-          .then(() =&gt; {
-            return article;
-          });
+          return models.Revision.createNew({ article, ipAddress, author, text, status: &#x27;new&#x27;, summary: &#x27;new: &#x27; + summary });
+        });
+      },
+
+
+      findByFullTitle(fullTitle) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        return this.findOne({
+          where: {
+            namespaceId: namespace.id,
+            title: title
+          }
+        });
+      },
+
+      findByFullTitleCaseInsensitive(fullTitle) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        return this.findOne({
+          where: {
+            namespaceId: namespace.id,
+            lowercaseTitle: title.toLowerCase()
+          }
+        });
+      },
+
+      randomQueryString: &#x60;SELECT r1.id, r1.namespaceId, r1.title
+          FROM articles r1
+          JOIN (SELECT CEIL(RAND() * (SELECT MAX(id) FROM articles)) AS id) r2
+          WHERE r1.id &gt;= r2.id and namespaceId = 0
+          ORDER BY r1.id ASC
+          LIMIT :limit&#x60;,
+
+      findRandomly({ limit }) {
+        return sequelize.query(this.randomQueryString, {
+          replacements: { limit }, type: sequelize.QueryTypes.SELECT, model: this
+        });
+      },
+
+      exists(fullTitle) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+
+        let findQuery = &#x60;(
+        	SELECT namespaceId, title, 0 as priority
+        	FROM articles
+        	WHERE namespaceId = :namespaceId AND title = :title AND deletedAt IS NULL
+        )
+        UNION ALL
+        (
+        	SELECT articles.namespaceId, articles.title, 1 as priority
+        	FROM redirections, articles
+        	WHERE sourceNamespaceId = :namespaceId AND sourceTitle = :title AND destinationArticleId = articles.id
+        )
+        UNION ALL
+        (
+        	SELECT namespaceId, title, 2 as priority
+        	FROM articles
+        	WHERE namespaceId = :namespaceId AND lowercaseTitle = :lowercaseTitle AND deletedAt IS NULL
+        )
+        UNION ALL
+        (
+        	SELECT articles.namespaceId, articles.title, 3 as priority
+        	FROM redirections, articles
+        	WHERE sourceNamespaceId = :namespaceId AND lowercaseSourceTitle = :lowercaseTitle AND destinationArticleId = articles.id
+        )
+        ORDER BY priority LIMIT 1&#x60;;
+
+        return sequelize.query(findQuery, {
+          replacements: {
+            namespaceId: namespace.id,
+            title: title,
+            lowercaseTitle: title.toLowerCase()
+          }, type: sequelize.QueryTypes.SELECT
+        })
+        .then(([result]) =&gt; {
+          return !!result;
         });
       }
+
     },
     instanceMethods: {
       /**
        * Get the latest revision.
        * @method getLatestRevision
-       * @return {Promise&lt;Revision&gt;}
+       * @param {Object} option
+       * @param {String} option.includeWikitext include wikitext instance.
+       * @return {Promise&lt;Revision&gt;} Resolves latest revision.
        */
-      getLatestRevision: function() {
-        return this.getLatestRevisions()
-        .then((revisions) =&gt; {
-          return revisions[0];
+      getLatestRevision({ includeWikitext } = {}) {
+        if (includeWikitext) {
+          return models.Revision.findById(this.latestRevisionId, {
+            include: [models.Wikitext]
+          });
+        } else {
+          return models.Revision.findById(this.latestRevisionId);
+        }
+      },
+
+      /**
+       * Update with new revision and wikitext.
+       * @method edit
+       * @param {Object} option
+       * @param {String} option.ipAddress ip address.
+       * @param {User} option.author author.
+       * @param {String} option.text wikitext.
+       * @param {String} [option.summary] summary.
+       * @return {Promise&lt;Revision&gt;} Resolves latest revision.
+       */
+      edit({ ipAddress, author, text, summary = &#x27;&#x27; }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, text, status: &#x27;updated&#x27;, summary });
+      },
+
+      /**
+       * Rename this article and add a new revision.
+       * @method rename
+       * @param {Object} option
+       * @param {String} option.ipAddress ip address.
+       * @param {User} option.author author.
+       * @param {String} option.newFullTitle full title to change into.
+       * @param {String} [option.summary] summary.
+       * @return {Promise&lt;Revision&gt;} Resolves latest revision.
+       */
+      rename({ ipAddress, author, newFullTitle, summary = &#x27;&#x27; }) {
+        const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
+        return models.Revision.createNew({ article: this, ipAddress, author, status: &#x27;renamed&#x27;, newFullTitle, summary })
+        .then(() =&gt; {
+          return this.update({ namespaceId: namespace.id, title: title });
+        });
+      },
+
+      /**
+       * Remove this article.
+       * @method delete
+       * @param {Object} option
+       * @param {String} option.ipAddress ip address.
+       * @param {User} option.author author.
+       * @param {String} [option.summary] summary.
+       * @return {Promise&lt;Revision&gt;} Resolves latest revision.
+       */
+      delete({ ipAddress, author, summary }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, status: &#x27;deleted&#x27;, summary })
+        .then(() =&gt; {
+          return this.destroy();
+        });
+      },
+
+      /**
+       * Render its latest wikitext to HTML.
+       * @return {Promise&lt;RenderResult&gt;} Resolves result of rendering.
+       */
+      render() {
+        return articleParser.parseRender({ article: this })
+        .then((result) =&gt; {
+          return result;
         });
       }
+
     }
   });
   return Article;

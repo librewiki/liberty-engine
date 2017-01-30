@@ -2,26 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { sequelize, Article, Namespace } = require('../models');
-const Response = require('../src/responses');
-
-router.post('/',
-  (req, res, next) => {
-    return Article.createNew({
-      ipAddress: req.ipAddress,
-      fullTitle: req.body.fullTitle,
-      author: req.user,
-      text: req.body.wikitext,
-      summary: req.body.summary
-    })
-    .then(() => {
-      new Response.Created().send(res);
-    })
-    .catch((err) => {
-      next(err);
-    });
-  }
-);
+const { sequelize, Article, Namespace } = require(global.rootdir + '/models');
+const Response = require(global.rootdir + '/src/responses');
 
 router.get('/',
   (req, res, next) => {
@@ -48,7 +30,85 @@ router.get('/',
   }
 );
 
-router.get('/full-title/:fullTitle(*)',
+router.post('/',
+  (req, res, next) => {
+    return Article.createNew({
+      ipAddress: req.ipAddress,
+      fullTitle: req.body.fullTitle,
+      author: req.user,
+      wikitext: req.body.wikitext,
+      summary: req.body.summary
+    })
+    .then(() => {
+      new Response.Created().send(res);
+    })
+    .catch((err) => {
+      next(err);
+    });
+  }
+);
+
+/* rename article */
+router.put('/full-title/:fullTitle/full-title',
+  (req, res, next) => {
+    return Article.findByFullTitle(req.params.fullTitle)
+    .then((article) => {
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      if (req.params.fullTitle === req.body.fullTitle) {
+        return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
+      }
+      return article.rename({
+        ipAddress: req.ipAddress,
+        author: req.user,
+        newFullTitle: req.body.fullTitle,
+        summary: req.body.summary
+      })
+      .then(() => {
+        new Response.Success().send(res);
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+  }
+);
+
+router.put('/full-title/:fullTitle/wikitext',
+  (req, res, next) => {
+    //@TODO Permission
+    return Article.findByFullTitle(req.params.fullTitle)
+    .then((article) => {
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      return article.getLatestRevision({ includeWikitext: true })
+      .then((latestRevision) => {
+        if (!req.body.latestRevisionId || latestRevision.id > req.body.latestRevisionId) {
+          return new Response.BadRequest({ name: 'EditConflictError', message: 'edit conflict' }).send(res);
+        }
+        if (req.body.wikitext === latestRevision.wikitext.text) {
+          return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
+        }
+        return article.edit({
+          ipAddress: req.ipAddress,
+          author: req.user,
+          wikitext: req.body.wikitext,
+          summary: req.body.summary
+        })
+        .then(() => {
+          new Response.Success().send(res);
+        });
+      });
+    })
+    .catch((err) => {
+      next(err);
+    });
+  }
+);
+
+router.get('/full-title/:fullTitle',
   (req, res, next) => {
     const fields = req.queryData.fields || ['namespaceId', 'title', 'updatedAt'];
     return Article.findByFullTitle(req.params.fullTitle)
@@ -96,37 +156,30 @@ router.get('/full-title/:fullTitle(*)',
       .then(() => {
         new Response.Success({ article: result }).send(res);
       }, (err) => {
+        console.log(err);
         next(err);
       });
     });
   }
 );
 
-router.post('/full-title/:fullTitle(*)/revisions',
+
+/* delete article */
+router.delete('/full-title/:fullTitle',
   (req, res, next) => {
-    //@TODO Permission
+    console.log("AFDSFDSFD");
     return Article.findByFullTitle(req.params.fullTitle)
     .then((article) => {
       if (!article) {
         return new Response.ResourceNotFound().send(res);
       }
-      return article.getLatestRevision({ includeWikitext: true })
-      .then((latestRevision) => {
-        if (!req.body.latestRevisionId || latestRevision.id > req.body.latestRevisionId) {
-          return new Response.BadRequest({ name: 'EditConflictError', message: 'edit conflict' }).send(res);
-        }
-        if (req.body.wikitext === latestRevision.wikitext.text) {
-          return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
-        }
-        return article.edit({
-          ipAddress: req.ipAddress,
-          author: req.user,
-          text: req.body.wikitext,
-          summary: req.body.summary
-        })
-        .then(() => {
-          new Response.Success().send(res);
-        });
+      return article.delete({
+        ipAddress: req.ipAddress,
+        author: req.user,
+        summary: req.body.summary
+      })
+      .then(() => {
+        new Response.Success().send(res);
       });
     })
     .catch((err) => {
@@ -134,6 +187,8 @@ router.post('/full-title/:fullTitle(*)/revisions',
     });
   }
 );
+
+
 
 
 const findQuery = `(
@@ -161,7 +216,7 @@ UNION ALL
 )
 ORDER BY priority LIMIT 1`;
 
-router.get('/full-title-ci/:fullTitle(*)',
+router.get('/full-title-ci/:fullTitle',
   (req, res, next) => {
     const { namespace, title } = Namespace.splitFullTitle(req.params.fullTitle);
 

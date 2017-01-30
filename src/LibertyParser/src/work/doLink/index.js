@@ -74,7 +74,7 @@ const caseByNamespaceId = {
     } else {
       textToShow = textToLink;
     }
-    return models.Article.existsCaseInsensitive(textToLink)
+    return models.Article.existsIncludeRedirection(textToLink)
     .then((exists) => {
       if (exists) {
         return `<a href="${textToLink}">${textToShow}</a>`;
@@ -87,7 +87,7 @@ const caseByNamespaceId = {
   // 2: doFile,
 
   3: function categoryCase(textToLink, rest, parsingData) {
-    return models.Article.existsCaseInsensitive(textToLink)
+    return models.Article.existsIncludeRedirection(textToLink)
     .then((exists) => {
       let { title } = models.Namespace.splitFullTitle(textToLink);
       parsingData.structureData.link.categories.add({ title, exists });

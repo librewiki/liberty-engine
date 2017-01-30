@@ -69,6 +69,7 @@ const recentChanges = require('./routes/recent-changes');
 const siteNotice = require('./routes/site-notice');
 const frontPage = require('./routes/front-page');
 const articles = require('./routes/articles');
+const namespaces = require('./routes/namespaces');
 
 app.use('/', index);
 app.use('/users', users);
@@ -77,6 +78,7 @@ app.use('/recent-changes', recentChanges);
 app.use('/site-notice', siteNotice);
 app.use('/front-page', frontPage);
 app.use('/articles', articles);
+app.use('/namespaces', namespaces);
 
 const Response = require('./src/responses');
 

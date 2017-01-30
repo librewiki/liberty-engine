@@ -43,10 +43,10 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.status one of 'new', 'normal', 'moved', or 'deleted'.
        * @return {Promise<String>} Returns a replaced wikitext.
        */
-      replaceOnSave({ ipAddress, article, author, text, status }) {
+      replaceOnSave({ ipAddress, article, author, wikitext, status }) {
         let date = moment().format();
         let nowikiArr = [];
-        let newText = text
+        let newText = wikitext
         .replace(/\r\n/g, '\n')
         .replace(/\r/g, '\n')
         .replace(nowikiRegex1,'\\Nowiki\\')

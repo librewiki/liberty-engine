@@ -103,20 +103,20 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} option
        * @param {String} option.fullTitle full title of an article.
        * @param {User} option.author user writing this.
-       * @param {String} option.text wikitext.
+       * @param {String} option.wikitext wikitext.
        * @param {String} [option.summary] summary.
        * @return {Promise<Article>} Resolves new article.
        * @example
        *   Aritcle.createNew({ fullTitle: 'ns:title', author: 'author', wikitext: 'sample [[wikitext]]' });
        */
-      createNew({ fullTitle, ipAddress, author, text, summary = '' }) {
+      createNew({ fullTitle, ipAddress, author, wikitext, summary = '' }) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
         return this.create({
           namespaceId: namespace.id,
           title: title
         })
         .then((article) => {
-          return models.Revision.createNew({ article, ipAddress, author, text, status: 'new', summary: 'new: ' + summary });
+          return models.Revision.createNew({ article, ipAddress, author, wikitext, type: 'CREATE', summary: summary? '(new) ' + summary: '(new)' });
         });
       },
 
@@ -127,16 +127,6 @@ module.exports = function(sequelize, DataTypes) {
           where: {
             namespaceId: namespace.id,
             title: title
-          }
-        });
-      },
-
-      findByFullTitleCaseInsensitive(fullTitle) {
-        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
-        return this.findOne({
-          where: {
-            namespaceId: namespace.id,
-            lowercaseTitle: title.toLowerCase()
           }
         });
       },
@@ -154,35 +144,35 @@ module.exports = function(sequelize, DataTypes) {
         });
       },
 
-      existsCaseInsensitive(fullTitle) {
+      findQuery: `(
+      	SELECT namespaceId, title, 0 as priority
+      	FROM articles
+      	WHERE namespaceId = :namespaceId AND title = :title AND deletedAt IS NULL
+      )
+      UNION ALL
+      (
+      	SELECT articles.namespaceId, articles.title, 1 as priority
+      	FROM redirections, articles
+      	WHERE sourceNamespaceId = :namespaceId AND sourceTitle = :title AND destinationArticleId = articles.id
+      )
+      UNION ALL
+      (
+      	SELECT namespaceId, title, 2 as priority
+      	FROM articles
+      	WHERE namespaceId = :namespaceId AND lowercaseTitle = :lowercaseTitle AND deletedAt IS NULL
+      )
+      UNION ALL
+      (
+      	SELECT articles.namespaceId, articles.title, 3 as priority
+      	FROM redirections, articles
+      	WHERE sourceNamespaceId = :namespaceId AND lowercaseSourceTitle = :lowercaseTitle AND destinationArticleId = articles.id
+      )
+      ORDER BY priority LIMIT 1`,
+
+      findByFullTitleIncludeRedirection(fullTitle) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
 
-        let findQuery = `(
-        	SELECT namespaceId, title, 0 as priority
-        	FROM articles
-        	WHERE namespaceId = :namespaceId AND title = :title AND deletedAt IS NULL
-        )
-        UNION ALL
-        (
-        	SELECT articles.namespaceId, articles.title, 1 as priority
-        	FROM redirections, articles
-        	WHERE sourceNamespaceId = :namespaceId AND sourceTitle = :title AND destinationArticleId = articles.id
-        )
-        UNION ALL
-        (
-        	SELECT namespaceId, title, 2 as priority
-        	FROM articles
-        	WHERE namespaceId = :namespaceId AND lowercaseTitle = :lowercaseTitle AND deletedAt IS NULL
-        )
-        UNION ALL
-        (
-        	SELECT articles.namespaceId, articles.title, 3 as priority
-        	FROM redirections, articles
-        	WHERE sourceNamespaceId = :namespaceId AND lowercaseSourceTitle = :lowercaseTitle AND destinationArticleId = articles.id
-        )
-        ORDER BY priority LIMIT 1`;
-
-        return sequelize.query(findQuery, {
+        return sequelize.query(this.findQuery, {
           replacements: {
             namespaceId: namespace.id,
             title: title,
@@ -190,8 +180,13 @@ module.exports = function(sequelize, DataTypes) {
           }, type: sequelize.QueryTypes.SELECT
         })
         .then(([result]) => {
-          return !!result;
+          return result;
         });
+      },
+
+      existsIncludeRedirection(fullTitle) {
+        return this.findByFullTitleIncludeRedirection(fullTitle)
+        .then(result => !!result);
       }
 
     },
@@ -219,12 +214,12 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} option
        * @param {String} option.ipAddress ip address.
        * @param {User} option.author author.
-       * @param {String} option.text wikitext.
+       * @param {String} option.wikitext wikitext.
        * @param {String} [option.summary] summary.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      edit({ ipAddress, author, text, summary = '' }) {
-        return models.Revision.createNew({ article: this, ipAddress, author, text, status: 'updated', summary });
+      edit({ ipAddress, author, wikitext, summary = '' }) {
+        return models.Revision.createNew({ article: this, ipAddress, author, wikitext, type: 'UPDATE', summary });
       },
 
       /**
@@ -239,7 +234,7 @@ module.exports = function(sequelize, DataTypes) {
        */
       rename({ ipAddress, author, newFullTitle, summary = '' }) {
         const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
-        return models.Revision.createNew({ article: this, ipAddress, author, status: 'renamed', newFullTitle, summary })
+        return models.Revision.createNew({ article: this, ipAddress, author, type: 'RENAME', newFullTitle, summary })
         .then(() => {
           return this.update({ namespaceId: namespace.id, title: title });
         });
@@ -255,7 +250,7 @@ module.exports = function(sequelize, DataTypes) {
        * @return {Promise<Revision>} Resolves latest revision.
        */
       delete({ ipAddress, author, summary }) {
-        return models.Revision.createNew({ article: this, ipAddress, author, status: 'deleted', summary })
+        return models.Revision.createNew({ article: this, ipAddress, author, type: 'DELETE', summary })
         .then(() => {
           return this.destroy();
         });

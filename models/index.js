@@ -72,13 +72,13 @@ models.setDefaultInstances = function() {
     return models.User.findById(1)
     .then((user1) => {
       user = user1;
-      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'asfd', author: user, text: '--~~~~' });
+      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'asfd', author: user, wikitext: '--~~~~' });
     })
     .then((article) => {
       return article.rename({ ipAddress: '192.111.23.4', newFullTitle: 'aaaAA', author: user });
     })
     .then(() => {
-      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'qqQq', author: user, text: '--~~~~' });
+      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'qqQq', author: user, wikitext: '--~~~~' });
     })
     .then((article) => {
       return models.Redirection.create({ sourceNamespaceId: 0, sourceTitle: 'xxx', destinationArticleId: article.id, user: user })
@@ -87,13 +87,13 @@ models.setDefaultInstances = function() {
       });
     })
     .then(() => {
-      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: '뷁뷀⏰', author: user, text: '--~~~~' });
+      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: '뷁뷀⏰', author: user, wikitext: '--~~~~' });
     })
     .then((article) => {
-      return article.edit({ ipAddress: 'ffff:adda:0011:1111:0000:1111:2200:1131', author: models.User.anonymous, text: 'asdfsdfdf!!!! --~~~~' });
+      return article.edit({ ipAddress: 'ffff:adda:0011:1111:0000:1111:2200:1131', author: models.User.anonymous, wikitext: 'asdfsdfdf!!!! --~~~~' });
     })
     .then(() => {
-      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'aaAAA', author: user, text: '--~~~~' });
+      return models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'aaAAA', author: user, wikitext: '--~~~~' });
     })
     .then(() => {
       return models.Revision.findById(3);

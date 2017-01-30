@@ -90,6 +90,10 @@ module.exports = function(sequelize, DataTypes) {
         });
       },
 
+      getAll() {
+        return Array.from(this._idKeyMap.values());
+      },
+
       /**
        * Returns an instance of Namespace. Each object is unique across app.
        * @method getById
@@ -147,6 +151,11 @@ module.exports = function(sequelize, DataTypes) {
 
       joinNamespaceIdTitle(id, title) {
         if (id === 0) {
+          if (this.getByName(title.split(':')[0])) {
+            const err = new Error('title should not contain namespace name.');
+            err.name = 'MalformedTitleError';
+            throw err;
+          }
           return title;
         }
         return this.getById(id).name + ':' + title;

@@ -27,8 +27,11 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: 0
     },
-    status: {
-      type: DataTypes.ENUM('new', 'updated', 'renamed', 'deleted'),
+    type: {
+      type: DataTypes.ENUM('CREATE', 'UPDATE', 'RENAME', 'DELETE'),
+      validation: {
+        isIn: [['CREATE', 'UPDATE', 'RENAME', 'DELETE']]
+      },
       allowNull: false
     },
     summary: {
@@ -77,54 +80,54 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} option
        * @param {User} option.article an article to change.
        * @param {User} option.author user writing this.
-       * @param {String} option.text text.
+       * @param {String} option.wikitext wikitext.
        * @param {String} option.ipAddress IP address of request.
-       * @param {String} option.status one of 'new', 'updated', 'renamed', or 'deleted'.
+       * @param {String} option.type one of 'new', 'updated', 'renamed', or 'deleted'.
        * @param {String} option.destinationFullTitle full title to rename.
        * @return {Promise<Revision>} Returns a promise of new revision.
        */
-      createNew({ article, author, ipAddress, text, status, newFullTitle, summary }) {
+      createNew({ article, author, ipAddress, wikitext, type, newFullTitle, summary }) {
         return Promise.resolve()
         .then(() => {
-          switch (status) {
-            case 'new': {
-              return models.Wikitext.replaceOnSave({ ipAddress, article, author, text, status })
+          switch (type) {
+            case 'CREATE': {
+              return models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type })
               .then((replacedText) => {
                 return models.Wikitext.create({ text: replacedText })
-                .then((wikitext) => {
+                .then((wikitextInstance) => {
                   return this.create({
                     authorId: author.id,
                     articleId: article.id,
-                    wikitextId: wikitext.id,
-                    changedLength: wikitext.text.length,
+                    wikitextId: wikitextInstance.id,
+                    changedLength: wikitextInstance.text.length,
                     ipAddress,
-                    status,
+                    type,
                     summary
                   });
                 });
               });
             }
-            case 'updated': {
-              return models.Wikitext.replaceOnSave({ ipAddress, article, author, text, status })
+            case 'UPDATE': {
+              return models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type })
               .then((replacedText) => {
                 return article.getLatestRevision({ includeWikitext: true })
                 .then((baseRevision) => {
                   return models.Wikitext.create({ text: replacedText })
-                  .then((wikitext) => {
+                  .then((wikitextInstance) => {
                     return this.create({
                       authorId: author.id,
                       articleId: article.id,
-                      wikitextId: wikitext.id,
-                      changedLength: wikitext.text.length - baseRevision.wikitext.text.length,
+                      wikitextId: wikitextInstance.id,
+                      changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
                       ipAddress,
-                      status,
+                      type,
                       summary
                     });
                   });
                 });
               });
             }
-            case 'renamed': {
+            case 'RENAME': {
               const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
               return article.getLatestRevision({ includeWikitext: false })
               .then((baseRevision) => {
@@ -134,7 +137,7 @@ module.exports = function(sequelize, DataTypes) {
                   wikitextId: baseRevision.wikitextId,
                   articleId: article.id,
                   ipAddress,
-                  status,
+                  type,
                   summary,
                   renameLog: {
                     oldNamespaceId: article.namespaceId,
@@ -147,7 +150,7 @@ module.exports = function(sequelize, DataTypes) {
                 });
               });
             }
-            case 'deleted': {
+            case 'DELETE': {
               return article.getLatestRevision({ includeWikitext: true })
               .then((baseRevision) => {
                 return this.create({
@@ -156,13 +159,13 @@ module.exports = function(sequelize, DataTypes) {
                   wikitextId: null,
                   articleId: article.id,
                   ipAddress,
-                  status,
+                  type,
                   summary
                 });
               });
             }
             default:
-              throw new TypeError('No such status');
+              throw new TypeError('No such type');
           }
         })
         .then((newRevision) => {

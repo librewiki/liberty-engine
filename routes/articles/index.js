@@ -120,6 +120,14 @@ router.get('/full-title/:fullTitle',
       return Promise.resolve()
       .then(() => {
         const promises = [];
+        if (fields.includes('revisions')) {
+          promises.push(
+            article.getRevisions()
+            .then((revisions) => {
+              result.revisions = revisions;
+            })
+          );
+        }
         if (fields.includes('namespaceId')) {
           result.namespaceId = article.namespaceId;
         }

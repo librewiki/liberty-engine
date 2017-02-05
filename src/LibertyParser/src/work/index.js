@@ -11,6 +11,7 @@ const doNowiki = require('./doNowiki');
 const doTableOfContents = require('./doTableOfContents');
 const doTemplate = require('./doTemplate');
 const doSanitize = require('./doSanitize');
+const beautifyHtml = require('js-beautify').html;
 require('./doPartial');
 module.exports = function(wikitext, parsingData) {
   return Promise.resolve('\n' + wikitext.trim().replace(/\r\n|\r/g, '\n') + '\n')
@@ -27,7 +28,7 @@ module.exports = function(wikitext, parsingData) {
   .then((intermediate) => doXml('afterParsing', intermediate, parsingData))
   .then((intermediate) => doNowiki.restore(intermediate, parsingData))
   .then((intermediate) => doSanitize(intermediate, parsingData))
-  .then((intermediate) => intermediate.trim())
+  .then((intermediate) => beautifyHtml(intermediate.trim()))
   .then((html) => {
     return {
       html: html,

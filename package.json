@@ -24,6 +24,7 @@
     "helmet": "^3.3.0",
     "i18next": "^6.1.2",
     "ip": "^1.1.4",
+    "js-beautify": "^1.6.8",
     "jsonschema": "^1.1.1",
     "jsonwebtoken": "^7.2.1",
     "lodash": "^4.17.4",

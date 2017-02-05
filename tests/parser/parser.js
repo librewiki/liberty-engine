@@ -12,10 +12,10 @@ const i18next = require('i18next');
 describe('Parser', () => {
   before(() => {
     i18next.init({
-      'debug': true,
+      debug: true,
       lng: 'en',
-      'fallbackLng': 'en',
-      'ns': [
+      fallbackLng: 'en',
+      ns: [
         'LibertyParser'
       ],
       resources: {
@@ -32,7 +32,7 @@ describe('Parser', () => {
       .then((result) => {
         result.html.should.be.eql(
 `<p>
-asdf
+    asdf
 </p>`
         );
       });
@@ -45,7 +45,7 @@ asdf
       .then((result) => {
         result.html.should.be.eql(
 `<p>
-<a class="new" href="asdf">asdf</a>
+    <a class="new" href="asdf">asdf</a>
 </p>`
         );
       });
@@ -75,15 +75,17 @@ asdf
     it('should be rendered correctly', () => {
       return wikitextParser.parseRender({ wikitext: '__TOC__\n==aaa==' })
       .then((result) => {
+        console.log(result.html);
         result.html.should.be.eql(
 `<div id="toc" class="liberty-toc">
-  <div id="toc-title">
-    <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
-  </div>
-<ul>
-<li class="liberty-toc-level-1 liberty-toc-section-1"><a href="#s-1"><span class="liberty-toc-number">1</span> <span class="toctext">aaa</span></a>
-</li>
-</ul>
+    <div id="toc-title">
+        <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
+    </div>
+    <ul>
+        <li class="liberty-toc-level-1 liberty-toc-section-1">
+            <a href="#s-1"><span class="liberty-toc-number">1</span> <span class="liberty-toc-text">aaa</span></a>
+        </li>
+    </ul>
 </div>
 
 
@@ -99,7 +101,7 @@ asdf
       .then((result) => {
         result.html.should.be.eql(
 `<p>
-${settings.WIKI_NAME}
+    ${settings.WIKI_NAME}
 </p>`
         );
       });
@@ -110,7 +112,7 @@ ${settings.WIKI_NAME}
       .then((result) => {
         result.html.should.be.eql(
 `<p>
-${settings.DOMAIN}
+    ${settings.DOMAIN}
 </p>`
         );
       });

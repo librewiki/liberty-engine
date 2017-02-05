@@ -1,7 +1,6 @@
 'use strict';
 
 const i18next = require('i18next');
-
 const minimumHeadingsToShowToc = 4;
 
 module.exports = function(wikitext, parsingData) {
@@ -41,15 +40,23 @@ ${buildToc(parsingData.structureData.section, parsingData)}
 function buildToc(section, parsingData, levelString) {
   let result = '';
   if (levelString) {
-    result += `<li class="liberty-toc-level-${section.relativeLevel + 1} liberty-toc-section-${++parsingData.structureData.tocSerialNumber}"><a href="#s-${levelString}"><span class="liberty-toc-number">${levelString}</span> <span class="toctext">${section.title}</span></a>\n`;
+    result += (
+`<li class="liberty-toc-level-${section.relativeLevel + 1} liberty-toc-section-${++parsingData.structureData.tocSerialNumber}">
+<a href="#s-${levelString}"><span class="liberty-toc-number">${levelString}</span> <span class="liberty-toc-text">${section.title}</span></a>
+`
+    );
   }
   if (section.subsections.length) {
-    result += '<ul>\n';
-    result += section.subsections.map((subsection, i) => {
-      let newLevelString = levelString? levelString + '.' + (i + 1) : String(i + 1);
-      return buildToc(subsection, parsingData, newLevelString);
-    }).join('\n');
-    result += '\n</ul>';
+    result += (
+`<ul>
+${
+  section.subsections.map((subsection, i) => {
+    let newLevelString = levelString? `${levelString}.${i + 1}` : String(i + 1);
+    return buildToc(subsection, parsingData, newLevelString);
+  }).join('\n')
+}
+</ul>`
+    );
   }
   if (section.absoluteLevel !== -1) {
     result += '</li>';

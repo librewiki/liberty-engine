@@ -20,8 +20,8 @@ models.initialize({ force: true })
 const i18next = require('i18next');
 i18next.init({
   lng: 'en',
-  'fallbackLng': 'en',
-  'ns': [
+  fallbackLng: 'en',
+  ns: [
     'LibertyParser'
   ],
   resources: {

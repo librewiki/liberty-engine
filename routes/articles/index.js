@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { sequelize, Article, Namespace } = require(global.rootdir + '/models');
+const { sequelize, Article, Namespace, Revision } = require(global.rootdir + '/models');
 const Response = require(global.rootdir + '/src/responses');
 
 router.get('/',
@@ -122,9 +122,18 @@ router.get('/full-title/:fullTitle',
         const promises = [];
         if (fields.includes('revisions')) {
           promises.push(
-            article.getRevisions()
+            article.getRevisions({
+              include: [Revision.associations.author]
+            })
             .then((revisions) => {
-              result.revisions = revisions;
+              result.revisions = revisions.map((revision) => {
+                return {
+                  id: revision.id,
+                  changedLength: revision.changedLength,
+                  updatedAt: revision.updatedAt,
+                  authorName: revision.author.username
+                };
+              });
             })
           );
         }

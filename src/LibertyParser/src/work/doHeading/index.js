@@ -9,10 +9,10 @@ module.exports = function(wikitext, parsingData) {
     if (match) {
       parsingData.structureData.numOfHeadings++;
       let level = match[2].length;
-      let title = match[1];
+      let title = (match[1] || '').trim();
       let headingNumber = locateInTree(level, title, sectionTree);
       return `</p>
-<h${level}><span id="s-${headingNumber}" class="headline"><a href="#toctitle">${headingNumber}</a> ${title}</span></h${level}>
+<h${level}><span id="s-${headingNumber}" class="liberty-wiki-heading"><a href="#toc-title">${headingNumber}</a> ${title}</span></h${level}>
 <p>`;
     } else {
       return line;

@@ -5,7 +5,7 @@ const ParsingData = require('../ParsingData');
 const LibertyParserSupporter = require('../ParserSupporter').LibertyParserSupporter;
 const settings = require('../../../../config/settings.json');
 
-const defaultParsingData = new ParsingData({
+const makeDefaultParsingData = () => new ParsingData({
   id: -1
 }, {
   WIKI_NAME: settings.WIKI_NAME,
@@ -15,7 +15,7 @@ const defaultParsingData = new ParsingData({
 
 class WikitextParser extends LibertyParser {
   parseRender({ wikitext }) {
-    return super.parseRender({ wikitext: wikitext, parsingData: defaultParsingData });
+    return super.parseRender({ wikitext: wikitext, parsingData: makeDefaultParsingData() });
   }
 }
 

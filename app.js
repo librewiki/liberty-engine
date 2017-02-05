@@ -17,6 +17,18 @@ models.initialize({ force: true })
   console.log(err);
   process.exit(1);
 });
+const i18next = require('i18next');
+i18next.init({
+  lng: 'en',
+  'fallbackLng': 'en',
+  'ns': [
+    'LibertyParser'
+  ],
+  resources: {
+    en: require(global.rootdir + '/i18n/en.json'),
+    ko: require(global.rootdir + '/i18n/ko.json')
+  }
+});
 
 const app = express();
 

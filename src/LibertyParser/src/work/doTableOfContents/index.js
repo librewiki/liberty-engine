@@ -1,5 +1,7 @@
 'use strict';
 
+const i18next = require('i18next');
+
 const minimumHeadingsToShowToc = 4;
 
 module.exports = function(wikitext, parsingData) {
@@ -25,15 +27,21 @@ module.exports = function(wikitext, parsingData) {
 };
 
 function getToc(parsingData) {
-  return `<div id="toc" class="toc"><div id="toctitle"><h2>${global.i18n.t('parsing', 'Table of Contents')}</h2></div>
+  return (
+`<div id="toc" class="liberty-toc">
+  <div id="toc-title">
+    <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
+  </div>
 ${buildToc(parsingData.structureData.section, parsingData)}
-</div>\n`;
+</div>
+`
+  );
 }
 
 function buildToc(section, parsingData, levelString) {
   let result = '';
   if (levelString) {
-    result += `<li class="toclevel-${section.relativeLevel + 1} tocsection-${++parsingData.structureData.tocSerialNumber}"><a href="#s-${levelString}"><span class="tocnumber">${levelString}</span> <span class="toctext">${section.title}</span></a>\n`;
+    result += `<li class="liberty-toc-level-${section.relativeLevel + 1} liberty-toc-section-${++parsingData.structureData.tocSerialNumber}"><a href="#s-${levelString}"><span class="liberty-toc-number">${levelString}</span> <span class="toctext">${section.title}</span></a>\n`;
   }
   if (section.subsections.length) {
     result += '<ul>\n';

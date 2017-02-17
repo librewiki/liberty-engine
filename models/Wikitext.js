@@ -26,7 +26,7 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
     text: {
-      type: DataTypes.STRING(128),
+      type: DataTypes.TEXT('medium'),
       allowNull: false
     }
   }, {

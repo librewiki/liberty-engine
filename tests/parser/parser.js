@@ -75,7 +75,6 @@ describe('Parser', () => {
     it('should be rendered correctly', () => {
       return wikitextParser.parseRender({ wikitext: '__TOC__\n==aaa==' })
       .then((result) => {
-        console.log(result.html);
         result.html.should.be.eql(
 `<div id="toc" class="liberty-toc">
     <div id="toc-title">

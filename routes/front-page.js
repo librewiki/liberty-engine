@@ -16,15 +16,12 @@ router.get('/',
 );
 
 router.put('/',
-  (req, res, next) => {
-    return req.user.hasPermissionTo('SET_PUBLIC_SETTINGS')
-    .then((hasPermission) => {
-      if (hasPermission) {
-        next();
-      } else {
-        return new Response.Unauthorized().send(res);
-      }
-    });
+  async (req, res, next) => {
+    if (await req.user.hasPermissionTo('SET_PUBLIC_SETTINGS')) {
+      next();
+    } else {
+      new Response.Unauthorized().send(res);
+    }
   },
   (req, res, next) => {
     if (typeof req.body.data.frontPage === 'string') {

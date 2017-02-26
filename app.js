@@ -103,6 +103,7 @@ app.use((req, res, next) => {
 // error handler
 app.use((err, req, res, next) => {
   res.status(err.status || 500);
+  console.log(err);
   if (req.app.get('env') === 'production') {
     res.send({
       type: 'error',

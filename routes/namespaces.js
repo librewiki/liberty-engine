@@ -8,7 +8,6 @@ const Response = require(global.rootdir + '/src/responses');
 router.get('/',
   (req, res, next) => {
     try {
-      console.log( Namespace.getAll());
       new Response.Success({ namespaces: Namespace.getAll() }).send(res);
     } catch (err) {
       next(err);

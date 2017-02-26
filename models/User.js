@@ -48,6 +48,10 @@ module.exports = function(sequelize, DataTypes) {
         len: [6, 128]
       }
     },
+    passwordExpiry: {
+      type: DataTypes.DATE,
+      allowNull: true
+    },
     email: {
       type: DataTypes.STRING(128),
       allowNull: true,

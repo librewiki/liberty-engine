@@ -84,9 +84,10 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Finds a user by username.
        * @method findByUsername
+       * @async
        * @static
        * @param {String} username
-       * @return {Promise<User, null>} Returns a promise of user or null if not exists.
+       * @return {Promise<User, null>} Resolves user or null if not exists.
        */
       findByUsername(username) {
         return User.findOne({
@@ -99,6 +100,7 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Verifies a json web token (jwt). If it valid, returns decoded data of it.
        * @method verifyToken
+       * @async
        * @static
        * @param {String} token jwt of a user.
        * @return {Promise<String, Error>} Resolves decoded token data or rejects if it invalid.
@@ -126,25 +128,29 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Returns whether given password is correct.
        * @method verifyPassword
+       * @async
        * @param {String} password password of this user
-       * @return {Promise<Bool>} Returns a promise that has true (correct) or false (incorrect).
+       * @return {Promise<Bool>} Resolves true (correct) or false (incorrect).
        */
       verifyPassword(password) {
         return bcrypt.compare(password, this.passwordHash);
       },
 
       /**
-       * Issues a json web token (jwt). You must call verifyPassword() to check password before issue it to the user.
+       * Issues a json web token (jwt).
        * @method issueToken
+       * @async
        * @return {Promise<String>} Resolves new jwt.
        */
       issueToken() {
         return new Promise((resolve, reject) => {
-          jwt.sign({
+          const payload = {
             id: this.id,
             username: this.username,
-            email: this.email
-          }, secret, { expiresIn: '1h' }, (err, token) => {
+            email: this.email,
+            type: 'ACCESS'
+          };
+          jwt.sign(payload, secret, { expiresIn: '30min' }, (err, token) => {
             if (err) {
               reject(err);
             } else {
@@ -155,32 +161,54 @@ module.exports = function(sequelize, DataTypes) {
       },
 
       /**
+       * Issues a refresh token.
+       * @method issueToken
+       * @async
+       * @return {Promise<String>} Resolves new refresh token.
+       */
+      issueRefreshToken() {
+        return new Promise((resolve, reject) => {
+          const payload = {
+            id: this.id,
+            type: 'REFRESH'
+          };
+          jwt.sign(payload, secret, { expiresIn: '7d' }, (err, token) => {
+            if (err) {
+              return reject(err);
+            } else {
+              return resolve(token);
+            }
+          });
+        });
+      },
+
+      /**
        * Returns signature of this user.
        * @method getSignature
-       * @return {Promise<String>} Returns a promise of signature of this user.
+       * @async
+       * @return {Promise<String>} Resolves the signature of this user.
        */
-      getSignature(ipAddress) {
+      async getSignature(ipAddress) {
         if (this.isAnonymous) {
-          return Promise.resolve(`[[사용자:${ipAddress}]]`);
+          return `[[사용자:${ipAddress}]]`;
         }
-        return this.getUserSignature()
-        .then((signature) => {
-          if (signature) {
-            return signature.text;
-          } else {
-            return `[[${this.userPageFullTitle}]]`;
-          }
-        });
+        const signature = await this.getUserSignature();
+        if (signature) {
+          return signature.text;
+        } else {
+          return `[[${this.userPageFullTitle}]]`;
+        }
       },
 
       /**
        * Returns which this user has permission to do an action.
        * @method hasPermissionTo
+       * @async
        * @param {String} actionName
        * @return {Promise<Bool>} Resolves which this user has permission
        */
-      hasPermissionTo(actionName) {
-        return Promise.resolve(true);
+      async hasPermissionTo(actionName) {
+        return true;
       }
     },
     getterMethods: {
@@ -203,11 +231,9 @@ module.exports = function(sequelize, DataTypes) {
   return User;
 };
 
-function hashPassword(user) {
+async function hashPassword(user) {
   if (!user.changed('password')) return;
-  return bcrypt.hash(user.password, saltRounds)
-  .then((hash) => {
-    user.passwordHash = hash;
-    user.password = undefined;
-  });
+  const hash = await bcrypt.hash(user.password, saltRounds);
+  user.passwordHash = hash;
+  user.password = undefined;
 }

@@ -14,10 +14,10 @@ router.post('/', async (req, res, next) => {
     if (!await user.verifyPassword(req.body.password)) {
       return new Response.Unauthorized('Password does not match').send(res);
     }
-    const token = await user.issueToken();
-    return new Response.Success({ token }).send(res);
-  } catch (e) {
-    next(e);
+    const [token, refreshToken] = await Promise.all([user.issueToken(), user.issueRefreshToken()]);
+    return new Response.Success({ token, refreshToken }).send(res);
+  } catch (err) {
+    next(err);
   }
 });
 

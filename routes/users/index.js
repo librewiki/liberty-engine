@@ -2,26 +2,21 @@
 
 const express = require('express');
 const router = express.Router();
-const { User } = require('../../models');
+const { User } = require(global.rootdir + '/models');
+const Response = require(global.rootdir + '/src/responses');
+const middlewares = require(global.rootdir + '/src/middlewares');
 
-//@TODO add auth.
-router.get('/', (req, res, next) => {
-  return User.findAll()
-  .then((users) => {
-    const result = users.map((user) => {
-      return {
-        id: user.id,
-        username: user.username,
-        email: user.email
-      };
-    });
-    res.status(200).json(result);
-  })
-  .catch((err) => {
-    res.status(500).json({
-      message: 'Internal Server Error'
-    });
-  });
-});
+router.get('/', middlewares.userShouldHaveAnyRole(['admin']),
+  async (req, res, next) => {
+    try {
+      const users = await User.findAll({
+        attributes: ['id', 'username', 'email']
+      });
+      new Response.Success({ users }).send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 module.exports = router;

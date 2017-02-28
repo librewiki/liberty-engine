@@ -2,8 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const { User } = require('../models');
-const Response = require('../src/responses');
+const { User } = require(global.rootdir + '/models');
+const Response = require(global.rootdir + '/src/responses');
 
 router.post('/', async (req, res, next) => {
   try {

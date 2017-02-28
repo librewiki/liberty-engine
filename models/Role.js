@@ -1,19 +1,19 @@
 /**
- * Provides UserGroup model.
+ * Provides Role model.
  *
  * @module models
- * @submodule UserGroup
+ * @submodule Role
  */
 
 'use strict';
 
 /**
- * Model representing usergroups.
+ * Model representing roles.
  *
- * @class UserGroup
+ * @class Role
  */
 module.exports = function(sequelize, DataTypes) {
-  const UserGroup = sequelize.define('userGroup', {
+  const Role = sequelize.define('role', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
@@ -33,9 +33,9 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} models
        */
       associate(models) {
-        UserGroup.belongsToMany(models.User, { through: 'userUserGroups' });
+        Role.belongsToMany(models.User, { through: models.UserRole });
       }
     },
   });
-  return UserGroup;
+  return Role;
 };

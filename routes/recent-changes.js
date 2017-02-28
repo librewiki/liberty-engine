@@ -2,8 +2,8 @@
 
 const express = require('express');
 const router = express.Router();
-const recentChanges = require('../src/recentChanges');
-const Response = require('../src/responses');
+const recentChanges = require(global.rootdir + '/src/recentChanges');
+const Response = require(global.rootdir + '/src/responses');
 
 router.get('/',
   async (req, res, next) => {

@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const Response = require('../src/responses');
+const Response = require(global.rootdir + '/src/responses');
 
 router.get('/', (req, res, next) => {
   new Response.Success({

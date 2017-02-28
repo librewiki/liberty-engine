@@ -75,7 +75,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} models
        */
       associate(models) {
-        User.belongsToMany(models.UserGroup, { through: 'userUserGroups' });
+        User.belongsToMany(models.Role, { through: models.UserRole });
         User.hasOne(models.UserSignature, {
           onDelete: 'CASCADE', onUpdate: 'CASCADE'
         });
@@ -199,16 +199,21 @@ module.exports = function(sequelize, DataTypes) {
           return `[[${this.userPageFullTitle}]]`;
         }
       },
-
       /**
-       * Returns which this user has permission to do an action.
-       * @method hasPermissionTo
+       * Returns which this user has one of the passed roles.
+       * @method hasAnyRole
        * @async
-       * @param {String} actionName
-       * @return {Promise<Bool>} Resolves which this user has permission
+       * @param {String[]} roleNames Array of name of roles
+       * @return {Promise<Bool>} Resolves true or false
        */
-      async hasPermissionTo(actionName) {
-        return true;
+      async hasAnyRole(roleNames) {
+        return !!await this.countRoles({
+          where: {
+            name: {
+              $in: roleNames
+            }
+          }
+        });
       }
     },
     getterMethods: {

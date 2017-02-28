@@ -70,23 +70,21 @@ module.exports = function(sequelize, DataTypes) {
        */
       _nameKeyMap: new Map(),
 
-
       /**
        * Loads all namespaces and caches the instances of Namespace.
        * It should be called when the app starts.
        * @method initialize
+       * @async
        * @static
-       * @return {Promise} Returns a promise.
+       * @return {Promise<undefined>} Resolves undefined when initialization finished.
        */
-      initialize() {
+      async initialize() {
         this._idKeyMap.clear();
         this._nameKeyMap.clear();
-        return this.findAll()
-        .then((namespaces) => {
-          namespaces.forEach((namespace) => {
-            this._idKeyMap.set(namespace.id, namespace);
-            this._nameKeyMap.set(namespace.name, namespace);
-          });
+        const namespaces = await this.findAll();
+        namespaces.forEach((namespace) => {
+          this._idKeyMap.set(namespace.id, namespace);
+          this._nameKeyMap.set(namespace.name, namespace);
         });
       },
 
@@ -127,11 +125,11 @@ module.exports = function(sequelize, DataTypes) {
       },
 
       /**
-       * Split full title into namespace instance and title
+       * Splits full title into namespace instance and title
        * @method splitFullTitle
        * @static
        * @param {String} fullTitle full title of an article.
-       * @return {Promise} Returns a promise.
+       * @return {Object} returns object { namespace, title }
        */
       splitFullTitle(fullTitle) {
         let [first, ...rest] = fullTitle.split(':');
@@ -149,6 +147,14 @@ module.exports = function(sequelize, DataTypes) {
         }
       },
 
+      /**
+       * Returns full title from namespace id and title
+       * @method splitFullTitle
+       * @static
+       * @param {Number} id namespace id.
+       * @param {String} title title.
+       * @return {String} Returns full title.
+       */
       joinNamespaceIdTitle(id, title) {
         if (id === 0) {
           if (this.getByName(title.split(':')[0])) {

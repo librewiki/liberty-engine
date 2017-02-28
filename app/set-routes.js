@@ -1,5 +1,7 @@
 'use strict';
-module.exports = function(app) {
+const path = require('path');
+
+module.exports = function(express, app) {
   const index = require(global.rootdir + '/routes/index');
   const users = require(global.rootdir + '/routes/users');
   const authentication = require(global.rootdir + '/routes/authentication');
@@ -10,6 +12,11 @@ module.exports = function(app) {
   const namespaces = require(global.rootdir + '/routes/namespaces');
   const roles = require(global.rootdir + '/routes/roles');
 
+  app.use('/swagger\.json', express.static(path.join(global.rootdir, './docs/swagger.json')));
+  app.use('/swagger-ui', express.static(path.join(global.rootdir, './node_modules/swagger-ui/dist')));
+  app.use('/swagger', (req, res) => {
+    res.redirect('/swagger-ui?url=/swagger.json');
+  });
   app.use('/', index);
   app.use('/users', users);
   app.use('/authentication', authentication);

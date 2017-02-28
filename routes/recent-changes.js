@@ -10,8 +10,8 @@ router.get('/',
     try {
       const recents = await recentChanges.get({ limit: 10 });
       new Response.Success({ recentChanges: recents }).send(res);
-    } catch (e) {
-      new Response.ServerError().send(res);
+    } catch (err) {
+      next(err);
     }
   }
 );

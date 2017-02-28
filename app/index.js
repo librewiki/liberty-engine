@@ -7,7 +7,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const helmet = require('helmet');
 
-const models = require('./models');
+const models = require(global.rootdir + '/models');
 
 models.initialize({ force: true })
 .then(() => {
@@ -38,23 +38,21 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cors({ origin: 'http://localhost:3000' }));
 
-app.use((req, res, next) => {
-  req.ipAddress = req.ip.replace(/^::ffff:/, '');
-  const token = req.headers['x-access-token'];
-  if (token) {
-    return models.User.verifyToken(token)
-    .then((decoded) => {
-      return models.User.findById(decoded.id);
-    })
-    .then((user) => {
+app.use(async (req, res, next) => {
+  try {
+    req.ipAddress = req.ip.replace(/^::ffff:/, '');
+    const token = req.headers['x-access-token'];
+    if (token) {
+      const decoded = await models.User.verifyToken(token);
+      const user = await models.User.findById(decoded.id);
       req.user = user;
       next();
-    }, (err) => {
-      next(err);
-    });
-  } else {
-    req.user = models.User.anonymous;
-    next();
+    } else {
+      req.user = models.User.anonymous;
+      next();
+    }
+  } catch (err) {
+    next(err);
   }
 });
 
@@ -68,31 +66,16 @@ app.use((req, res, next) => {
   next();
 });
 
-app.use('/swagger\.json', express.static(path.join(__dirname, './docs/swagger.json')));
-app.use('/swagger-ui', express.static(path.join(__dirname, './node_modules/swagger-ui/dist')));
+app.use('/swagger\.json', express.static(path.join(global.rootdir, './docs/swagger.json')));
+app.use('/swagger-ui', express.static(path.join(global.rootdir, './node_modules/swagger-ui/dist')));
 app.use('/swagger', (req, res) => {
   res.redirect('/swagger-ui?url=/swagger.json');
 });
 
-const index = require('./routes/index');
-const users = require('./routes/users');
-const authentication = require('./routes/authentication');
-const recentChanges = require('./routes/recent-changes');
-const siteNotice = require('./routes/site-notice');
-const frontPage = require('./routes/front-page');
-const articles = require('./routes/articles');
-const namespaces = require('./routes/namespaces');
+const setRoutes = require('./set-routes');
+setRoutes(app);
 
-app.use('/', index);
-app.use('/users', users);
-app.use('/authentication', authentication);
-app.use('/recent-changes', recentChanges);
-app.use('/site-notice', siteNotice);
-app.use('/front-page', frontPage);
-app.use('/articles', articles);
-app.use('/namespaces', namespaces);
-
-const Response = require('./src/responses');
+const Response = require(global.rootdir + '/src/responses');
 
 
 // catch 404 and forward to error handler

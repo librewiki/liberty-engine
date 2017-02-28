@@ -1,12 +1,6 @@
 'use strict';
-const path = require('path');
 
 module.exports = async function(express, app) {
-  const logger = require('morgan');
-  const bodyParser = require('body-parser');
-  const cors = require('cors');
-  const helmet = require('helmet');
-
   const models = require(global.rootdir + '/models');
   await models.initialize({ force: true });
   await models.setDefaultInstances();
@@ -24,6 +18,10 @@ module.exports = async function(express, app) {
     }
   });
 
+  const logger = require('morgan');
+  const bodyParser = require('body-parser');
+  const cors = require('cors');
+  const helmet = require('helmet');
 
   app.use(helmet());
   app.use(logger('dev'));

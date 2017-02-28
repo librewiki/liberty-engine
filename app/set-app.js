@@ -65,7 +65,7 @@ module.exports = async function(express, app) {
   const Response = require(global.rootdir + '/src/responses');
 
 
-  // catch 404 and forward to error handler
+  // catch 404
   app.use((req, res, next) => {
     new Response.ApiNotFound().send(res);
   });
@@ -75,12 +75,12 @@ module.exports = async function(express, app) {
     res.status(err.status || 500);
     console.log(err);
     if (req.app.get('env') === 'production') {
-      res.send({
+      res.json({
         type: 'error',
         message: 'Internal Server Error'
       });
     } else {
-      res.send({
+      res.json({
         type: 'error',
         message: err.message || 'Internal Server Error',
         stackTrace: err.stack

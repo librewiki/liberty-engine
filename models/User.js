@@ -122,6 +122,13 @@ module.exports = function(sequelize, DataTypes) {
           username: '(anonymous)',
           email: null,
         });
+      },
+      signUp({ email, password, username }) {
+        return this.create({
+          username: username,
+          password: password,
+          email: email
+        });
       }
     },
     instanceMethods: {

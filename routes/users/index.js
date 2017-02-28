@@ -19,4 +19,24 @@ router.get('/', middlewares.userShouldHaveAnyRole(['admin']),
   }
 );
 
+router.post('/',
+  async (req, res, next) => {
+    try {
+      const user = await User.signUp({
+        email: req.body.email,
+        password: req.body.password,
+        username: req.body.username
+      });
+      new Response.Created({
+        user: {
+          email: user.email,
+          username: user.username
+        }
+      }).send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 module.exports = router;

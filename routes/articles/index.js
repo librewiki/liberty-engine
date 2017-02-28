@@ -110,15 +110,17 @@ router.get('/full-title/:fullTitle',
       if (fields.includes('revisions')) {
         promises.push(
           article.getRevisions({
-            include: [Revision.associations.author]
+            include: [Revision.associations.author],
+            order: [['id', 'DESC']],
           })
           .then((revisions) => {
             result.revisions = revisions.map((revision) => {
               return {
                 id: revision.id,
                 changedLength: revision.changedLength,
-                updatedAt: revision.updatedAt,
-                authorName: revision.author? revision.author.username : null
+                createdAt: revision.createdAt,
+                authorName: revision.author? revision.author.username : null,
+                ipAddress: revision.author? null : revision.ipAddress
               };
             });
           })

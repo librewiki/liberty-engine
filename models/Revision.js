@@ -50,7 +50,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   }, {
-    createdAt: false,
+    updatedAt: false,
     classMethods: {
       /**
        * Describes associations.

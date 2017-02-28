@@ -11,6 +11,7 @@ module.exports = function(express, app) {
   const articles = require(global.rootdir + '/routes/articles');
   const namespaces = require(global.rootdir + '/routes/namespaces');
   const roles = require(global.rootdir + '/routes/roles');
+  const revisions = require(global.rootdir + '/routes/revisions');
 
   app.use('/swagger\.json', express.static(path.join(global.rootdir, './docs/swagger.json')));
   app.use('/swagger-ui', express.static(path.join(global.rootdir, './node_modules/swagger-ui/dist')));
@@ -26,4 +27,5 @@ module.exports = function(express, app) {
   app.use('/articles', articles);
   app.use('/namespaces', namespaces);
   app.use('/roles', roles);
+  app.use('/revisions', revisions);
 };

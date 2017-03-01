@@ -7,7 +7,7 @@ const { Role } = require(global.rootdir + '/models');
 const Response = require(global.rootdir + '/src/responses');
 const middlewares = require(global.rootdir + '/src/middlewares');
 
-router.get('/', middlewares.userShouldHaveAnyRole(['admin']),
+router.get('/', middlewares.userShouldHaveAnyRole(['sysop']),
   async (req, res, next) => {
     try {
       const roles = await Role.findAll();
@@ -18,7 +18,7 @@ router.get('/', middlewares.userShouldHaveAnyRole(['admin']),
   }
 );
 
-router.get('/:roleId', middlewares.userShouldHaveAnyRole(['admin']),
+router.get('/:roleId', middlewares.userShouldHaveAnyRole(['sysop']),
   async (req, res, next) => {
     try {
       const role = await Role.findById(req.params.roleId);

@@ -149,15 +149,26 @@ module.exports = function(sequelize, DataTypes) {
        * @async
        * @return {Promise<String>} Resolves new jwt.
        */
-      issueToken() {
+      async issueToken() {
+        const roles = await this.getRoles();
+        let isAdmin = false;
+        const roleNames = roles.map((role) => {
+          if (role.isAdmin) {
+            isAdmin = true;
+          }
+          return role.name;
+        });
+        const payload = {
+          id: this.id,
+          username: this.username,
+          email: this.email,
+          roleNames,
+          isAdmin,
+          type: 'ACCESS'
+        };
         return new Promise((resolve, reject) => {
-          const payload = {
-            id: this.id,
-            username: this.username,
-            email: this.email,
-            type: 'ACCESS'
-          };
           jwt.sign(payload, secret, { expiresIn: '30min' }, (err, token) => {
+            console.log(token);
             if (err) {
               reject(err);
             } else {
@@ -174,11 +185,11 @@ module.exports = function(sequelize, DataTypes) {
        * @return {Promise<String>} Resolves new refresh token.
        */
       issueRefreshToken() {
+        const payload = {
+          id: this.id,
+          type: 'REFRESH'
+        };
         return new Promise((resolve, reject) => {
-          const payload = {
-            id: this.id,
-            type: 'REFRESH'
-          };
           jwt.sign(payload, secret, { expiresIn: '7d' }, (err, token) => {
             if (err) {
               return reject(err);
@@ -206,6 +217,7 @@ module.exports = function(sequelize, DataTypes) {
           return `[[${this.userPageFullTitle}]]`;
         }
       },
+
       /**
        * Returns which this user has one of the passed roles.
        * @method hasAnyRole

@@ -16,7 +16,7 @@ router.get('/',
   }
 );
 
-router.put('/', middlewares.userShouldHaveAnyRole(['admin']),
+router.put('/', middlewares.userShouldHaveAnyRole(['sysop']),
   (req, res, next) => {
     if (typeof req.body.data.frontPage === 'string') {
       let frontPage = publicSettings.set('front-page', req.body.data.frontPage);

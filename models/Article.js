@@ -99,6 +99,7 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Create a new article.
        * @method createNew
+       * @async
        * @static
        * @param {Object} option
        * @param {String} option.fullTitle full title of an article.
@@ -109,15 +110,14 @@ module.exports = function(sequelize, DataTypes) {
        * @example
        *   Aritcle.createNew({ fullTitle: 'ns:title', author: 'author', wikitext: 'sample [[wikitext]]' });
        */
-      createNew({ fullTitle, ipAddress, author, wikitext, summary = '' }) {
+      async createNew({ fullTitle, ipAddress, author, wikitext, summary = '' }) {
         const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
-        return this.create({
+        const article = await this.create({
           namespaceId: namespace.id,
           title: title
-        })
-        .then((article) => {
-          return models.Revision.createNew({ article, ipAddress, author, wikitext, type: 'CREATE', summary: summary? '(new) ' + summary: '(new)' });
         });
+        await models.Revision.createNew({ article, ipAddress, author, wikitext, type: 'CREATE', summary: summary? '(new) ' + summary: '(new)' });
+        return article;
       },
 
 
@@ -211,6 +211,7 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Update with new revision and wikitext.
        * @method edit
+       * @async
        * @param {Object} option
        * @param {String} option.ipAddress ip address.
        * @param {User} option.author author.
@@ -225,6 +226,7 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Rename this article and add a new revision.
        * @method rename
+       * @async
        * @param {Object} option
        * @param {String} option.ipAddress ip address.
        * @param {User} option.author author.
@@ -232,39 +234,36 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} [option.summary] summary.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      rename({ ipAddress, author, newFullTitle, summary = '' }) {
+      async rename({ ipAddress, author, newFullTitle, summary = '' }) {
         const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
-        return models.Revision.createNew({ article: this, ipAddress, author, type: 'RENAME', newFullTitle, summary })
-        .then(() => {
-          return this.update({ namespaceId: namespace.id, title: title });
-        });
+        const revision = await models.Revision.createNew({ article: this, ipAddress, author, type: 'RENAME', newFullTitle, summary });
+        await this.update({ namespaceId: namespace.id, title: title });
+        return revision;
       },
 
       /**
        * Remove this article.
        * @method delete
+       * @async
        * @param {Object} option
        * @param {String} option.ipAddress ip address.
        * @param {User} option.author author.
        * @param {String} [option.summary] summary.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      delete({ ipAddress, author, summary }) {
-        return models.Revision.createNew({ article: this, ipAddress, author, type: 'DELETE', summary })
-        .then(() => {
-          return this.destroy();
-        });
+      async delete({ ipAddress, author, summary }) {
+        const revision = await models.Revision.createNew({ article: this, ipAddress, author, type: 'DELETE', summary });
+        await this.destroy();
+        return revision;
       },
 
       /**
        * Render its latest wikitext to HTML.
+       * @async
        * @return {Promise<RenderResult>} Resolves result of rendering.
        */
       render() {
-        return articleParser.parseRender({ article: this })
-        .then((result) => {
-          return result;
-        });
+        return articleParser.parseRender({ article: this });
       }
 
     }

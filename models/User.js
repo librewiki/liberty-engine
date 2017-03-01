@@ -168,7 +168,6 @@ module.exports = function(sequelize, DataTypes) {
         };
         return new Promise((resolve, reject) => {
           jwt.sign(payload, secret, { expiresIn: '30min' }, (err, token) => {
-            console.log(token);
             if (err) {
               reject(err);
             } else {

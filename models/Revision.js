@@ -77,6 +77,7 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Create a new revision and make it latest revision of an article.
        * @method createNew
+       * @async
        * @static
        * @param {Object} option
        * @param {User} option.article an article to change.
@@ -85,93 +86,80 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.ipAddress IP address of request.
        * @param {String} option.type one of 'new', 'updated', 'renamed', or 'deleted'.
        * @param {String} option.destinationFullTitle full title to rename.
-       * @return {Promise<Revision>} Returns a promise of new revision.
+       * @return {Promise<Revision>} Resolves new revision.
        */
-      createNew({ article, author, ipAddress, wikitext, type, newFullTitle, summary }) {
-        return Promise.resolve()
-        .then(() => {
-          switch (type) {
-            case 'CREATE': {
-              return models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type })
-              .then((replacedText) => {
-                return models.Wikitext.create({ text: replacedText })
-                .then((wikitextInstance) => {
-                  return this.create({
-                    authorId: author.id,
-                    articleId: article.id,
-                    wikitextId: wikitextInstance.id,
-                    changedLength: wikitextInstance.text.length,
-                    ipAddress,
-                    type,
-                    summary
-                  });
-                });
-              });
-            }
-            case 'UPDATE': {
-              return models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type })
-              .then((replacedText) => {
-                return article.getLatestRevision({ includeWikitext: true })
-                .then((baseRevision) => {
-                  return models.Wikitext.create({ text: replacedText })
-                  .then((wikitextInstance) => {
-                    return this.create({
-                      authorId: author.id,
-                      articleId: article.id,
-                      wikitextId: wikitextInstance.id,
-                      changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
-                      ipAddress,
-                      type,
-                      summary
-                    });
-                  });
-                });
-              });
-            }
-            case 'RENAME': {
-              const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
-              return article.getLatestRevision({ includeWikitext: false })
-              .then((baseRevision) => {
-                return this.create({
-                  authorId: author.id,
-                  changedLength: 0,
-                  wikitextId: baseRevision.wikitextId,
-                  articleId: article.id,
-                  ipAddress,
-                  type,
-                  summary,
-                  renameLog: {
-                    oldNamespaceId: article.namespaceId,
-                    oldTitle: article.title,
-                    newNamespaceId: namespace.id,
-                    newTitle: title
-                  }
-                }, {
-                  include: [models.RenameLog]
-                });
-              });
-            }
-            case 'DELETE': {
-              return article.getLatestRevision({ includeWikitext: true })
-              .then((baseRevision) => {
-                return this.create({
-                  authorId: author.id,
-                  changedLength: -baseRevision.wikitext.text.length,
-                  wikitextId: null,
-                  articleId: article.id,
-                  ipAddress,
-                  type,
-                  summary
-                });
-              });
-            }
-            default:
-              throw new TypeError('No such type');
+      async createNew({ article, author, ipAddress, wikitext, type, newFullTitle, summary }) {
+        let newRevision;
+        switch (type) {
+          case 'CREATE': {
+            const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type });
+            const wikitextInstance = await models.Wikitext.create({ text: replacedText });
+            newRevision = await this.create({
+              authorId: author.id,
+              articleId: article.id,
+              wikitextId: wikitextInstance.id,
+              changedLength: wikitextInstance.text.length,
+              ipAddress,
+              type,
+              summary
+            });
+            break;
           }
-        })
-        .then((newRevision) => {
-          return article.update({ latestRevisionId: newRevision.id });
-        });
+          case 'UPDATE': {
+            const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type });
+            const baseRevision = await article.getLatestRevision({ includeWikitext: true });
+            const wikitextInstance = await models.Wikitext.create({ text: replacedText });
+            newRevision = await this.create({
+              authorId: author.id,
+              articleId: article.id,
+              wikitextId: wikitextInstance.id,
+              changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
+              ipAddress,
+              type,
+              summary
+            });
+            break;
+          }
+          case 'RENAME': {
+            const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
+            const baseRevision = await article.getLatestRevision({ includeWikitext: false });
+            newRevision = await this.create({
+              authorId: author.id,
+              changedLength: 0,
+              wikitextId: baseRevision.wikitextId,
+              articleId: article.id,
+              ipAddress,
+              type,
+              summary,
+              renameLog: {
+                oldNamespaceId: article.namespaceId,
+                oldTitle: article.title,
+                newNamespaceId: namespace.id,
+                newTitle: title
+              }
+            }, {
+              include: [models.RenameLog]
+            });
+            break;
+          }
+          case 'DELETE': {
+            const baseRevision = await article.getLatestRevision({ includeWikitext: true });
+            newRevision = await this.create({
+              authorId: author.id,
+              changedLength: -baseRevision.wikitext.text.length,
+              wikitextId: null,
+              articleId: article.id,
+              ipAddress,
+              type,
+              summary
+            });
+            break;
+          }
+          default:
+            throw new TypeError('No such type');
+        }
+        await article.update({ latestRevisionId: newRevision.id });
+        return newRevision;
       }
     }
   });

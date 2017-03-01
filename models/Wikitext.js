@@ -34,6 +34,7 @@ module.exports = function(sequelize, DataTypes) {
       /**
        * Replace wikitext when it is saved.
        * @method replaceOnSave
+       * @async
        * @static
        * @param {Object} option
        * @param {User} option.ipAddress ip.
@@ -43,7 +44,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.status one of 'new', 'normal', 'moved', or 'deleted'.
        * @return {Promise<String>} Returns a replaced wikitext.
        */
-      replaceOnSave({ ipAddress, article, author, wikitext, status }) {
+      async replaceOnSave({ ipAddress, article, author, wikitext, status }) {
         let date = moment().format();
         let nowikiArr = [];
         let newText = wikitext
@@ -58,13 +59,11 @@ module.exports = function(sequelize, DataTypes) {
           let x = nowikiArr.push($0);
           return '\\nowiki\\_' + (x - 1) + '_\\nowiki\\';
         });
-        return author.getSignature(ipAddress)
-        .then((signature) => {
-          return newText.replace(/~~~~~/g, date)
-          .replace(/~~~~/g, signature + ' ' + date)
-          .replace(/~~~/g, signature)
-          .replace(/\\nowiki\\_(\d+)_\\nowiki\\/g, ($0, $1) => nowikiArr[$1]);
-        });
+        const signature = await author.getSignature(ipAddress);
+        return newText.replace(/~~~~~/g, date)
+        .replace(/~~~~/g, signature + ' ' + date)
+        .replace(/~~~/g, signature)
+        .replace(/\\nowiki\\_(\d+)_\\nowiki\\/g, ($0, $1) => nowikiArr[$1]);
       }
     }
   });

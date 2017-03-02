@@ -82,10 +82,10 @@ module.exports = function(sequelize, DataTypes) {
         this._idKeyMap.clear();
         this._nameKeyMap.clear();
         const namespaces = await this.findAll();
-        namespaces.forEach((namespace) => {
+        for (const namespace of namespaces) {
           this._idKeyMap.set(namespace.id, namespace);
           this._nameKeyMap.set(namespace.name, namespace);
-        });
+        }
       },
 
       getAll() {

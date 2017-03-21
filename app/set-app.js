@@ -25,7 +25,7 @@ module.exports = async function(express, app) {
 
   app.use(helmet());
   app.use(logger('dev'));
-  app.use(bodyParser.json());
+  app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cors({ origin: 'http://localhost:3000' }));
 

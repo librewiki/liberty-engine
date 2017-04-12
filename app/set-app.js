@@ -28,6 +28,7 @@ module.exports = async function(express, app) {
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cors({ origin: 'http://localhost:3000' }));
+  app.use(cors({ origin: 'http://localhost:8080' }));
 
   app.use(async (req, res, next) => {
     try {

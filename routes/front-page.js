@@ -3,26 +3,35 @@
 const express = require('express');
 const router = express.Router();
 const Response = require(global.rootdir + '/src/responses');
-const publicSettings = require(global.rootdir + '/src/publicSettings');
+const models = require(global.rootdir + '/models');
 const middlewares = require(global.rootdir + '/src/middlewares');
 
 router.get('/',
   (req, res, next) => {
-    let frontPage = publicSettings.get('front-page');
-    if (!frontPage) {
-      frontPage = 'front page';
+    try {
+      let frontPage = models.Setting.get('front-page');
+      if (!frontPage) {
+        frontPage = 'front page';
+      }
+      new Response.Success({ frontPage }).send(res);
+    } catch (err) {
+      next(err);
     }
-    new Response.Success({ frontPage }).send(res);
   }
 );
 
-router.put('/', middlewares.userShouldHaveAnyRole(['sysop']),
-  (req, res, next) => {
-    if (typeof req.body.data.frontPage === 'string') {
-      let frontPage = publicSettings.set('front-page', req.body.data.frontPage);
-      new Response.Success({ frontPage }).send(res);
-    } else {
-      new Response.BadRequest().send(res);
+router.put('/',
+  middlewares.userShouldHaveAnyRole(['sysop']),
+  async (req, res, next) => {
+    try {
+      if (typeof req.body.frontPage === 'string') {
+        models.Setting.set('front-page', req.body.frontPage);
+        new Response.Success().send(res);
+      } else {
+        new Response.BadRequest().send(res);
+      }
+    } catch (err) {
+      next(err);
     }
   }
 );

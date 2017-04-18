@@ -25,7 +25,7 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-    active: {
+    emailConfirmed: {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
@@ -127,7 +127,8 @@ module.exports = function(sequelize, DataTypes) {
         return this.create({
           username: username,
           password: password,
-          email: email
+          email: email,
+          emailConfirmed: false
         });
       }
     },

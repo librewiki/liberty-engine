@@ -50,10 +50,12 @@ models.initialize = async function({ force = false } = {}) {
     name: '(default)'
   });
   await models.Namespace.initialize();
+  await models.Setting.initialize();
 };
 
 
 models.setDefaultInstances = async function() {
+  await models.Setting.set('front-page', 'aaaAA');
   const user = await models.User.create({ username: 'Admin001', password: 'password', email: 'asdf@gmail.com' });
   const sysop = await models.Role.findById(1);
   await user.addRole(sysop);

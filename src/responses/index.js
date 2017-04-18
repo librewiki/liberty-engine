@@ -3,16 +3,23 @@
 class Response {
   constructor() {
     this.code = 200;
+    this.status = 'success';
   }
   send(res) {
-    res.status(this.code).json(this);
+    res.status(this.code).json(this.data);
+  }
+}
+
+class ErrorResponse extends Response {
+  constructor() {
+    super();
+    this.status = 'failure';
   }
 }
 
 class Success extends Response {
   constructor(data) {
     super();
-    this.status = 'success';
     this.code = 200;
     this.data = data;
   }
@@ -21,66 +28,72 @@ class Success extends Response {
 class Created extends Response {
   constructor(data) {
     super();
-    this.status = 'success';
     this.code = 201;
     this.data = data;
   }
 }
 
-class Failure extends Response {
+class Failure extends ErrorResponse {
   constructor(message) {
     super();
-    this.status = 'failure';
     this.code = 400;
-    this.message = message;
+    this.data = { message };
   }
 }
 
-class BadRequest extends Response {
+class BadRequest extends ErrorResponse {
   constructor({ name, message } = {}) {
     super();
-    this.status = 'failure';
     this.code = 400;
-    this.name = name || 'BadRequestError';
-    this.message = message || 'bad request.';
+    this.data = {
+      name: name || 'BadRequestError',
+      message: message || 'bad request.'
+    };
   }
 }
 
-class ResourceNotFound extends Response {
+class ResourceNotFound extends ErrorResponse {
   constructor() {
     super();
-    this.status = 'failure';
     this.code = 404;
-    this.name = 'ResourceNotFoundError';
-    this.message = 'Cannot find the resource.';
+    this.data = {
+      name: 'ResourceNotFoundError',
+      message: 'Cannot find the resource.'
+    };
   }
 }
 
-class Unauthorized extends Response {
+class Unauthorized extends ErrorResponse {
   constructor(message) {
     super();
-    this.status = 'failure';
     this.code = 401;
-    this.message = message || 'you don\'t have permission to access it.';
+    this.data = {
+      name: 'UnauthorizedError',
+      message: message || 'you don\'t have permission to access it.'
+    };
   }
 }
 
-class ApiNotFound extends Response {
+class ApiNotFound extends ErrorResponse {
   constructor() {
     super();
-    this.status = 'failure';
     this.code = 404;
-    this.message = 'Cannot find the API endpoint.';
+    this.data = {
+      name: 'ApiNotFoundError',
+      message: 'Cannot find the API endpoint.'
+    };
   }
 }
 
 
-class ServerError extends Response {
+class ServerError extends ErrorResponse {
   constructor(message) {
     super();
-    this.status = 'failure';
     this.code = 500;
-    this.message = message || 'Internal Server Error';
+    this.data = {
+      name: 'ServerError',
+      message: message || 'Internal Server Error'
+    };
   }
 }
 

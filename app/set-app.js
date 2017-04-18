@@ -2,8 +2,9 @@
 
 module.exports = async function(express, app) {
   const models = require(global.rootdir + '/models');
-  await models.initialize({ force: true });
-  await models.setDefaultInstances();
+  // await models.install();
+  await models.initialize();
+  // await models.setDefaultInstances();
 
   const i18next = require('i18next');
   i18next.init({
@@ -27,8 +28,7 @@ module.exports = async function(express, app) {
   app.use(logger('dev'));
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
-  app.use(cors({ origin: 'http://localhost:3000' }));
-  app.use(cors({ origin: 'http://localhost:8080' }));
+  app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:8080'] }));
 
   app.use(async (req, res, next) => {
     try {

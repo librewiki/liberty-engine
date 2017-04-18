@@ -36,19 +36,19 @@ module.exports = (sequelize, DataTypes) => {
         cache.clear();
         const settings = await this.findAll();
         for (const { key, value } of settings) {
-          cache.setting.set(key, JSON.parse(value));
+          cache.set(key, JSON.parse(value));
         }
       },
       get(key) {
         return cache.get(key) || null;
       },
-      set(key, value) {
+      async set(key, value) {
+        await this.upsert({ key, value: JSON.stringify(value) });
         cache.set(key, JSON.parse(JSON.stringify(value)));
-        this.upsert({ key, value: JSON.stringify(value) });  // async
       },
-      delete(key) {
+      async delete(key) {
+        await this.destroy(key);
         cache.delete(key);
-        this.destroy(key);  // async
       }
     }
   });

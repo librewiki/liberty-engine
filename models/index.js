@@ -32,27 +32,25 @@ Object.keys(models).forEach((modelName) => {
 models.sequelize = sequelize;
 models.Sequelize = Sequelize;
 
-models.initialize = async function({ force = false } = {}) {
-  if (force) {
-    await models.sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
-  }
-  await models.sequelize.sync({ force });
-  if (force) {
-    await models.sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
-  }
+models.install = async function() {
+  await models.sequelize.query('SET FOREIGN_KEY_CHECKS = 0;');
+  await models.sequelize.sync({ force: true });
+  await models.sequelize.query('SET FOREIGN_KEY_CHECKS = 1;');
   await models.Role.create({
     name: 'sysop',
     isAdmin: true
   });
-  await models.User.initialize();
   await models.Namespace.create({
     id: 0,
     name: '(default)'
   });
+};
+
+models.initialize = async function() {
+  await models.User.initialize();
   await models.Namespace.initialize();
   await models.Setting.initialize();
 };
-
 
 models.setDefaultInstances = async function() {
   await models.Setting.set('front-page', 'aaaAA');

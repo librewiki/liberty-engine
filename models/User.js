@@ -12,6 +12,10 @@ const saltRounds = 10;
 const jwt = require('jsonwebtoken');
 const env = process.env.NODE_ENV || 'development';
 const secret = require('../config/config.json')[env].secret;
+const crypto = require('crypto');
+const sendMail = require(global.rootdir + '/src/sendMail');
+const models = require('./');
+const moment = require('moment');
 
 /**
  * Model representing users.
@@ -29,6 +33,14 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.BOOLEAN,
       allowNull: false,
       defaultValue: false
+    },
+    confirmCode: {
+      type: DataTypes.STRING(96),
+      allowNull: true
+    },
+    confirmCodeExpiry: {
+      type: DataTypes.DATE,
+      allowNull: true
     },
     username: {
       type: DataTypes.STRING(128),
@@ -121,15 +133,48 @@ module.exports = function(sequelize, DataTypes) {
           id: null,
           username: '(anonymous)',
           email: null,
+          emailConfirmed: true,
         });
       },
-      signUp({ email, password, username }) {
-        return this.create({
-          username: username,
-          password: password,
-          email: email,
-          emailConfirmed: false
-        });
+      async signUp({ email, password, username }) {
+        const userEmailShouldBeConfirmed = models.Setting.get('userEmailShouldBeConfirmed');
+        if (userEmailShouldBeConfirmed) {
+          const confirmCode = await new Promise((resolve, reject) => {
+            crypto.randomBytes(48, (err, buffer) => {
+              if (err) return reject(err);
+              return resolve(buffer.toString('hex'));
+            });
+          });
+          const user = await this.create({
+            username,
+            password,
+            email,
+            emailConfirmed: false,
+            confirmCode,
+            confirmCodeExpiry: moment().add(1, 'days').toDate()
+          });
+          sendMail({
+            to: email,
+            subject: '메일 인증입니다.',
+            text: `
+메일 인증 코드는 하루 동안 유효합니다.
+${username} 사용자가 아닌 경우, 이 메일을 삭제해 주십시오.
+http://localhost:3001/mail-confirm?username=${encodeURIComponent(username)}&code=${confirmCode}`,
+          })
+          .catch((err) => {
+            console.error(err);
+            console.error('Please check mail config.');
+          });
+          return user;
+        } else {
+          const user = await this.create({
+            username,
+            password,
+            email,
+            emailConfirmed: true
+          });
+          return user;
+        }
       }
     },
     instanceMethods: {

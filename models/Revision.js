@@ -46,6 +46,9 @@ module.exports = function(sequelize, DataTypes) {
         this.setDataValue('ipAddress', ip.toBuffer(ipAddress));
       },
       get() {
+        if (!this.getDataValue('ipAddress')) {
+          return undefined;
+        }
         return ip.toString(this.getDataValue('ipAddress'));
       }
     }

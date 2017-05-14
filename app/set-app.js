@@ -29,22 +29,27 @@ module.exports = async function(express, app) {
   app.use(bodyParser.json({ limit: '10mb' }));
   app.use(bodyParser.urlencoded({ extended: false }));
   app.use(cors({ origin: ['http://localhost:3000', 'http://localhost:8080'] }));
-
   app.use(async (req, res, next) => {
     try {
       req.ipAddress = req.ip.replace(/^::ffff:/, '');
-      const token = req.headers['x-access-token'];
-      if (token) {
-        const decoded = await models.User.verifyToken(token);
-        const user = await models.User.findById(decoded.id);
-        req.user = user;
-        next();
-      } else {
-        req.user = models.User.anonymous;
-        next();
+      if (req.path === '/authentication/refresh') {
+        return next();
       }
+      const token = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
+      if (!token) {
+        req.user = models.User.anonymous;
+        return next();
+      }
+      const decoded = await models.User.verifyToken(token);
+      if (decoded.type !== 'ACCESS') {
+        const err = new Error('An access token is needed.');
+        err.name = 'BadTokenTypeError';
+        throw err;
+      }
+      req.user = await models.User.findById(decoded.id);
+      return next();
     } catch (err) {
-      next(err);
+      return next(err);
     }
   });
 

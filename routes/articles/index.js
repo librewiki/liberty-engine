@@ -45,58 +45,6 @@ router.post('/',
   }
 );
 
-/* rename article */
-router.put('/full-title/:fullTitle/full-title',
-  async (req, res, next) => {
-    try {
-      const article = await Article.findByFullTitle(req.params.fullTitle);
-      if (!article) {
-        return new Response.ResourceNotFound().send(res);
-      }
-      if (req.params.fullTitle === req.body.fullTitle) {
-        return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
-      }
-      await article.rename({
-        ipAddress: req.ipAddress,
-        author: req.user,
-        newFullTitle: req.body.fullTitle,
-        summary: req.body.summary
-      });
-      return new Response.Success().send(res);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
-router.put('/full-title/:fullTitle/wikitext',
-  async (req, res, next) => {
-    try {
-      //@TODO Permission
-      const article = await Article.findByFullTitle(req.params.fullTitle);
-      if (!article) {
-        return new Response.ResourceNotFound().send(res);
-      }
-      const latestRevision = await article.getLatestRevision({ includeWikitext: true });
-      if (!req.body.latestRevisionId || latestRevision.id > req.body.latestRevisionId) {
-        return new Response.BadRequest({ name: 'EditConflictError', message: 'edit conflict' }).send(res);
-      }
-      if (req.body.wikitext === latestRevision.wikitext.text) {
-        return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
-      }
-      await article.edit({
-        ipAddress: req.ipAddress,
-        author: req.user,
-        wikitext: req.body.wikitext,
-        summary: req.body.summary
-      });
-      return new Response.Success().send(res);
-    } catch (err) {
-      next(err);
-    }
-  }
-);
-
 router.get('/full-title/:fullTitle',
   async (req, res, next) => {
     try {
@@ -165,6 +113,57 @@ router.get('/full-title/:fullTitle',
   }
 );
 
+/* rename article */
+router.put('/full-title/:fullTitle/full-title',
+  async (req, res, next) => {
+    try {
+      const article = await Article.findByFullTitle(req.params.fullTitle);
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      if (req.params.fullTitle === req.body.fullTitle) {
+        return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
+      }
+      await article.rename({
+        ipAddress: req.ipAddress,
+        author: req.user,
+        newFullTitle: req.body.fullTitle,
+        summary: req.body.summary
+      });
+      return new Response.Success().send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.put('/full-title/:fullTitle/wikitext',
+  async (req, res, next) => {
+    try {
+      //@TODO Permission
+      const article = await Article.findByFullTitle(req.params.fullTitle);
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      const latestRevision = await article.getLatestRevision({ includeWikitext: true });
+      if (!req.body.latestRevisionId || latestRevision.id > req.body.latestRevisionId) {
+        return new Response.BadRequest({ name: 'EditConflictError', message: 'edit conflict' }).send(res);
+      }
+      if (req.body.wikitext === latestRevision.wikitext.text) {
+        return new Response.BadRequest({ name: 'NoChangeError', message: 'No change' }).send(res);
+      }
+      await article.edit({
+        ipAddress: req.ipAddress,
+        author: req.user,
+        wikitext: req.body.wikitext,
+        summary: req.body.summary
+      });
+      return new Response.Success().send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
 
 /* delete article */
 router.delete('/full-title/:fullTitle',

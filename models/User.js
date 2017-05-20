@@ -196,9 +196,8 @@ http://localhost:3001/mail-confirm?username=${encodeURIComponent(username)}&code
        * @return {Promise<String>} Resolves new jwt.
        */
       async issueToken() {
-        const roles = await this.getRoles();
         let isAdmin = false;
-        const roleNames = roles.map((role) => {
+        const roles = (await this.getRoles()).map((role) => {
           if (role.isAdmin) {
             isAdmin = true;
           }
@@ -208,7 +207,7 @@ http://localhost:3001/mail-confirm?username=${encodeURIComponent(username)}&code
           id: this.id,
           username: this.username,
           email: this.email,
-          roleNames,
+          roles,
           isAdmin,
           type: 'ACCESS'
         };

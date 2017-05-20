@@ -44,6 +44,10 @@ models.install = async function() {
     id: 0,
     name: '(default)'
   });
+  await models.Namespace.create({
+    id: 2,
+    name: '사용자'
+  });
 };
 
 models.initialize = async function() {

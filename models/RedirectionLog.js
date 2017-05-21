@@ -1,19 +1,19 @@
 /**
- * Provides Redirection model.
+ * Provides RedirectionLog model.
  *
  * @module models
- * @submodule Redirection
+ * @submodule RedirectionLog
  */
 
 'use strict';
 
 /**
- * Model representing redirection.
+ * Model representing redirection log.
  *
- * @class Redirection
+ * @class RedirectionLog
  */
 module.exports = function(sequelize, DataTypes) {
-  const Redirection = sequelize.define('redirection', {
+  const RedirectionLog = sequelize.define('redirectionLog', {
     /**
      * Primary key.
      *
@@ -51,15 +51,6 @@ module.exports = function(sequelize, DataTypes) {
     },
 
     /**
-     * lowercased source title.
-     *
-     * @property lowercaseSourceTitle
-     * @readOnly
-     * @type String
-     */
-    lowercaseSourceTitle: 'VARCHAR(128) AS (lower(`sourceTitle`)) PERSISTENT',
-
-    /**
      * Name of namespace.
      *
      * @property destinationArticleId
@@ -83,9 +74,7 @@ module.exports = function(sequelize, DataTypes) {
   }, {
     classMethods: {
       indexes: [{
-        unique: true, fields: ['namespaceId', 'title']
-      }, {
-        fields: ['lowercaseSourceTitle']
+        fields: ['namespaceId', 'title']
       }],
       /**
        * Describes associations.
@@ -94,8 +83,8 @@ module.exports = function(sequelize, DataTypes) {
        * @param {Object} models
        */
       associate(models) {
-        Redirection.belongsTo(models.Namespace, { as: 'sourceNamespace' });
-        Redirection.belongsTo(models.Article, {
+        RedirectionLog.belongsTo(models.Namespace, { as: 'sourceNamespace' });
+        RedirectionLog.belongsTo(models.Article, {
           as: 'destinationArticle',
           onDelete: 'CASCADE',
           onUpdate: 'CASCADE'
@@ -103,5 +92,5 @@ module.exports = function(sequelize, DataTypes) {
       }
     }
   });
-  return Redirection;
+  return RedirectionLog;
 };

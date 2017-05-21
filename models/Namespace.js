@@ -157,7 +157,7 @@ module.exports = function(sequelize, DataTypes) {
        */
       joinNamespaceIdTitle(id, title) {
         if (id === 0) {
-          if (this.getByName(title.split(':')[0])) {
+          if (this.getByName(title.includes(':') && title.split(':')[0])) {
             const err = new Error('title should not contain namespace name.');
             err.name = 'MalformedTitleError';
             throw err;

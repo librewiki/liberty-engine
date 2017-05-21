@@ -48,7 +48,7 @@ router.post('/',
 router.get('/full-title/:fullTitle',
   async (req, res, next) => {
     try {
-      const fields = req.queryData.fields || ['namespaceId', 'title', 'updatedAt'];
+      const fields = req.query.fields? req.query.fields.split(',') : ['namespaceId', 'title', 'updatedAt'];
       const article = await Article.findByFullTitle(req.params.fullTitle);
       if (!article) {
         return new Response.ResourceNotFound().send(res);
@@ -88,6 +88,9 @@ router.get('/full-title/:fullTitle',
       }
       if (fields.includes('latestRevisionId')) {
         result.latestRevisionId = article.latestRevisionId;
+      }
+      if (fields.includes('allowedActions')) {
+        result.allowedActions = article.allowedActions(req.user);
       }
       if (fields.includes('wikitext')) {
         promises.push(

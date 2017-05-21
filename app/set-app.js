@@ -53,16 +53,6 @@ module.exports = async function(express, app) {
     }
   });
 
-  app.use((req, res, next) => {
-    req.queryData = req.queryData || {};
-    if (req.query.fields) {
-      req.queryData.fields = req.query.fields.split(',');
-    } else {
-      req.queryData.fields = [];
-    }
-    next();
-  });
-
   const setRoutes = require('./set-routes');
   setRoutes(express, app);
 

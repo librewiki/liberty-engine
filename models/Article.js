@@ -264,8 +264,11 @@ module.exports = function(sequelize, DataTypes) {
        */
       render() {
         return articleParser.parseRender({ article: this });
-      }
+      },
 
+      allowedActions(/* user */) {
+        return ['read', 'edit', 'rename'];
+      }
     }
   });
   return Article;

@@ -7,6 +7,8 @@
 
 'use strict';
 
+const CustomDataTypes = require('../src/CustomDataTypes');
+
 /**
  * Model representing redirection log.
  *
@@ -26,36 +28,24 @@ module.exports = function(sequelize, DataTypes) {
       autoIncrement: true
     },
 
-    /**
-     * Name of namespace.
-     *
-     * @property sourceNamespaceId
-     * @type String
-     */
+    type: {
+      type: DataTypes.ENUM('ADD', 'DELETE'),
+      validation: {
+        isIn: [['ADD', 'DELETE']]
+      },
+      allowNull: false
+    },
+
     sourceNamespaceId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true
     },
 
-    /**
-     * Name of namespace.
-     *
-     * @property sourceTitle
-     * @type String
-     */
     sourceTitle: {
       type: DataTypes.STRING(128),
       allowNull: false,
-      unique: true
     },
 
-    /**
-     * Name of namespace.
-     *
-     * @property destinationArticleId
-     * @type String
-     */
     destinationArticleId: {
       type: DataTypes.INTEGER,
       allowNull: false
@@ -70,12 +60,14 @@ module.exports = function(sequelize, DataTypes) {
     userId: {
       type: DataTypes.INTEGER,
       allowNull: true
-    }
+    },
+
+    ipAddress: CustomDataTypes.ipAddress(),
   }, {
+    indexes: [{
+      fields: ['sourceNamespaceId', 'sourceTitle']
+    }],
     classMethods: {
-      indexes: [{
-        fields: ['namespaceId', 'title']
-      }],
       /**
        * Describes associations.
        * @method associate

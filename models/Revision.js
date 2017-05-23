@@ -7,9 +7,8 @@
 
 'use strict';
 
-const ip = require('ip');
 const models = require('./');
-
+const CustomDataTypes = require('../src/CustomDataTypes');
 /**
  * Model representing revisions.
  *
@@ -39,19 +38,7 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: false,
       defaultValue: ''
     },
-    ipAddress: {
-      type: 'VARBINARY(16)',
-      allowNull: false,
-      set(ipAddress) {
-        this.setDataValue('ipAddress', ip.toBuffer(ipAddress));
-      },
-      get() {
-        if (!this.getDataValue('ipAddress')) {
-          return undefined;
-        }
-        return ip.toString(this.getDataValue('ipAddress'));
-      }
-    }
+    ipAddress: CustomDataTypes.ipAddress()
   }, {
     updatedAt: false,
     classMethods: {

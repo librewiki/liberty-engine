@@ -257,6 +257,43 @@ module.exports = function(sequelize, DataTypes) {
         return revision;
       },
 
+      async addNewRedirection({ ipAddress, fullTitle, user }) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        await models.Redirection.create({
+          sourceNamespaceId: namespace.id,
+          sourceTitle: title,
+          destinationArticleId: this.id
+        });
+        await models.RedirectionLog.create({
+          type: 'ADD',
+          sourceNamespaceId: namespace.id,
+          sourceTitle: title,
+          destinationArticleId: this.id,
+          user,
+          ipAddress
+        });
+      },
+
+      async deleteRedirection({ ipAddress, fullTitle, user }) {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        const redir = await models.Redirection.findOne({
+          where: {
+            sourceNamespaceId: namespace.id,
+            sourceTitle: title,
+            destinationArticleId: this.id
+          }
+        });
+        await redir.destroy();
+        await models.RedirectionLog.create({
+          type: 'DELETE',
+          sourceNamespaceId: namespace.id,
+          sourceTitle: title,
+          destinationArticleId: this.id,
+          user,
+          ipAddress
+        });
+      },
+
       /**
        * Render its latest wikitext to HTML.
        * @async
@@ -268,7 +305,8 @@ module.exports = function(sequelize, DataTypes) {
 
       allowedActions(/* user */) {
         return ['read', 'edit', 'rename'];
-      }
+      },
+
     }
   });
   return Article;

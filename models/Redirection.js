@@ -25,29 +25,14 @@ module.exports = function(sequelize, DataTypes) {
       primaryKey: true,
       autoIncrement: true
     },
-
-    /**
-     * Name of namespace.
-     *
-     * @property sourceNamespaceId
-     * @type String
-     */
     sourceNamespaceId: {
       type: DataTypes.INTEGER,
       allowNull: false,
-      unique: true
     },
 
-    /**
-     * Name of namespace.
-     *
-     * @property sourceTitle
-     * @type String
-     */
     sourceTitle: {
       type: DataTypes.STRING(128),
       allowNull: false,
-      unique: true
     },
 
     /**
@@ -59,34 +44,17 @@ module.exports = function(sequelize, DataTypes) {
      */
     lowercaseSourceTitle: 'VARCHAR(128) AS (lower(`sourceTitle`)) PERSISTENT',
 
-    /**
-     * Name of namespace.
-     *
-     * @property destinationArticleId
-     * @type String
-     */
     destinationArticleId: {
       type: DataTypes.INTEGER,
       allowNull: false
     },
-
-    /**
-     * Id of user who make this redirection.
-     *
-     * @property userId
-     * @type String
-     */
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    }
   }, {
+    indexes: [{
+      unique: true, fields: ['sourceNamespaceId', 'sourceTitle']
+    }, {
+      fields: ['lowercaseSourceTitle']
+    }],
     classMethods: {
-      indexes: [{
-        unique: true, fields: ['namespaceId', 'title']
-      }, {
-        fields: ['lowercaseSourceTitle']
-      }],
       /**
        * Describes associations.
        * @method associate

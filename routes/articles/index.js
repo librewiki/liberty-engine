@@ -92,6 +92,11 @@ router.get('/full-title/:fullTitle',
       if (fields.includes('allowedActions')) {
         result.allowedActions = article.allowedActions(req.user);
       }
+      if (fields.includes('redirections')) {
+        promises.push(article.getRedirections().then((redirections) => {
+          result.redirections = redirections;
+        }));
+      }
       if (fields.includes('wikitext')) {
         promises.push(
           article.getLatestRevision({ includeWikitext: true })
@@ -182,6 +187,44 @@ router.delete('/full-title/:fullTitle',
         summary: req.body.summary
       });
       return new Response.Success().send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.post('/full-title/:fullTitle/redirections',
+  async (req, res, next) => {
+    try {
+      const article = await Article.findByFullTitle(req.params.fullTitle);
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      await article.addNewRedirection({
+        ipAddress: req.ipAddress,
+        fullTitle: req.body.fullTitle,
+        user: req.user
+      });
+      return new Response.Created().send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
+router.delete('/full-title/:fullTitle/redirections',
+  async (req, res, next) => {
+    try {
+      const article = await Article.findByFullTitle(req.params.fullTitle);
+      if (!article) {
+        return new Response.ResourceNotFound().send(res);
+      }
+      await article.deleteRedirection({
+        ipAddress: req.ipAddress,
+        fullTitle: req.query.to,
+        user: req.user
+      });
+      return new Response.Created().send(res);
     } catch (err) {
       next(err);
     }

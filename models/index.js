@@ -64,9 +64,9 @@ models.setDefaultInstances = async function() {
   let article = await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'asfd', author: user, wikitext: '--~~~~' });
   await article.rename({ ipAddress: '192.111.23.4', newFullTitle: 'aaaAA', author: user });
   article = await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'qqQq', author: user, wikitext: '--~~~~' });
-  await models.Redirection.create({ sourceNamespaceId: 0, sourceTitle: 'xxx', destinationArticleId: article.id, user: user });
-  await models.RedirectionLog.create({ sourceNamespaceId: 0, sourceTitle: 'xxx', destinationArticleId: article.id, user: user });
-  await article.delete({ ipAddress: '192.111.23.4', author: user });
+  await models.Redirection.create({ sourceNamespaceId: 0, sourceTitle: 'xxx', destinationArticleId: article.id });
+  await models.RedirectionLog.create({ type: 'ADD', sourceNamespaceId: 0, sourceTitle: 'xxx', destinationArticleId: article.id, user: user, ipAddress: '192.111.23.4' });
+  // await article.delete({ ipAddress: '192.111.23.4', author: user });
   article = await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: '뷁뷀⏰', author: user, wikitext: '--~~~~' });
   await article.edit({ ipAddress: 'ffff:adda:0011:1111:0000:1111:2200:1131', author: models.User.anonymous, wikitext: 'asdfsdfdf!!!! --~~~~' });
   await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'aaAAA', author: user, wikitext: '--~~~~' });

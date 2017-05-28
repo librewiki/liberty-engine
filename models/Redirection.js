@@ -14,23 +14,14 @@
  */
 module.exports = function(sequelize, DataTypes) {
   const Redirection = sequelize.define('redirection', {
-    /**
-     * Primary key.
-     *
-     * @property id
-     * @type Number
-     */
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
     sourceNamespaceId: {
+      primaryKey: true,
       type: DataTypes.INTEGER,
       allowNull: false,
     },
 
     sourceTitle: {
+      primaryKey: true,
       type: DataTypes.STRING(128),
       allowNull: false,
     },
@@ -50,7 +41,7 @@ module.exports = function(sequelize, DataTypes) {
     },
   }, {
     indexes: [{
-      unique: true, fields: ['sourceNamespaceId', 'sourceTitle']
+      fields: ['destinationArticleId']
     }, {
       fields: ['lowercaseSourceTitle']
     }],

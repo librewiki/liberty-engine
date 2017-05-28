@@ -2,9 +2,9 @@
 
 module.exports = async function(express, app) {
   const models = require(global.rootdir + '/models');
-  await models.install();
+  // await models.install();
   await models.initialize();
-  await models.setDefaultInstances();
+  // await models.setDefaultInstances();
 
   const i18next = require('i18next');
   i18next.init({

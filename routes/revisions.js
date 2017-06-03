@@ -22,6 +22,7 @@ router.get('/:revisionId',
           id: revision.id,
           changedLength: revision.changedLength,
           createdAt: revision.createdAt,
+          summary: revision.summary,
           authorName: revision.author? revision.author.username : null,
           ipAddress: revision.author? null : revision.ipAddress,
           wikitext: revision.wikitext.text

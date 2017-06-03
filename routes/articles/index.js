@@ -67,8 +67,9 @@ router.get('/full-title/:fullTitle',
                 id: revision.id,
                 changedLength: revision.changedLength,
                 createdAt: revision.createdAt,
+                summary: revision.summary,
                 authorName: revision.author? revision.author.username : null,
-                ipAddress: revision.author? null : revision.ipAddress
+                ipAddress: revision.author? null : revision.ipAddress,
               };
             });
           })

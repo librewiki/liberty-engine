@@ -13,6 +13,7 @@ module.exports = function(express, app) {
   const roles = require(global.rootdir + '/routes/roles');
   const revisions = require(global.rootdir + '/routes/revisions');
   const mailConfirm = require(global.rootdir + '/routes/mail-confirm');
+  const preview = require(global.rootdir + '/routes/preview');
 
   app.use('/swagger\.json', express.static(path.join(global.rootdir, './docs/swagger.json')));
   app.use('/swagger-ui', express.static(path.join(global.rootdir, './node_modules/swagger-ui/dist')));
@@ -30,4 +31,5 @@ module.exports = function(express, app) {
   app.use('/roles', roles);
   app.use('/revisions', revisions);
   app.use('/mail-confirm', mailConfirm);
+  app.use('/preview', preview);
 };

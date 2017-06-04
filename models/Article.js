@@ -198,13 +198,13 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.includeWikitext include wikitext instance.
        * @return {Promise<Revision>} Resolves latest revision.
        */
-      getLatestRevision({ includeWikitext } = {}) {
+      getLatestRevision({ includeWikitext, transaction } = {}) {
         if (includeWikitext) {
           return models.Revision.findById(this.latestRevisionId, {
             include: [models.Wikitext]
-          });
+          }, { transaction });
         } else {
-          return models.Revision.findById(this.latestRevisionId);
+          return models.Revision.findById(this.latestRevisionId, { transaction });
         }
       },
 

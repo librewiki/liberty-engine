@@ -78,78 +78,99 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.destinationFullTitle full title to rename.
        * @return {Promise<Revision>} Resolves new revision.
        */
-      async createNew({ article, author, ipAddress, wikitext, type, newFullTitle, summary }) {
-        let newRevision;
-        switch (type) {
-          case 'CREATE': {
-            const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type });
-            const wikitextInstance = await models.Wikitext.create({ text: replacedText });
-            newRevision = await this.create({
-              authorId: author.id,
-              articleId: article.id,
-              wikitextId: wikitextInstance.id,
-              changedLength: wikitextInstance.text.length,
-              ipAddress,
-              type,
-              summary
-            });
-            break;
-          }
-          case 'UPDATE': {
-            const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, article, author, wikitext, type });
-            const baseRevision = await article.getLatestRevision({ includeWikitext: true });
-            const wikitextInstance = await models.Wikitext.create({ text: replacedText });
-            newRevision = await this.create({
-              authorId: author.id,
-              articleId: article.id,
-              wikitextId: wikitextInstance.id,
-              changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
-              ipAddress,
-              type,
-              summary
-            });
-            break;
-          }
-          case 'RENAME': {
-            const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
-            const baseRevision = await article.getLatestRevision({ includeWikitext: false });
-            newRevision = await this.create({
-              authorId: author.id,
-              changedLength: 0,
-              wikitextId: baseRevision.wikitextId,
-              articleId: article.id,
-              ipAddress,
-              type,
-              summary,
-              renameLog: {
-                oldNamespaceId: article.namespaceId,
-                oldTitle: article.title,
-                newNamespaceId: namespace.id,
-                newTitle: title
-              }
-            }, {
-              include: [models.RenameLog]
-            });
-            break;
-          }
-          case 'DELETE': {
-            const baseRevision = await article.getLatestRevision({ includeWikitext: true });
-            newRevision = await this.create({
-              authorId: author.id,
-              changedLength: -baseRevision.wikitext.text.length,
-              wikitextId: null,
-              articleId: article.id,
-              ipAddress,
-              type,
-              summary
-            });
-            break;
-          }
-          default:
-            throw new TypeError('No such type');
+      async createNew({ article, author, ipAddress, wikitext, type, newFullTitle, summary, transaction }) {
+        let isTransactionGiven = !!transaction;
+        let t = transaction;
+        if (!isTransactionGiven) {
+          t = await sequelize.transaction();
         }
-        await article.update({ latestRevisionId: newRevision.id });
-        return newRevision;
+        let newRevision;
+        try {
+          switch (type) {
+            case 'CREATE': {
+              const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
+              const wikitextInstance = await models.Wikitext.create({
+                text: replacedText
+              }, { transaction: t });
+              newRevision = await this.create({
+                authorId: author.id,
+                articleId: article.id,
+                wikitextId: wikitextInstance.id,
+                changedLength: wikitextInstance.text.length,
+                ipAddress,
+                type,
+                summary
+              }, { transaction: t });
+              break;
+            }
+            case 'UPDATE': {
+              const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
+              const baseRevision = await article.getLatestRevision({
+                includeWikitext: true,
+                transaction: t
+              });
+              const wikitextInstance = await models.Wikitext.create({ text: replacedText });
+              newRevision = await this.create({
+                authorId: author.id,
+                articleId: article.id,
+                wikitextId: wikitextInstance.id,
+                changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
+                ipAddress,
+                type,
+                summary
+              }, { transaction: t });
+              break;
+            }
+            case 'RENAME': {
+              const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
+              const baseRevision = await article.getLatestRevision({ includeWikitext: false, transaction: t });
+              newRevision = await this.create({
+                authorId: author.id,
+                changedLength: 0,
+                wikitextId: baseRevision.wikitextId,
+                articleId: article.id,
+                ipAddress,
+                type,
+                summary,
+                renameLog: {
+                  oldNamespaceId: article.namespaceId,
+                  oldTitle: article.title,
+                  newNamespaceId: namespace.id,
+                  newTitle: title
+                }
+              }, {
+                include: [models.RenameLog],
+                transaction: t,
+              });
+              break;
+            }
+            case 'DELETE': {
+              const baseRevision = await article.getLatestRevision({ includeWikitext: true, transaction: t });
+              newRevision = await this.create({
+                authorId: author.id,
+                changedLength: -baseRevision.wikitext.text.length,
+                wikitextId: null,
+                articleId: article.id,
+                ipAddress,
+                type,
+                summary
+              }, { transaction: t });
+              break;
+            }
+            default:
+              throw new TypeError('No such type');
+          }
+          await article.update({ latestRevisionId: newRevision.id }, { transaction: t });
+          if (!isTransactionGiven) {
+            await t.commit();
+          }
+          return newRevision;
+        } catch (err) {
+          if (!isTransactionGiven) {
+            await t.rollback();
+          }
+          throw err;
+        }
       }
     }
   });

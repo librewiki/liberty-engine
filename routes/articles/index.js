@@ -2,7 +2,12 @@
 
 const express = require('express');
 const router = express.Router();
-const { sequelize, Article, Namespace, Revision } = require(global.rootdir + '/models');
+const {
+  sequelize,
+  Article,
+  Namespace,
+  Revision,
+} = require(global.rootdir + '/models');
 const Response = require(global.rootdir + '/src/responses');
 
 router.get('/',
@@ -68,12 +73,32 @@ router.get('/full-title/:fullTitle',
                 changedLength: revision.changedLength,
                 createdAt: revision.createdAt,
                 summary: revision.summary,
-                authorName: revision.author? revision.author.username : null,
-                ipAddress: revision.author? null : revision.ipAddress,
+                authorName: revision.author ? revision.author.username : null,
+                ipAddress: revision.author ? null : revision.ipAddress,
               };
             });
           })
         );
+      }
+      if (fields.includes('topics')) {
+        promises.push((async () => {
+          const topics = await article.getTopics({
+            order: [['id', 'DESC']],
+          });
+          result.topics = await Promise.all(topics.map(async (topic) => {
+            const firstComment = await topic.getFirstComment();
+            const rendered = await firstComment.parseRender();
+            return {
+              id: topic.id,
+              title: topic.title,
+              createdAt: topic.createdAt,
+              updatedAt: topic.updatedAt,
+              author: firstComment.author ? firstComment.author.username : null,
+              ipAddress: firstComment.author ? null : firstComment.ipAddress,
+              html: rendered.html
+            };
+          }));
+        })());
       }
       if (fields.includes('namespaceId')) {
         result.namespaceId = article.namespaceId;

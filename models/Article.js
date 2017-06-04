@@ -94,6 +94,7 @@ module.exports = function(sequelize, DataTypes) {
         Article.belongsTo(models.Namespace, { foreignKey: 'namespaceId' });
         Article.hasMany(models.Revision);
         Article.hasMany(models.Redirection, { foreignKey: 'destinationArticleId' });
+        Article.hasMany(models.DiscussionTopic, { as: 'topics' });
       },
 
       /**

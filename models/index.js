@@ -69,6 +69,12 @@ models.setDefaultInstances = async function() {
   // await article.delete({ ipAddress: '192.111.23.4', author: user });
   article = await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: '뷁뷀⏰', author: user, wikitext: '--~~~~' });
   await article.edit({ ipAddress: 'ffff:adda:0011:1111:0000:1111:2200:1131', author: models.User.anonymous, wikitext: 'asdfsdfdf!!!! --~~~~' });
-  await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'aaAAA', author: user, wikitext: '--~~~~' });
-  await models.Revision.findById(3);
+  article = await models.Article.createNew({ ipAddress: '192.111.23.4', fullTitle: 'aaAAA', author: user, wikitext: '--~~~~' });
+  await models.DiscussionTopic.createNew({
+    ipAddress: '192.111.23.4',
+    title: 'ㅁㄴㅇㄹ를 건의합니다.',
+    author: user,
+    wikitext: 'ㅁㅁㅁㅁ[[ㅇㅇㅇ]]ㅁ--~~~~',
+    article,
+  });
 };

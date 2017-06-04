@@ -44,7 +44,7 @@ module.exports = function(sequelize, DataTypes) {
        * @param {String} option.status one of 'new', 'normal', 'moved', or 'deleted'.
        * @return {Promise<String>} Returns a replaced wikitext.
        */
-      async replaceOnSave({ ipAddress, article, author, wikitext, status }) {
+      async replaceOnSave({ ipAddress, author, wikitext }) {
         let date = moment().format();
         let nowikiArr = [];
         let newText = wikitext

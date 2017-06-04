@@ -305,7 +305,13 @@ module.exports = function(sequelize, DataTypes) {
       },
 
       allowedActions(/* user */) {
-        return ['read', 'edit', 'rename'];
+        return [
+          'article:read',
+          'article:edit',
+          'article:rename',
+          'discussion:read',
+          'discussion:add-topic'
+        ];
       },
 
     }

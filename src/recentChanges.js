@@ -10,7 +10,6 @@ const _ = require('lodash');
 const _cache = [];   // caches maximum 100 changes
 module.exports = {
   /**
-   * Replace wikitext when it is saved.
    * @method get
    * @param {Object} option
    * @param {Function} [option.filter] function to filter results.

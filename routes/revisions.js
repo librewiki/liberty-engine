@@ -5,6 +5,32 @@ const router = express.Router();
 const { Revision } = require(global.rootdir + '/models');
 const Response = require(global.rootdir + '/src/responses');
 
+router.get('/',
+  async (req, res, next) => {
+    try {
+      const revisions = await Revision.findAll({
+        include: [Revision.associations.author, Revision.associations.article],
+        limit: 10,
+        order: [['id', 'DESC']],
+      });
+      const result = revisions.map((revision) => {
+        return {
+          id: revision.id,
+          changedLength: revision.changedLength,
+          createdAt: revision.createdAt,
+          articleFullTitle: revision.article.fullTitle,
+          summary: revision.summary,
+          authorName: revision.author? revision.author.username : null,
+          ipAddress: revision.author? null : revision.ipAddress,
+        };
+      });
+      new Response.Success({ revisions: result }).send(res);
+    } catch (err) {
+      next(err);
+    }
+  }
+);
+
 router.get('/:revisionId',
   async (req, res, next) => {
     try {

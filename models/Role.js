@@ -7,6 +7,8 @@
 
 'use strict';
 
+const models = require('./');
+
 /**
  * Model representing roles.
  *
@@ -23,11 +25,6 @@ module.exports = function(sequelize, DataTypes) {
       type: DataTypes.STRING(128),
       allowNull: false,
       unique: true
-    },
-    isAdmin: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-      defaultValue: false
     }
   }, {
     classMethods: {
@@ -39,7 +36,27 @@ module.exports = function(sequelize, DataTypes) {
        */
       associate(models) {
         Role.belongsToMany(models.User, { through: models.UserRole });
+        Role.belongsToMany(models.SpecialPermission, { through: models.SpecialPermissionRole });
+      },
+      permissionSets: new Map(),
+      async initialize() {
+        this.permissionSets.clear();
+        const roles = await this.findAll({ include: models.SpecialPermission });
+        for (const role of roles) {
+          const permissionSet = new Set();
+          this.permissionSets.set(role.id, permissionSet);
+          for (const permission of role.specialPermissions) {
+            permissionSet.add(permission.name);
+          }
+        }
       }
+    },
+    instanceMethods: {
+      hasPermissionTo(permissionName) {
+        if (this.name === 'root') return true;
+        const permissionSet = Role.permissionSets.get(this.id);
+        return permissionSet.has(permissionName);
+      },
     },
   });
   return Role;

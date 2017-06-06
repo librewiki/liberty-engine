@@ -2,7 +2,7 @@
  * Provides UserRole model.
  *
  * @module models
- * @submodule User
+ * @submodule UserRole
  */
 
 'use strict';

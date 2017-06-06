@@ -16,6 +16,7 @@ const crypto = require('crypto');
 const sendMail = require(global.rootdir + '/src/sendMail');
 const models = require('./');
 const moment = require('moment');
+const { ACCESS_ADMIN_PANEL } = require('../src/SpecialPermissionConstants');
 
 /**
  * Model representing users.
@@ -197,17 +198,18 @@ http://localhost:3001/mail-confirm?username=${encodeURIComponent(username)}&code
        */
       async issueToken() {
         let isAdmin = false;
-        const roles = (await this.getRoles()).map((role) => {
-          if (role.isAdmin) {
+        const roles = await this.getRoles();
+        for (const role of roles) {
+          if (role.hasPermissionTo(ACCESS_ADMIN_PANEL)) {
             isAdmin = true;
+            break;
           }
-          return role.name;
-        });
+        }
         const payload = {
           id: this.id,
           username: this.username,
           email: this.email,
-          roles,
+          roles: roles.map(role => role.name),
           isAdmin,
           type: 'ACCESS'
         };

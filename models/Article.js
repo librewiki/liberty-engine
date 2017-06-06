@@ -221,7 +221,7 @@ module.exports = function(sequelize, DataTypes) {
        * @return {Promise<Revision>} Resolves latest revision.
        */
       edit({ ipAddress, author, wikitext, summary = '' }) {
-        return models.Revision.createNew({ article: this, ipAddress, author, wikitext, type: 'UPDATE', summary });
+        return models.Revision.createNew({ article: this, ipAddress, author, wikitext, type: 'EDIT', summary });
       },
 
       /**

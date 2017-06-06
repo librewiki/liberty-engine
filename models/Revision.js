@@ -27,9 +27,9 @@ module.exports = function(sequelize, DataTypes) {
       defaultValue: 0
     },
     type: {
-      type: DataTypes.ENUM('CREATE', 'UPDATE', 'RENAME', 'DELETE'),
+      type: DataTypes.ENUM('CREATE', 'EDIT', 'RENAME', 'DELETE'),
       validation: {
-        isIn: [['CREATE', 'UPDATE', 'RENAME', 'DELETE']]
+        isIn: [['CREATE', 'EDIT', 'RENAME', 'DELETE']]
       },
       allowNull: false
     },
@@ -103,7 +103,7 @@ module.exports = function(sequelize, DataTypes) {
               }, { transaction: t });
               break;
             }
-            case 'UPDATE': {
+            case 'EDIT': {
               const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
               const baseRevision = await article.getLatestRevision({
                 includeWikitext: true,

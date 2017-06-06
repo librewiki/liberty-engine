@@ -89,6 +89,7 @@ models.setDefaultInstances = async function() {
   await models.SpecialPermission.initialize();
   await models.Role.initialize();
   const user2 = await models.User.create({ username: 'subsbu', password: 'password', email: 'aaasdf@gmail.com' });
+  await models.User.create({ username: 'zzzzzz', password: 'password', email: 'ccq@gmail.com' });
   await user2.addRole(subadmin);
   console.log(subadmin.hasPermissionTo(ACCESS_ADMIN_PANEL));
 };

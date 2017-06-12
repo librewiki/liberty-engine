@@ -13,7 +13,7 @@ const env = process.env.NODE_ENV || 'development';
 const dbConfig = require('../config/config.json')[env].db;
 const sequelize = new Sequelize(dbConfig.database, dbConfig.username, dbConfig.password, dbConfig);
 const models = module.exports = {};
-const { ACCESS_ADMIN_PANEL } = require('../src/SpecialPermissionConstants');
+const specialPermissionConstants = require('../src/specialPermissionConstants');
 
 fs.readdirSync(__dirname)
 .filter((file) => {
@@ -40,9 +40,11 @@ models.install = async function() {
   await models.Role.create({
     name: 'root'
   });
-  await models.SpecialPermission.create({
-    name: ACCESS_ADMIN_PANEL
-  });
+  for (const key of Object.keys(specialPermissionConstants)) {
+    await models.SpecialPermission.create({
+      name: specialPermissionConstants[key]
+    });
+  }
   await models.Namespace.create({
     id: 0,
     name: '(default)'
@@ -85,11 +87,11 @@ models.setDefaultInstances = async function() {
   const subadmin = await models.Role.create({
     name: 'subadmin'
   });
-  await subadmin.addSpecialPermission(models.SpecialPermission.getByName(ACCESS_ADMIN_PANEL));
+  await subadmin.addSpecialPermission(models.SpecialPermission.getByName(specialPermissionConstants.ACCESS_ADMIN_PANEL));
   await models.SpecialPermission.initialize();
   await models.Role.initialize();
   const user2 = await models.User.create({ username: 'subsbu', password: 'password', email: 'aaasdf@gmail.com' });
   await models.User.create({ username: 'zzzzzz', password: 'password', email: 'ccq@gmail.com' });
   await user2.addRole(subadmin);
-  console.log(subadmin.hasPermissionTo(ACCESS_ADMIN_PANEL));
+  console.log(subadmin.hasSpecialPermissionTo(specialPermissionConstants.ACCESS_ADMIN_PANEL));
 };

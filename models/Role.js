@@ -52,7 +52,7 @@ module.exports = function(sequelize, DataTypes) {
       }
     },
     instanceMethods: {
-      hasPermissionTo(permissionName) {
+      hasSpecialPermissionTo(permissionName) {
         if (this.name === 'root') return true;
         const permissionSet = Role.permissionSets.get(this.id);
         return permissionSet.has(permissionName);

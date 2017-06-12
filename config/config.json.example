@@ -7,7 +7,9 @@
       "database": "libertydev",
       "host": "localhost",
       "port": 3306,
-      "dialect": "mariadb",
+      "dialect": "mysql",
+      "charset": "utf8mb4",
+      "collate": "utf8mb4_bin",
       "pool": { "max": 40, "min": 0, "idle": 10000 }
     }
   },
@@ -19,7 +21,9 @@
       "database": "libertytest",
       "host": "localhost",
       "port": 3306,
-      "dialect": "mariadb",
+      "dialect": "mysql",
+      "charset": "utf8mb4",
+      "collate": "utf8mb4_bin",
       "pool": { "max": 40, "min": 0, "idle": 10000 }
     }
   },
@@ -31,7 +35,9 @@
       "database": "libertyproduction",
       "host": "localhost",
       "port": 3306,
-      "dialect": "mariadb",
+      "dialect": "mysql",
+      "charset": "utf8mb4",
+      "collate": "utf8mb4_bin",
       "pool": { "max": 40, "min": 0, "idle": 10000 }
     }
   }

@@ -16,7 +16,7 @@ const crypto = require('crypto');
 const sendMail = require(global.rootdir + '/src/sendMail');
 const models = require('./');
 const moment = require('moment');
-const { ACCESS_ADMIN_PANEL } = require('../src/SpecialPermissionConstants');
+const { ACCESS_ADMIN_PANEL } = require('../src/specialPermissionConstants');
 
 /**
  * Model representing users.
@@ -197,20 +197,12 @@ http://localhost:3001/mail-confirm?username=${encodeURIComponent(username)}&code
        * @return {Promise<String>} Resolves new jwt.
        */
       async issueToken() {
-        let isAdmin = false;
-        const roles = await this.getRoles();
-        for (const role of roles) {
-          if (role.hasPermissionTo(ACCESS_ADMIN_PANEL)) {
-            isAdmin = true;
-            break;
-          }
-        }
         const payload = {
           id: this.id,
           username: this.username,
           email: this.email,
-          roles: roles.map(role => role.name),
-          isAdmin,
+          roles: (await this.getRoles()).map(role => role.name),
+          isAdmin: await this.hasSpecialPermissionTo(ACCESS_ADMIN_PANEL),
           type: 'ACCESS'
         };
         return new Promise((resolve, reject) => {
@@ -279,6 +271,15 @@ http://localhost:3001/mail-confirm?username=${encodeURIComponent(username)}&code
             }
           }
         });
+      },
+      async hasSpecialPermissionTo(permissionName) {
+        const roles = await this.getRoles();
+        for (const role of roles) {
+          if (role.hasSpecialPermissionTo(permissionName)) {
+            return true;
+          }
+        }
+        return false;
       }
     },
     getterMethods: {

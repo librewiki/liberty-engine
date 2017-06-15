@@ -2,7 +2,7 @@
 
 const express = require('express');
 const router = express.Router();
-const { sequelize, User } = require(global.rootdir + '/models');
+const { User } = require(global.rootdir + '/models');
 const Response = require(global.rootdir + '/src/responses');
 const middlewares = require(global.rootdir + '/src/middlewares');
 const { GET_USER_LIST } = require(global.rootdir + '/src/specialPermissionConstants');
@@ -15,7 +15,7 @@ router.get('/',
       if (req.query.startsWith) {
         where = {
           username: {
-            // $like: `${sequelize.escape(req.query.startsWith)}%`
+            $like: `${req.query.startsWith}%`
           }
         };
       }

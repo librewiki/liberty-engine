@@ -1,88 +1,82 @@
-/**
- * Provides RedirectionLog model.
- *
- * @module models
- * @submodule RedirectionLog
- */
-
 'use strict';
 
+const Sequelize = require('sequelize');
+const LibertyModel = require('./LibertyModel');
+const models = require('./');
 const CustomDataTypes = require('../src/CustomDataTypes');
 
-/**
- * Model representing redirection log.
- *
- * @class RedirectionLog
- */
-module.exports = function(sequelize, DataTypes) {
-  const RedirectionLog = sequelize.define('redirectionLog', {
-    /**
-     * Primary key.
-     *
-     * @property id
-     * @type Number
-     */
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-
-    type: {
-      type: DataTypes.ENUM('ADD', 'DELETE'),
-      validation: {
-        isIn: [['ADD', 'DELETE']]
-      },
-      allowNull: false
-    },
-
-    sourceNamespaceId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-
-    sourceTitle: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-    },
-
-    destinationArticleId: {
-      type: DataTypes.INTEGER,
-      allowNull: false
-    },
-
-    /**
-     * Id of user who make this redirection.
-     *
-     * @property userId
-     * @type String
-     */
-    userId: {
-      type: DataTypes.INTEGER,
-      allowNull: true
-    },
-
-    ipAddress: CustomDataTypes.ipAddress(),
-  }, {
-    indexes: [{
-      fields: ['sourceNamespaceId', 'sourceTitle']
-    }],
-    classMethods: {
+class RedirectionLog extends LibertyModel {
+  static init(sequelize) {
+    super.init({
       /**
-       * Describes associations.
-       * @method associate
-       * @static
-       * @param {Object} models
+       * Primary key.
+       *
+       * @property id
+       * @type Number
        */
-      associate(models) {
-        RedirectionLog.belongsTo(models.Namespace, { as: 'sourceNamespace' });
-        RedirectionLog.belongsTo(models.Article, {
-          as: 'destinationArticle',
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-        });
-      }
-    }
-  });
-  return RedirectionLog;
-};
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+
+      type: {
+        type: Sequelize.ENUM('ADD', 'DELETE'),
+        validation: {
+          isIn: [['ADD', 'DELETE']],
+        },
+        allowNull: false,
+      },
+
+      sourceNamespaceId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+
+      sourceTitle: {
+        type: Sequelize.STRING(128),
+        allowNull: false,
+      },
+
+      destinationArticleId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+
+      /**
+       * Id of user who make this redirection.
+       *
+       * @property userId
+       * @type String
+       */
+      userId: {
+        type: Sequelize.INTEGER,
+        allowNull: true,
+      },
+
+      ipAddress: CustomDataTypes.ipAddress(),
+    },
+    {
+      sequelize,
+      modelName: 'redirectionLog',
+      indexes: [{
+        fields: ['sourceNamespaceId', 'sourceTitle'],
+      }],
+    });
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+    this.belongsTo(models.Namespace, { as: 'sourceNamespace' });
+    this.belongsTo(models.Article, {
+      as: 'destinationArticle',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+  }
+}
+
+module.exports = RedirectionLog;

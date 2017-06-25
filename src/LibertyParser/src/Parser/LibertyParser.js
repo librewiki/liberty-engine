@@ -8,11 +8,10 @@ const settings = require('../../../../config/settings.json');
 const makeDefaultParsingData = () => new ParsingData({}, {
   WIKI_NAME: settings.WIKI_NAME,
   DOMAIN: settings.DOMAIN,
-  LIBERTY_VERSION: global.LIBERTY_VERSION
+  LIBERTY_VERSION: global.LIBERTY_VERSION,
 }, LibertyParserSupporter);
 
 class LibertyParser {
-  constructor() {}
   parseRender({ wikitext, parsingData = makeDefaultParsingData() }) {
     return work(wikitext, parsingData);
   }

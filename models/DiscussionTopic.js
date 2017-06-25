@@ -1,106 +1,88 @@
-/**
- * Provides DiscussionTopic model.
- *
- * @module models
- * @submodule DiscussionTopic
- */
-
 'use strict';
 
+const Sequelize = require('sequelize');
+const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
-/**
- * Model representing topic of discussion.
- *
- * @class DiscussionTopic
- */
-module.exports = function(sequelize, DataTypes) {
-  const DiscussionTopic = sequelize.define('discussionTopic', {
-    /**
-     * Primary key.
-     *
-     * @property id
-     * @type Number
-     */
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true,
-      autoIncrement: true
-    },
-    articleId: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-    },
-    title: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    status: {
-      type: DataTypes.ENUM('OPEN', 'PAUSED', 'CLOSED'),
-      allowNull: false,
-      defaultValue: 'OPEN',
-    },
-  }, {
-    paranoid: true,
-    classMethods: {
+class DiscussionTopic extends LibertyModel {
+  static init(sequelize) {
+    super.init({
       /**
-       * Describes associations.
-       * @method associate
-       * @static
-       * @param {Object} models
+       * Primary key.
+       *
+       * @property id
+       * @type Number
        */
-      associate(models) {
-        DiscussionTopic.belongsTo(models.Article, {
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-        });
-        DiscussionTopic.hasMany(models.DiscussionComment, {
-          as: 'comments',
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-        });
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
       },
-      async createNew({ article, title, wikitext, ipAddress, author, transaction }) {
-        const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
-        let isTransactionGiven = !!transaction;
-        let t = transaction;
-        if (!isTransactionGiven) {
-          t = await sequelize.transaction();
-        }
-        try {
-          const newTopic = await this.create({
-            title: title.trim(),
-            articleId: article.id,
-          }, { transaction: t });
-          await models.DiscussionComment.create({
-            wikitext: replacedText,
-            topicId: newTopic.id,
-            authorId: author.id,
-            ipAddress,
-          }, { transaction: t });
-          if (!isTransactionGiven) {
-            await t.commit();
-          }
-          return newTopic;
-        } catch (err) {
-          if (!isTransactionGiven) {
-            await t.rollback();
-          }
-          throw err;
-        }
-      }
-    },
-    instanceMethods: {
-      async getFirstComment() {
-        return models.DiscussionComment.findOne({
-          where: {
-            topicId: this.id,
-          },
-          order: [['id', 'ASC']],
-          includes: [models.DiscussionComment.associations.author]
-        });
+      articleId: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
+      title: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      status: {
+        type: Sequelize.ENUM('OPEN', 'PAUSED', 'CLOSED'),
+        allowNull: false,
+        defaultValue: 'OPEN',
       },
     },
-  });
-  return DiscussionTopic;
-};
+    {
+      sequelize,
+      paranoid: true,
+      modelName: 'discussionTopic',
+    });
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+    this.belongsTo(models.Article, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    this.hasMany(models.DiscussionComment, {
+      as: 'comments',
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+  }
+
+  static createNew({
+    article, title, wikitext, ipAddress, author, transaction,
+  }) {
+    return this.autoTransaction(transaction, async (transaction) => {
+      const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
+      const newTopic = await this.create({
+        title: title.trim(),
+        articleId: article.id,
+      }, { transaction });
+      await models.DiscussionComment.create({
+        wikitext: replacedText,
+        topicId: newTopic.id,
+        authorId: author.id,
+        ipAddress,
+      }, { transaction });
+      return newTopic;
+    });
+  }
+
+  async getFirstComment() {
+    return models.DiscussionComment.findOne({
+      where: {
+        topicId: this.id,
+      },
+      order: [['id', 'ASC']],
+      includes: [models.DiscussionComment.associations.author],
+    });
+  }
+}
+
+module.exports = DiscussionTopic;

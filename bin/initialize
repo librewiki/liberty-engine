@@ -1,14 +1,21 @@
 #!/usr/bin/env node
+
 'use strict';
+
 const path = require('path');
 
 global.rootdir = path.join(__dirname, '/..');
 
-const models = require(global.rootdir + '/models');
+const models = require(`${global.rootdir}/models`);
 
 (async () => {
-  await models.install();
-  await models.initialize();
-  await models.setDefaultInstances();
-  process.exit(0);
+  try {
+    await models.install();
+    await models.initialize();
+    await models.setDefaultInstances();
+    process.exit(0);
+  } catch (e) {
+    console.log(e);
+    process.exit(-1);
+  }
 })();

@@ -1,172 +1,164 @@
-/**
- * Provides Namespace model.
- *
- * @module models
- * @submodule Namespace
- */
-
 'use strict';
 
-/**
- * Model representing namespaces.
- *
- * @class Namespace
- */
-module.exports = function(sequelize, DataTypes) {
-  const Namespace = sequelize.define('namespace', {
-    /**
-     * Primary key.
-     *
-     * @property id
-     * @type Number
-     */
-    id: {
-      type: DataTypes.INTEGER,
-      primaryKey: true
+const Sequelize = require('sequelize');
+const LibertyModel = require('./LibertyModel');
+const models = require('./');
+
+class Namespace extends LibertyModel {
+  static init(sequelize) {
+    super.init({
+      /**
+       * Primary key.
+       *
+       * @property id
+       * @type Number
+       */
+      id: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+      },
+
+      /**
+       * Name of namespace.
+       *
+       * @property name
+       * @type String
+       */
+      name: {
+        type: Sequelize.STRING(128),
+        allowNull: false,
+        unique: true,
+      },
     },
+    {
+      sequelize,
+      modelName: 'namespace',
+    });
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+    this.hasMany(models.Article);
+  }
 
-    /**
-     * Name of namespace.
-     *
-     * @property name
-     * @type String
-     */
-    name: {
-      type: DataTypes.STRING(128),
-      allowNull: false,
-      unique: true
+  /**
+   * Loads all namespaces and caches the instances of Namespace.
+   * It should be called when the app starts.
+   * @method initialize
+   * @async
+   * @static
+   * @return {Promise<undefined>} Resolves undefined when initialization finished.
+   */
+  static async initialize() {
+    this.idKeyMap.clear();
+    this.nameKeyMap.clear();
+    const namespaces = await this.findAll();
+    for (const namespace of namespaces) {
+      this.idKeyMap.set(namespace.id, namespace);
+      this.nameKeyMap.set(namespace.name, namespace);
     }
-  }, {
-    classMethods: {
-      /**
-       * Describes associations.
-       * @method associate
-       * @static
-       * @param {Object} models
-       */
-      associate(models) {
-        Namespace.hasMany(models.Article);
-      },
+  }
 
-      /**
-       * Map holding id as a key and namespace as a value.
-       *
-       * @property _idKeyMap
-       * @static
-       * @private
-       * @type Map<Namespace>
-       * @default Map{}
-       */
-      _idKeyMap: new Map(),
+  static getAll() {
+    return Array.from(this.idKeyMap.values());
+  }
 
-      /**
-       * Map holding name as a key and namespace as a value.
-       *
-       * @property _idKeyMap
-       * @static
-       * @private
-       * @type Map<Namespace>
-       * @default Map{}
-       */
-      _nameKeyMap: new Map(),
+  /**
+   * Returns an instance of Namespace. Each object is unique across app.
+   * @method getById
+   * @static
+   * @param {Number} id id of the namespace.
+   * @return {Namespace} Returns an instance of Namespace. If not exists, returns null.
+   */
+  static getById(id) {
+    const namespace = this.idKeyMap.get(id);
+    if (namespace) {
+      return namespace;
+    }
+    return null;
+  }
 
-      /**
-       * Loads all namespaces and caches the instances of Namespace.
-       * It should be called when the app starts.
-       * @method initialize
-       * @async
-       * @static
-       * @return {Promise<undefined>} Resolves undefined when initialization finished.
-       */
-      async initialize() {
-        this._idKeyMap.clear();
-        this._nameKeyMap.clear();
-        const namespaces = await this.findAll();
-        for (const namespace of namespaces) {
-          this._idKeyMap.set(namespace.id, namespace);
-          this._nameKeyMap.set(namespace.name, namespace);
-        }
-      },
+  /**
+   * Returns an instance of Namespace. Each object is unique across app.
+   * @method getByName
+   * @static
+   * @param {String} name name of the namespace.
+   * @return {Namespace} Returns an instance of Namespace. If not exists, returns null.
+   */
+  static getByName(name) {
+    const namespace = this.nameKeyMap.get(name);
+    if (namespace) {
+      return namespace;
+    }
+    return null;
+  }
 
-      getAll() {
-        return Array.from(this._idKeyMap.values());
-      },
+  /**
+   * Splits full title into namespace instance and title
+   * @method splitFullTitle
+   * @static
+   * @param {String} fullTitle full title of an article.
+   * @return {Object} returns object { namespace, title }
+   */
+  static splitFullTitle(fullTitle) {
+    const [first, ...rest] = fullTitle.split(':');
+    const namespace = this.getByName(first);
+    if (namespace) {
+      return {
+        namespace,
+        title: rest.join(':'),
+      };
+    }
+    return {
+      namespace: this.getById(0),
+      title: fullTitle,
+    };
+  }
 
-      /**
-       * Returns an instance of Namespace. Each object is unique across app.
-       * @method getById
-       * @static
-       * @param {Number} id id of the namespace.
-       * @return {Namespace} Returns an instance of Namespace. If not exists, returns null.
-       */
-      getById(id) {
-        const namespace = this._idKeyMap.get(id);
-        if (namespace) {
-          return namespace;
-        } else {
-          return null;
-        }
-      },
-
-      /**
-       * Returns an instance of Namespace. Each object is unique across app.
-       * @method getByName
-       * @static
-       * @param {String} name name of the namespace.
-       * @return {Namespace} Returns an instance of Namespace. If not exists, returns null.
-       */
-      getByName(name) {
-        const namespace = this._nameKeyMap.get(name);
-        if (namespace) {
-          return namespace;
-        } else {
-          return null;
-        }
-      },
-
-      /**
-       * Splits full title into namespace instance and title
-       * @method splitFullTitle
-       * @static
-       * @param {String} fullTitle full title of an article.
-       * @return {Object} returns object { namespace, title }
-       */
-      splitFullTitle(fullTitle) {
-        let [first, ...rest] = fullTitle.split(':');
-        let namespace = this.getByName(first);
-        if (namespace) {
-          return {
-            namespace: namespace,
-            title: rest.join(':')
-          };
-        } else {
-          return {
-            namespace: this.getById(0),
-            title: fullTitle
-          };
-        }
-      },
-
-      /**
-       * Returns full title from namespace id and title
-       * @method splitFullTitle
-       * @static
-       * @param {Number} id namespace id.
-       * @param {String} title title.
-       * @return {String} Returns full title.
-       */
-      joinNamespaceIdTitle(id, title) {
-        if (id === 0) {
-          if (this.getByName(title.includes(':') && title.split(':')[0])) {
-            const err = new Error('title should not contain namespace name.');
-            err.name = 'MalformedTitleError';
-            throw err;
-          }
-          return title;
-        }
-        return this.getById(id).name + ':' + title;
+  /**
+   * Returns full title from namespace id and title
+   * @method splitFullTitle
+   * @static
+   * @param {Number} id namespace id.
+   * @param {String} title title.
+   * @return {String} Returns full title.
+   */
+  static joinNamespaceIdTitle(id, title) {
+    if (id === 0) {
+      if (this.getByName(title.includes(':') && title.split(':')[0])) {
+        const err = new Error('title should not contain namespace name.');
+        err.name = 'MalformedTitleError';
+        throw err;
       }
+      return title;
     }
-  });
-  return Namespace;
-};
+    return `${this.getById(id).name}:${title}`;
+  }
+}
+
+/**
+ * Map holding id as a key and namespace as a value.
+ *
+ * @property _idKeyMap
+ * @static
+ * @private
+ * @type Map<Namespace>
+ * @default Map{}
+ */
+Namespace.idKeyMap = new Map();
+
+/**
+ * Map holding name as a key and namespace as a value.
+ *
+ * @property _idKeyMap
+ * @static
+ * @private
+ * @type Map<Namespace>
+ * @default Map{}
+ */
+Namespace.nameKeyMap = new Map();
+
+module.exports = Namespace;

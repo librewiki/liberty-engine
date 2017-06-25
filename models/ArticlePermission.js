@@ -1,66 +1,61 @@
-/**
- * Provides ArticlePermission model.
- *
- * @module models
- * @submodule ArticlePermission
- */
-
 'use strict';
 
-/**
- * Model representing article level permissions.
- *
- * @class ArticlePermission
- */
-module.exports = function(sequelize, DataTypes) {
-  const ArticlePermission = sequelize.define('articlePermission', {
-    articleId: {
-      type: DataTypes.INTEGER,
-      primaryKey: true
-    },
-    roleId: {
-      type: DataTypes.INTEGER,
-      primaryKey: true
-    },
-    read: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    create: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    edit: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    rename: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    },
-    delete: {
-      type: DataTypes.BOOLEAN,
-      allowNull: false,
-    }
-  }, {
-    classMethods: {
-      /**
-       * Describes associations.
-       * @method associate
-       * @static
-       * @param {Object} models
-       */
-      associate(models) {
-        ArticlePermission.belongsTo(models.Article, {
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-        });
-        ArticlePermission.belongsTo(models.Role, {
-          onDelete: 'CASCADE',
-          onUpdate: 'CASCADE'
-        });
+const Sequelize = require('sequelize');
+const LibertyModel = require('./LibertyModel');
+const models = require('./');
+
+class ArticlePermission extends LibertyModel {
+  static init(sequelize) {
+    super.init({
+      articleId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
       },
-    }
-  });
-  return ArticlePermission;
-};
+      roleId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+      },
+      read: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      create: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      edit: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      rename: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+      delete: {
+        type: Sequelize.BOOLEAN,
+        allowNull: false,
+      },
+    },
+    {
+      sequelize,
+      modelName: 'redirection',
+    });
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+    this.belongsTo(models.Article, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+    this.belongsTo(models.Role, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+  }
+}
+
+module.exports = ArticlePermission;

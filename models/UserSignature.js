@@ -1,50 +1,46 @@
-/**
- * Provides UserSignature model.
- *
- * @module models
- * @submodule UserSignature
- */
-
 'use strict';
 
-/**
- * Model representing signatures.
- *
- * @class UserSignature
- */
-module.exports = function(sequelize, DataTypes) {
-  const UserSignature = sequelize.define('userSignature', {
-    /**
-     * Owner's id. Used as primary key.
-     *
-     * @property userId
-     * @type Number
-     */
-    userId: {
-      type: DataTypes.INTEGER,
-      primaryKey: true
-    },
-    text: {
-      type: DataTypes.STRING,
-      allowNull: false
-    },
-    treatWikitext: {
-      type: DataTypes.BOOLEAN
-    }
-  }, {
-    classMethods: {
+const Sequelize = require('sequelize');
+const LibertyModel = require('./LibertyModel');
+const models = require('./');
+
+class UserSignature extends LibertyModel {
+  static init(sequelize) {
+    super.init({
       /**
-       * Describes associations.
-       * @method associate
-       * @static
-       * @param {Object} models
+       * Owner's id. Used as primary key.
+       *
+       * @property userId
+       * @type Number
        */
-      associate(models) {
-        UserSignature.belongsTo(models.User, {
-          onDelete: 'CASCADE', onUpdate: 'CASCADE'
-        });
-      }
-    }
-  });
-  return UserSignature;
-};
+      userId: {
+        type: Sequelize.INTEGER,
+        primaryKey: true,
+      },
+      text: {
+        type: Sequelize.STRING,
+        allowNull: false,
+      },
+      treatWikitext: {
+        type: Sequelize.BOOLEAN,
+      },
+    },
+    {
+      sequelize,
+      modelName: 'userSignature',
+    });
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+    this.belongsTo(models.User, {
+      onDelete: 'CASCADE',
+      onUpdate: 'CASCADE',
+    });
+  }
+}
+
+module.exports = UserSignature;

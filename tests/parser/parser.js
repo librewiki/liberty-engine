@@ -16,7 +16,7 @@ const i18next = require('i18next');
 describe('Parser', () => {
   before(async () => {
     i18next.init({
-      debug: true,
+      debug: false,
       lng: 'en',
       fallbackLng: 'en',
       ns: [

@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class RenameLog extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Id of the revision. Used as primary key.
        *
@@ -38,11 +38,7 @@ class RenameLog extends LibertyModel {
         type: Sequelize.STRING,
         allowNull: false,
       },
-    },
-    {
-      sequelize,
-      modelName: 'renameLog',
-    });
+    };
   }
   /**
    * Describes associations.

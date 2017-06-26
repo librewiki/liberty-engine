@@ -4,8 +4,8 @@ const Sequelize = require('sequelize');
 const LibertyModel = require('./LibertyModel');
 
 class UserRoleMap extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       userId: {
         type: Sequelize.INTEGER(11),
         primaryKey: true,
@@ -14,12 +14,12 @@ class UserRoleMap extends LibertyModel {
         type: Sequelize.INTEGER(11),
         primaryKey: true,
       },
-    },
-    {
-      sequelize,
+    };
+  }
+  static getOptions() {
+    return {
       timestamps: false,
-      modelName: 'userRoleMap',
-    });
+    };
   }
 }
 

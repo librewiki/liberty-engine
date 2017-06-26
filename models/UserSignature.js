@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class UserSignature extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Owner's id. Used as primary key.
        *
@@ -24,11 +24,7 @@ class UserSignature extends LibertyModel {
       treatWikitext: {
         type: Sequelize.BOOLEAN,
       },
-    },
-    {
-      sequelize,
-      modelName: 'userSignature',
-    });
+    };
   }
   /**
    * Describes associations.

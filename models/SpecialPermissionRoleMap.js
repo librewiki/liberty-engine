@@ -4,8 +4,8 @@ const Sequelize = require('sequelize');
 const LibertyModel = require('./LibertyModel');
 
 class SpecialPermissionRoleMap extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       specialPermissionId: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -14,12 +14,12 @@ class SpecialPermissionRoleMap extends LibertyModel {
         type: Sequelize.INTEGER,
         primaryKey: true,
       },
-    },
-    {
-      sequelize,
+    };
+  }
+  static getOptions() {
+    return {
       timestamps: false,
-      modelName: 'specialPermissionRoleMap',
-    });
+    };
   }
 }
 

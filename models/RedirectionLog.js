@@ -6,8 +6,8 @@ const models = require('./');
 const CustomDataTypes = require('../src/CustomDataTypes');
 
 class RedirectionLog extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Primary key.
        *
@@ -55,14 +55,14 @@ class RedirectionLog extends LibertyModel {
       },
 
       ipAddress: CustomDataTypes.ipAddress(),
-    },
-    {
-      sequelize,
-      modelName: 'redirectionLog',
+    };
+  }
+  static getOptions() {
+    return {
       indexes: [{
         fields: ['sourceNamespaceId', 'sourceTitle'],
       }],
-    });
+    };
   }
   /**
    * Describes associations.

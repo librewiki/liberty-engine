@@ -6,8 +6,8 @@ const CustomDataTypes = require('../src/CustomDataTypes');
 const models = require('./');
 
 class Revision extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -31,12 +31,12 @@ class Revision extends LibertyModel {
         defaultValue: '',
       },
       ipAddress: CustomDataTypes.ipAddress(),
-    },
-    {
-      sequelize,
+    };
+  }
+  static getOptions() {
+    return {
       updatedAt: false,
-      modelName: 'revision',
-    });
+    };
   }
 
   /**

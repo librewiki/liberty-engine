@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class ArticlePermission extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getOptions() {
+    return {
       articleId: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -35,11 +35,7 @@ class ArticlePermission extends LibertyModel {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },
-    },
-    {
-      sequelize,
-      modelName: 'redirection',
-    });
+    };
   }
   /**
    * Describes associations.

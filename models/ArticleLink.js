@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class ArticleLink extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       destinationNamespaceId: {
         type: Sequelize.INTEGER,
         allowNull: false,
@@ -22,14 +22,14 @@ class ArticleLink extends LibertyModel {
         allowNull: false,
         primaryKey: true,
       },
-    },
-    {
-      sequelize,
-      modelName: 'articleLink',
+    };
+  }
+  static getOptions() {
+    return {
       indexes: [{
         fields: ['sourceArticleId'],
       }],
-    });
+    };
   }
   /**
    * Describes associations.

@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class DiscussionTopic extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Primary key.
        *
@@ -31,12 +31,12 @@ class DiscussionTopic extends LibertyModel {
         allowNull: false,
         defaultValue: 'OPEN',
       },
-    },
-    {
-      sequelize,
+    };
+  }
+  static getOptions() {
+    return {
       paranoid: true,
-      modelName: 'discussionTopic',
-    });
+    };
   }
   /**
    * Describes associations.

@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class SpecialPermission extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -17,11 +17,7 @@ class SpecialPermission extends LibertyModel {
         allowNull: false,
         unique: true,
       },
-    },
-    {
-      sequelize,
-      modelName: 'specialPermission',
-    });
+    };
   }
   /**
    * Describes associations.

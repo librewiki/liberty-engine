@@ -6,8 +6,8 @@ const LibertyModel = require('./LibertyModel');
 const cache = new Map();
 
 class Setting extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       key: {
         type: Sequelize.STRING(120),
         primaryKey: true,
@@ -16,11 +16,7 @@ class Setting extends LibertyModel {
         type: Sequelize.STRING,
         allowNull: false,
       },
-    },
-    {
-      sequelize,
-      modelName: 'setting',
-    });
+    };
   }
 
   static async initialize() {

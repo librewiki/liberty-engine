@@ -13,10 +13,11 @@ const crypto = require('crypto');
 const sendMail = require('../src/sendMail');
 const moment = require('moment');
 const { ACCESS_ADMIN_PANEL } = require('../src/specialPermissionConstants');
+const LibertyModel = require('./LibertyModel');
 
-class User extends Sequelize.Model {
-  static init(sequelize) {
-    super.init({
+class User extends LibertyModel {
+  static getAttributes() {
+    return {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -71,15 +72,15 @@ class User extends Sequelize.Model {
           return this.getDataValue('id') === null;
         },
       },
-    },
-    {
-      sequelize,
-      modelName: 'user',
+    };
+  }
+  static getOptions() {
+    return {
       hooks: {
         beforeCreate: this.hashPasswordHook,
         beforeUpdate: this.hashPasswordHook,
       },
-    });
+    };
   }
   /**
    * Describes associations.

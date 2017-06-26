@@ -39,8 +39,8 @@ UNION ALL
 ORDER BY priority LIMIT 1`;
 
 class Article extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Primary key.
        *
@@ -102,17 +102,16 @@ class Article extends LibertyModel {
         type: Sequelize.INTEGER,
         allowNull: true,
       },
-    },
-    {
-      sequelize,
-      modelName: 'article',
+    };
+  }
+  static getOptions() {
+    return {
       paranoid: true,
       indexes: [{
         fields: ['lowercaseTitle'],
       }],
-    });
+    };
   }
-
   /**
    * Describes associations.
    * @method associate

@@ -7,8 +7,8 @@ const models = require('./');
 const WikitextParser = require('../src/LibertyParser/src/Parser/WikitextParser');
 
 class DiscussionComment extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Primary key.
        *
@@ -38,12 +38,12 @@ class DiscussionComment extends LibertyModel {
         allowNull: false,
         defaultValue: 'PUBLIC',
       },
-    },
-    {
-      sequelize,
+    };
+  }
+  static getOptions() {
+    return {
       paranoid: true,
-      modelName: 'discussionComment',
-    });
+    };
   }
   /**
    * Describes associations.

@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class NamespacePermission extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       namespaceId: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -35,11 +35,7 @@ class NamespacePermission extends LibertyModel {
         type: Sequelize.BOOLEAN,
         allowNull: false,
       },
-    },
-    {
-      sequelize,
-      modelName: 'namespacePermission',
-    });
+    };
   }
   /**
    * Describes associations.

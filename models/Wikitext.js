@@ -9,8 +9,8 @@ const annotRegex = /<!--((?:.|\n)*?)-->/g;
 const moment = require('moment');
 
 class Wikitext extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       id: {
         type: Sequelize.INTEGER,
         primaryKey: true,
@@ -20,11 +20,7 @@ class Wikitext extends LibertyModel {
         type: Sequelize.TEXT('medium'),
         allowNull: false,
       },
-    },
-    {
-      sequelize,
-      modelName: 'wikitext',
-    });
+    };
   }
 
   /**

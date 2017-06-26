@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class Namespace extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       /**
        * Primary key.
        *
@@ -29,11 +29,7 @@ class Namespace extends LibertyModel {
         allowNull: false,
         unique: true,
       },
-    },
-    {
-      sequelize,
-      modelName: 'namespace',
-    });
+    };
   }
   /**
    * Describes associations.

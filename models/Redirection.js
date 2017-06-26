@@ -5,8 +5,8 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class Redirection extends LibertyModel {
-  static init(sequelize) {
-    super.init({
+  static getAttributes() {
+    return {
       sourceNamespaceId: {
         primaryKey: true,
         type: Sequelize.INTEGER,
@@ -32,16 +32,16 @@ class Redirection extends LibertyModel {
         type: Sequelize.INTEGER,
         allowNull: false,
       },
-    },
-    {
-      sequelize,
-      modelName: 'redirection',
+    };
+  }
+  static getOptions() {
+    return {
       indexes: [{
         fields: ['destinationArticleId'],
       }, {
         fields: ['lowercaseSourceTitle'],
       }],
-    });
+    };
   }
   /**
    * Describes associations.

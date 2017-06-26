@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
@@ -8,12 +8,12 @@ class SpecialPermission extends LibertyModel {
   static getAttributes() {
     return {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       name: {
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
         unique: true,
       },

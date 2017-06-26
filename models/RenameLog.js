@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
@@ -14,28 +14,28 @@ class RenameLog extends LibertyModel {
        * @type Number
        */
       revisionId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
 
       oldNamespaceId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
 
       oldTitle: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
 
       newNamespaceId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
 
       newTitle: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
     };

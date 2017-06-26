@@ -1,7 +1,8 @@
 'use strict';
 
-const Sequelize = require('sequelize');
 const LibertyModel = require('./LibertyModel');
+const DataTypes = require('../src/DataTypes');
+const QueryTypes = require('../src/QueryTypes');
 const models = require('./');
 const { articleParser } = require('../src/LibertyParser');
 
@@ -48,7 +49,7 @@ class Article extends LibertyModel {
        * @type Number
        */
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
@@ -60,7 +61,7 @@ class Article extends LibertyModel {
        * @type Number
        */
       namespaceId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         unique: 'article_namespaceId_title_unique',
       },
@@ -72,7 +73,7 @@ class Article extends LibertyModel {
        * @type String
        */
       title: {
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
         unique: 'article_namespaceId_title_unique',
       },
@@ -86,7 +87,7 @@ class Article extends LibertyModel {
        * @type String
        */
       fullTitle: {
-        type: Sequelize.VIRTUAL,
+        type: DataTypes.VIRTUAL,
         get() {
           return models.Namespace.joinNamespaceIdTitle(this.getDataValue('namespaceId'), this.getDataValue('title'));
         },
@@ -99,7 +100,7 @@ class Article extends LibertyModel {
        * @type String
        */
       latestRevisionId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
     };
@@ -141,7 +142,7 @@ class Article extends LibertyModel {
   static findRandomly({ limit = 1 } = {}) {
     return this.sequelize.query(randomQuery, {
       replacements: { limit },
-      type: Sequelize.QueryTypes.SELECT,
+      type: QueryTypes.SELECT,
       model: this,
     });
   }
@@ -159,7 +160,7 @@ class Article extends LibertyModel {
         title,
         lowercaseTitle: title.toLowerCase(),
       },
-      type: Sequelize.QueryTypes.SELECT,
+      type: QueryTypes.SELECT,
     });
     return result;
   }

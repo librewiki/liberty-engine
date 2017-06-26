@@ -1,6 +1,7 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
+
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
@@ -8,17 +9,17 @@ class ArticleLink extends LibertyModel {
   static getAttributes() {
     return {
       destinationNamespaceId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
       },
       destinationTitle: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
       },
       sourceArticleId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         primaryKey: true,
       },

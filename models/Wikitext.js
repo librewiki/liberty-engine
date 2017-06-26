@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 
 const nowikiRegex1 = /\\nowiki\\/g;
@@ -12,12 +12,12 @@ class Wikitext extends LibertyModel {
   static getAttributes() {
     return {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       text: {
-        type: Sequelize.TEXT('medium'),
+        type: DataTypes.TEXT('medium'),
         allowNull: false,
       },
     };

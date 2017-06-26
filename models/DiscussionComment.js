@@ -1,8 +1,7 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
-const CustomDataTypes = require('../src/CustomDataTypes');
 const models = require('./');
 const WikitextParser = require('../src/LibertyParser/src/Parser/WikitextParser');
 
@@ -16,25 +15,25 @@ class DiscussionComment extends LibertyModel {
        * @type Number
        */
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       topicId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       authorId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
       wikitext: {
-        type: Sequelize.TEXT('medium'),
+        type: DataTypes.TEXT('medium'),
         allowNull: false,
       },
-      ipAddress: CustomDataTypes.ipAddress(),
+      ipAddress: DataTypes.ipAddress(),
       status: {
-        type: Sequelize.ENUM('PUBLIC', 'HIDDEN'),
+        type: DataTypes.ENUM('PUBLIC', 'HIDDEN'),
         allowNull: false,
         defaultValue: 'PUBLIC',
       },

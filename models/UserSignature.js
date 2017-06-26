@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
@@ -14,15 +14,15 @@ class UserSignature extends LibertyModel {
        * @type Number
        */
       userId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
       },
       text: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       treatWikitext: {
-        type: Sequelize.BOOLEAN,
+        type: DataTypes.BOOLEAN,
       },
     };
   }

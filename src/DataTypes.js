@@ -1,8 +1,9 @@
 'use strict';
 
 const ip = require('ip');
+const Sequelize = require('sequelize');
 
-module.exports = {
+module.exports = Object.assign({
   ipAddress() {
     return {
       type: 'VARBINARY(16)',
@@ -15,7 +16,7 @@ module.exports = {
           return undefined;
         }
         return ip.toString(this.getDataValue('ipAddress'));
-      }
+      },
     };
   },
-};
+}, Sequelize.DataTypes);

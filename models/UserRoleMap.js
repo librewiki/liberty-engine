@@ -1,17 +1,17 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 
 class UserRoleMap extends LibertyModel {
   static getAttributes() {
     return {
       userId: {
-        type: Sequelize.INTEGER(11),
+        type: DataTypes.INTEGER(11),
         primaryKey: true,
       },
       roleId: {
-        type: Sequelize.INTEGER(11),
+        type: DataTypes.INTEGER(11),
         primaryKey: true,
       },
     };

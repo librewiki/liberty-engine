@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 
 const cache = new Map();
@@ -9,11 +9,11 @@ class Setting extends LibertyModel {
   static getAttributes() {
     return {
       key: {
-        type: Sequelize.STRING(120),
+        type: DataTypes.STRING(120),
         primaryKey: true,
       },
       value: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
     };

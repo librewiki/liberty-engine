@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
@@ -9,13 +9,13 @@ class Redirection extends LibertyModel {
     return {
       sourceNamespaceId: {
         primaryKey: true,
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
 
       sourceTitle: {
         primaryKey: true,
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
       },
 
@@ -29,7 +29,7 @@ class Redirection extends LibertyModel {
       lowercaseSourceTitle: 'VARCHAR(128) AS (lower(`sourceTitle`)) PERSISTENT',
 
       destinationArticleId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
     };

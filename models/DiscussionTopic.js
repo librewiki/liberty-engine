@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
@@ -14,20 +14,20 @@ class DiscussionTopic extends LibertyModel {
        * @type Number
        */
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       articleId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
       title: {
-        type: Sequelize.STRING,
+        type: DataTypes.STRING,
         allowNull: false,
       },
       status: {
-        type: Sequelize.ENUM('OPEN', 'PAUSED', 'CLOSED'),
+        type: DataTypes.ENUM('OPEN', 'PAUSED', 'CLOSED'),
         allowNull: false,
         defaultValue: 'OPEN',
       },

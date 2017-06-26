@@ -1,9 +1,8 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
-const CustomDataTypes = require('../src/CustomDataTypes');
 
 class RedirectionLog extends LibertyModel {
   static getAttributes() {
@@ -15,13 +14,13 @@ class RedirectionLog extends LibertyModel {
        * @type Number
        */
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
 
       type: {
-        type: Sequelize.ENUM('ADD', 'DELETE'),
+        type: DataTypes.ENUM('ADD', 'DELETE'),
         validation: {
           isIn: [['ADD', 'DELETE']],
         },
@@ -29,17 +28,17 @@ class RedirectionLog extends LibertyModel {
       },
 
       sourceNamespaceId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
 
       sourceTitle: {
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
       },
 
       destinationArticleId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
       },
 
@@ -50,11 +49,11 @@ class RedirectionLog extends LibertyModel {
        * @type String
        */
       userId: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: true,
       },
 
-      ipAddress: CustomDataTypes.ipAddress(),
+      ipAddress: DataTypes.ipAddress(),
     };
   }
   static getOptions() {

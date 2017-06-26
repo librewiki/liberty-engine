@@ -1,6 +1,6 @@
 'use strict';
 
-const Sequelize = require('sequelize');
+const DataTypes = require('../src/DataTypes');
 const models = require('./');
 const bcrypt = require('bcrypt');
 
@@ -19,25 +19,25 @@ class User extends LibertyModel {
   static getAttributes() {
     return {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       emailConfirmed: {
-        type: Sequelize.BOOLEAN,
+        type: DataTypes.BOOLEAN,
         allowNull: false,
         defaultValue: false,
       },
       confirmCode: {
-        type: Sequelize.STRING(96),
+        type: DataTypes.STRING(96),
         allowNull: true,
       },
       confirmCodeExpiry: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: true,
       },
       username: {
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: false,
         unique: true,
         validate: {
@@ -46,20 +46,20 @@ class User extends LibertyModel {
         },
       },
       passwordHash: {
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
       },
       password: {
-        type: Sequelize.VIRTUAL,
+        type: DataTypes.VIRTUAL,
         validate: {
           len: [6, 128],
         },
       },
       passwordExpiry: {
-        type: Sequelize.DATE,
+        type: DataTypes.DATE,
         allowNull: true,
       },
       email: {
-        type: Sequelize.STRING(128),
+        type: DataTypes.STRING(128),
         allowNull: true,
         validate: {
           isEmail: true,
@@ -67,7 +67,7 @@ class User extends LibertyModel {
         defaultValue: null,
       },
       isAnonymous: {
-        type: Sequelize.VIRTUAL,
+        type: DataTypes.VIRTUAL,
         get() {
           return this.getDataValue('id') === null;
         },

@@ -1,36 +1,35 @@
 'use strict';
 
-const Sequelize = require('sequelize');
 const LibertyModel = require('./LibertyModel');
-const CustomDataTypes = require('../src/CustomDataTypes');
+const DataTypes = require('../src/DataTypes');
 const models = require('./');
 
 class Revision extends LibertyModel {
   static getAttributes() {
     return {
       id: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         primaryKey: true,
         autoIncrement: true,
       },
       changedLength: {
-        type: Sequelize.INTEGER,
+        type: DataTypes.INTEGER,
         allowNull: false,
         defaultValue: 0,
       },
       type: {
-        type: Sequelize.ENUM('CREATE', 'EDIT', 'RENAME', 'DELETE'),
+        type: DataTypes.ENUM('CREATE', 'EDIT', 'RENAME', 'DELETE'),
         validation: {
           isIn: [['CREATE', 'EDIT', 'RENAME', 'DELETE']],
         },
         allowNull: false,
       },
       summary: {
-        type: Sequelize.STRING(200),
+        type: DataTypes.STRING(200),
         allowNull: false,
         defaultValue: '',
       },
-      ipAddress: CustomDataTypes.ipAddress(),
+      ipAddress: DataTypes.ipAddress(),
     };
   }
   static getOptions() {

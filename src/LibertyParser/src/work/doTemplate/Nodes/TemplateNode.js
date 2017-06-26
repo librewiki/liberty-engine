@@ -1,4 +1,5 @@
 'use strict';
+
 const Node = require('./Node.js');
 const MagicWord = require('../MagicWord');
 const { Namespace } = require('../../.././../../../models');
@@ -30,74 +31,66 @@ class TemplateNode extends Node {
       this.paramChildren.push(nodes);
     }
   }
-  setTitleAndMagicWord(parsingData, option) {
-    return Promise.all(this.titleChildren.map((child) => child.render(parsingData, option)))
-    .then((results) => {
-      let title = results.join('').trim();
-      let magicWord = MagicWord.getMagicWord(title);
-      if (magicWord) {
-        if (magicWord.needColon) {
-          let rest;
-          [title, ...rest] = title.split(':');
-          this.magicWordParams.push(rest.join(':'));
-        }
-      } else {
-        if (title.charAt(0) === ':') {
-          title = title.slice(1);
-        } else if (title.indexOf(':') === -1) {
-          title = Namespace.joinIdTitle(Namespace.StandardNamespaceEnum.TEMPLATE, title);
-        }
+  async setTitleAndMagicWord(parsingData, option) {
+    const results = await Promise.all(
+      this.titleChildren.map(child => child.render(parsingData, option))
+    );
+    let title = results.join('').trim();
+    const magicWord = MagicWord.getMagicWord(title);
+    if (magicWord) {
+      if (magicWord.needColon) {
+        let rest;
+        [title, ...rest] = title.split(':');
+        this.magicWordParams.push(rest.join(':'));
       }
-      this.templateFullTitle = title;
-      this.magicWord = magicWord;
-    });
-  }
-  setParams(parsingData, option) {
-    this.params.push(undefined);
-    return Promise.all(this.paramChildren.map((child) => child.render(parsingData, option)))
-    .then((params) => {
-      for (let param of params) {
-        this.magicWordParams.push(param);
-        const [key, ...rest] =
-        param.split('').reverse().join('').split(/=(?!\\)/)
-          .map(s => s.trim().split('').reverse().join('').replace('\\=', '='))
-        .reverse();
-        if (rest.length) {
-          this.params.set(key, rest.join('='));
-        } else {
-          this.params.push(param);
-        }
-      }
-    });
-  }
-  render(parsingData, option) {
-    if (option.templateRecursionNumber > 4) {
-      return `<span class="error"> template too deep </span>`;
+    } else if (title.charAt(0) === ':') {
+      title = title.slice(1);
+    } else if (title.indexOf(':') === -1) {
+      title = Namespace.joinIdTitle(Namespace.StandardNamespaceEnum.TEMPLATE, title);
     }
-    return this.setTitleAndMagicWord(parsingData, option)
-    .then(() => this.setParams(parsingData, option))
-    .then(() => {
+    this.templateFullTitle = title;
+    this.magicWord = magicWord;
+  }
+  async setParams(parsingData, option) {
+    this.params.push(undefined);
+    const params = await Promise.all(
+      this.paramChildren.map(child => child.render(parsingData, option))
+    );
+    for (const param of params) {
+      this.magicWordParams.push(param);
+      const [key, ...rest] =
+    param.split('').reverse().join('').split(/=(?!\\)/)
+      .map(s => s.trim().split('').reverse().join('').replace('\\=', '='))
+      .reverse();
+      if (rest.length) {
+        this.params.set(key, rest.join('='));
+      } else {
+        this.params.push(param);
+      }
+    }
+  }
+  async render(parsingData, option) {
+    try {
+      if (option.templateRecursionNumber > 4) {
+        return '<span class="error"> template too deep </span>';
+      }
+      await this.setTitleAndMagicWord(parsingData, option);
+      await this.setParams(parsingData, option);
       if (this.magicWord) {
         return this.magicWord.run(parsingData, this.magicWordParams);
-      } else {
-        let [namespaceId, title] = Namespace.splitIntoIdTitle(this.templateFullTitle);
-        parsingData.structureData.link.templates.add({ namespaceId, title });
-        return parsingData.parserSupporter.templateTextGetter.get(this.templateFullTitle);
       }
-    })
-    .then((resultText) => {
-      return doPartial.onlyinclude(resultText, parsingData);
-    })
-    .then((resultText) => {
-      return doXml('onTemplateLoaded', resultText, parsingData);
-    })
-    .then((resultText) => {
-      return doTemplate(resultText, parsingData, {
+      const [namespaceId, title] = Namespace.splitIntoIdTitle(this.templateFullTitle);
+      parsingData.structureData.link.templates.add({ namespaceId, title });
+      let resultText =
+        await parsingData.parserSupporter.templateTextGetter.get(this.templateFullTitle);
+      resultText = await doPartial.onlyinclude(resultText, parsingData);
+      resultText = await doXml('onTemplateLoaded', resultText, parsingData);
+      resultText = await doTemplate(resultText, parsingData, {
         recursionCount: option.templateRecursionNumber + 1,
-        templateParams: this.magicWord? undefined : this.params
+        templateParams: this.magicWord ? undefined : this.params,
       });
-    })
-    .catch((err) => {
+      return resultText;
+    } catch (err) {
       switch (err.name) {
         case 'NoArticleError':
           return `<span class="error"> no such template: ${this.templateFullTitle} </span>`;
@@ -105,7 +98,7 @@ class TemplateNode extends Node {
           console.log(err);
           return '<span class="error"> Error </span>';
       }
-    });
+    }
   }
 }
 TemplateNode.param = class extends Node {

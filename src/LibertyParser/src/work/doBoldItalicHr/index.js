@@ -1,10 +1,8 @@
 'use strict';
-module.exports = function(wikitext) {
-  return Promise.resolve(
-    wikitext
-    .replace(/'''''(.+?)'''''/g, '<strong><em>$1</em></strong>')
-    .replace(/'''(.+?)'''/g, '<strong>$1</strong>')
-    .replace(/''(.+?)''/g, '<em>$1</em>')
-    .replace(/^----+/gm, '<hr>')
-  );
-};
+
+module.exports =
+  async wikitext => wikitext
+    .replace(/'''''(.+?)'''''/ug, '<strong><em>$1</em></strong>')
+    .replace(/'''(.+?)'''/ug, '<strong>$1</strong>')
+    .replace(/''(.+?)''/ug, '<em>$1</em>')
+    .replace(/^----+/ugm, '<hr>');

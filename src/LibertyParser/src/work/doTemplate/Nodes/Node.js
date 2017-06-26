@@ -4,6 +4,7 @@
  */
 
 'use strict';
+
 /**
  * Bass class representing a wiki node
  * @abstract
@@ -38,17 +39,16 @@ class Node {
     }
   }
 
-  renderChildren(parsingData, option) {
-    return Promise.all(this.children.map(child => child.render(parsingData, option)))
-    .then((results) => {
-      return results.join('');
-    });
+  async renderChildren(parsingData, option) {
+    const results = await Promise.all(
+      this.children.map(child => child.render(parsingData, option))
+    );
+    return results.join('');
   }
 
   static indent(str) {
-    return str.split('\n').map(line => '\t' + line).join('\n');
+    return str.split('\n').map(line => `  ${line}`).join('\n');
   }
 }
-
 
 module.exports = Node;

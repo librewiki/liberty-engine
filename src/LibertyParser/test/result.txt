@@ -1,4 +1,5 @@
 <p>
-<a class="external" href="magnet:www.asdf">1</a>
-<a class="external" href="//www.asdf.com">//www.asdf.com</a>
+    <a class="external" href="magnet:www.asdf">0</a>
+    <a class="external" href="//www.asdf.com">//www.asdf.com</a>
+    <a class="new">wikipedia:asdf</a>
 </p>

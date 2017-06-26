@@ -1,22 +1,21 @@
 'use strict';
+
 const MagicWord = require('../');
 
 new MagicWord('#if', true, (parsingData,
   [testString = '', ifNotEmpty = '', ifEmpty = '']) => {
   if (testString) {
     return ifNotEmpty;
-  } else {
-    return ifEmpty;
   }
+  return ifEmpty;
 });
 
 new MagicWord('#ifeq', true, (parsingData,
   [str1 = '', str2 = '', ifSame = '', ifDifferent = '']) => {
   if (str1 === str2) {
     return ifSame;
-  } else {
-    return ifDifferent;
   }
+  return ifDifferent;
 });
 
 /* escape = sign in {{#switch}} */
@@ -28,9 +27,9 @@ new MagicWord('#switch', true, (parsingData,
   let defaultValue = '';
   for (let i = 0; i < cases.length; i++) {
     const [key, ...rest] =
-    cases[i].split('').reverse().join('').split(/=(?!\\)/)
+    cases[i].split('').reverse().join('').split(/=(?!\\)/u)
       .map(s => s.trim().split('').reverse().join('').replace('\\=', '='))
-    .reverse();
+      .reverse();
     const value = rest.join('=');
     if (key === '#default') {
       defaultValue = value;

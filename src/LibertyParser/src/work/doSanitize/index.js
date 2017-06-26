@@ -3,7 +3,7 @@
 const sanitizeHtml = require('sanitize-html');
 const cheerio = require('cheerio');
 
-const styleRegex = /expression|filter|accelerator|-o-link|-o-link-source|-o-replace|url|image|image-set/i;
+const styleRegex = /expression|filter|accelerator|-o-link|-o-link-source|-o-replace|url|image|image-set/ui;
 
 const allowedTags = [
   'a', 'img', 'abbr', 'b', 'bdi', 'bdo', 'big', 'blockquote', 'br',
@@ -13,11 +13,11 @@ const allowedTags = [
   'rb', 'rp', 'rt', 'rtc', 'ruby', 's', 'samp', 'small',
   'strong', 'sub', 'sup', 'span', 'table', 'td', 'th', 'time',
   'tr', 'tt', 'u', 'ul', 'var', 'wbr',
-  'nowiki'
+  'nowiki',
 ];
 
 const allowedAttributes = {
-  '*' : ['id', 'class', 'style'],
+  '*': ['id', 'class', 'style'],
   table: ['align'],
   caption: ['align'],
   tr: ['align'],
@@ -25,12 +25,12 @@ const allowedAttributes = {
   th: ['colspan', 'rowspan', 'align'],
   a: ['href', 'title'],
   sup: ['title'],
-  img: ['src']
+  img: ['src'],
 };
 
 const allowedSchemes = [
   'http', 'https', 'ftp', 'sftp', 'gopher', 'telnet',
-  'news', 'mailto', 'ed2k', 'irc', 'ssh', 'magnet'
+  'news', 'mailto', 'ed2k', 'irc', 'ssh', 'magnet',
 ];
 
 
@@ -38,22 +38,22 @@ const sanitizeOption = {
   allowedTags,
   allowedAttributes,
   selfClosing: [
-    'img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta'
+    'img', 'br', 'hr', 'area', 'base', 'basefont', 'input', 'link', 'meta',
   ],
   allowedSchemes,
-  allowedSchemesByTag: {}
+  allowedSchemesByTag: {},
 };
 
-module.exports = function(wikitext, parsingData) {
-  let text = sanitizeHtml(wikitext.replace(/<p>\s*<\/p>/g, ''), sanitizeOption);
-  let $ = cheerio.load(text, { decodeEntities: false, recognizeSelfClosing: true });
-  $('[style]').each(function() {
+module.exports = (wikitext) => {
+  const text = sanitizeHtml(wikitext.replace(/<p>\s*<\/p>/g, ''), sanitizeOption);
+  const $ = cheerio.load(text, { decodeEntities: false, recognizeSelfClosing: true });
+  $('[style]').each(function a() {
     if (styleRegex.test($(this).attr('style'))) {
       $(this).attr('style', '/* insecure input */');
     }
   });
-  $('p > div').each(function() {
-    let $div = $(this).parent();
+  $('p > div').each(function a() {
+    const $div = $(this).parent();
     $div.replaceWith($div.html());
   });
   return $.html();

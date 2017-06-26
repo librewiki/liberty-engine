@@ -4,6 +4,7 @@
  */
 
 'use strict';
+
 const Node = require('./Node.js');
 
 class TextNode extends Node {

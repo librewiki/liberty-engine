@@ -100,6 +100,12 @@ class Namespace extends LibertyModel {
    * @return {Object} returns object { namespace, title }
    */
   static splitFullTitle(fullTitle) {
+    if (!fullTitle.includes(':')) {
+      return {
+        namespace: this.getById(0),
+        title: fullTitle,
+      };
+    }
     const [first, ...rest] = fullTitle.split(':');
     const namespace = this.getByName(first);
     if (namespace) {
@@ -116,7 +122,7 @@ class Namespace extends LibertyModel {
 
   /**
    * Returns full title from namespace id and title
-   * @method splitFullTitle
+   * @method joinNamespaceIdTitle
    * @static
    * @param {Number} id namespace id.
    * @param {String} title title.

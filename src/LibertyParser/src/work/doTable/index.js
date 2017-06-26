@@ -1,14 +1,12 @@
 'use strict';
 
 const tableFindRegex = /\n{\|(?:(?:.|\n)+?)\n\|}/g;
-module.exports = function(wikitext, parsingData) {
-  let result = wikitext.replace(tableFindRegex, ($0) => {
-    return new Table($0).render();
-  });
-  return Promise.resolve(result);
+module.exports = async (wikitext) => {
+  const result = wikitext.replace(tableFindRegex, $0 => new Table($0).render());
+  return result;
 };
 
-const attrRegex = /(class|style|align|colspan|rowspan)=\"(.+?)\"/gi;
+const attrRegex = /(class|style|align|colspan|rowspan)="(.+?)"/ugi;
 
 class TableElement {
   constructor() {
@@ -17,10 +15,9 @@ class TableElement {
 
   renderAttributes() {
     if (this.attrs.length) {
-      return ' ' + this.attrs.join(' ');
-    } else {
-      return '';
+      return ` ${this.attrs.join(' ')}`;
     }
+    return '';
   }
 
   setAttributes(text) {
@@ -32,11 +29,10 @@ class TableElement {
 }
 
 
-
 class Table extends TableElement {
   constructor(text) {
     super();
-    let lines = text.trim().split('\n');
+    const lines = text.trim().split('\n');
     this.rows = [];
     this.pretext = '';
     this.setAttributes(lines[0].slice(2));
@@ -67,13 +63,12 @@ class Table extends TableElement {
 
       if (line.startsWith('|') || line.startsWith('!')) {
         splitPushCells(line, lastRow.cells);
-        return;
       } else {
-        let lastCell = lastRow.cells[lastRow.cells.length - 1];
+        const lastCell = lastRow.cells[lastRow.cells.length - 1];
         if (!lastCell) {
-          this.pretext += '\n' + line;
+          this.pretext += `\n${line}`;
         } else {
-          lastRow.cells[lastRow.cells.length - 1].text += ('\n' + line);
+          lastRow.cells[lastRow.cells.length - 1].text += (`\n${line}`);
         }
       }
     });
@@ -81,30 +76,28 @@ class Table extends TableElement {
 
   render() {
     return `</p>${this.pretext}
-<table${this.renderAttributes()}>${this.caption? '\n' + this.caption.render() : ''}
+<table${this.renderAttributes()}>${this.caption ? `\n${this.caption.render()}` : ''}
 ${this.rows.filter(row => row.cells.length).map(row => row.render()).join('\n')}
 </table>
 <p>`;
   }
-
 }
 
 function splitPushCells(line, cells) {
-  let match = line.match(/\|\||!!/);
+  const match = line.match(/\|\||!!/u);
   if (match) {
-    let idx = match.index;
+    const idx = match.index;
     cells.push(new Cell(line.slice(0, idx)));
     return splitPushCells(line.slice(idx + 1), cells);
-  } else {
-    cells.push(new Cell(line));
   }
+  cells.push(new Cell(line));
 }
 
 
 class Caption extends TableElement {
   constructor(line) {
     super();
-    let pipeIdx = line.indexOf('|');
+    const pipeIdx = line.indexOf('|');
     if (pipeIdx !== -1) {
       this.setAttributes(line.slice(2), pipeIdx);
       this.text = line.slice(pipeIdx + 1).trim();
@@ -134,7 +127,7 @@ class Cell extends TableElement {
   constructor(line) {
     super();
     this.tag = line[0] === '|' ? 'td' : 'th';
-    let pipeIdx = line.indexOf('|', 1);
+    const pipeIdx = line.indexOf('|', 1);
     if (pipeIdx !== -1) {
       this.setAttributes(line.slice(1), pipeIdx);
       this.text = line.slice(pipeIdx + 1).trim();

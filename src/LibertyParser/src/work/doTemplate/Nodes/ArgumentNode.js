@@ -1,4 +1,5 @@
 'use strict';
+
 const Node = require('./Node.js');
 
 class ArgumentNode extends Node {
@@ -31,35 +32,31 @@ class ArgumentNode extends Node {
     }
   }
 
-  setArg(parsingData, option) {
-    return Promise.all(this.argChildren.map((child) => child.render(parsingData, option)))
-    .then((results) => {
-      this.argNameNoTrim = results.join('');
-      this.argName = this.argNameNoTrim.trim();
-    });
+  async setArg(parsingData, option) {
+    const results = await Promise.all(
+      this.argChildren.map(child => child.render(parsingData, option))
+    );
+    this.argNameNoTrim = results.join('');
+    this.argName = this.argNameNoTrim.trim();
   }
 
-  setDefault(parsingData, option) {
+  async setDefault(parsingData, option) {
     if (this.defaultChildren !== null) {
-      return Promise.all(this.defaultChildren.map((child) => child.render(parsingData, option)))
-      .then((results) => {
-        this.defaultText = results.join('');
-      });
-    } else {
-      this.defaultText = `{{{${this.argNameNoTrim}}}}`;
+      const results = await Promise.all(
+        this.defaultChildren.map(child => child.render(parsingData, option))
+      );
+      this.defaultText = results.join('');
     }
+    this.defaultText = `{{{${this.argNameNoTrim}}}}`;
   }
 
-  render(parsingData, option) {
-    return this.setArg(parsingData, option)
-    .then(() => this.setDefault(parsingData, option))
-    .then(() => {
-      if (option.templateParams.get(this.argName)) {
-        return option.templateParams.get(this.argName);
-      } else {
-        return this.defaultText;
-      }
-    });
+  async render(parsingData, option) {
+    await this.setArg(parsingData, option);
+    await this.setDefault(parsingData, option);
+    if (option.templateParams.get(this.argName)) {
+      return option.templateParams.get(this.argName);
+    }
+    return this.defaultText;
   }
 }
 module.exports = ArgumentNode;

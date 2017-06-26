@@ -3,6 +3,7 @@
  */
 
 'use strict';
+
 const Node = require('./Node.js');
 
 class RootNode extends Node {

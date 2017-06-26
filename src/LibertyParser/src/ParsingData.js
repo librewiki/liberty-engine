@@ -18,7 +18,7 @@ class ParsingData {
         title: '(root)',
         relativeLevel: -1,
         absoluteLevel: -1,
-        subsections: []
+        subsections: [],
       },
       tocSerialNumber: 0,
       numOfHeadings: 0,
@@ -30,7 +30,7 @@ class ParsingData {
         interwikis: new Set(),
       },
       numOfExternalLinks: 0,
-      templateRecursionNumber: 0
+      templateRecursionNumber: 0,
     };
   }
 }

@@ -1,4 +1,5 @@
 'use strict';
+
 class ArrayMap extends Map {
   constructor(...args) {
     super(args);
@@ -7,14 +8,13 @@ class ArrayMap extends Map {
   get(key) {
     if (typeof key === 'number') {
       return super.get(String(key));
-    } else {
-      return super.get(key);
     }
+    return super.get(key);
   }
   push(...values) {
     for (const value of values) {
       this.set(String(this.numOfNumbered), value);
-      this.numOfNumbered++;
+      this.numOfNumbered += 1;
     }
     return this.numOfNumbered;
   }

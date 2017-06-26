@@ -15,9 +15,8 @@ new MagicWord('#ifexpr', true, (parsingData,
   try {
     if (math.eval(expression)) {
       return ifTrue;
-    } else {
-      return ifFalse;
     }
+    return ifFalse;
   } catch (e) {
     return `<span class="error"> ${e} </span>`;
   }

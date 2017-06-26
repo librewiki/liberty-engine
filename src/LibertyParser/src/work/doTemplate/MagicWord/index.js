@@ -3,7 +3,7 @@
 
 class MagicWord {
   constructor(key, needColon, func) {
-    list.set(key, this);
+    MagicWord.list.set(key, this);
     this.key = key;
     this.needColon = needColon;
     this.func = func;
@@ -11,21 +11,24 @@ class MagicWord {
   }
 
   run(parsingData, params) {
-    return this.func(parsingData, params.map(p => p ? p.trim() : p)) ;
+    return this.func(parsingData, params.map(p => (p ? p.trim() : p)));
   }
 
   static getMagicWord(fullTitle) {
-    let splited = fullTitle.split(':')[0].trim();
-    if (list.get(splited) && fullTitle.indexOf(':') !== -1 && list.get(splited).needColon && list.get(splited).enabled) {
-      return list.get(splited);
-    } else if (list.get(fullTitle) && !list.get(fullTitle).needColon && list.get(fullTitle).enabled) {
-      return list.get(fullTitle);
-    } else {
-      return null;
+    const splited = fullTitle.split(':')[0].trim();
+    if (this.list.get(splited) && fullTitle.indexOf(':') !== -1 && this.list.get(splited).needColon && this.list.get(splited).enabled) {
+      return this.list.get(splited);
+    } else if (
+      this.list.get(fullTitle) &&
+      !this.list.get(fullTitle).needColon &&
+      this.list.get(fullTitle).enabled
+    ) {
+      return this.list.get(fullTitle);
     }
+    return null;
   }
 }
-const list = MagicWord.list = new Map();
+MagicWord.list = new Map();
 module.exports = MagicWord;
 require('./src/date');
 require('./src/format');

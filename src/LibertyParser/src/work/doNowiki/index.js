@@ -2,27 +2,25 @@
 
 const doXml = require('../doXml');
 
+function hook($item, parsingData) {
+  const id = Math.random();
+  parsingData.structureData.nowikiTexts[id] = `<nowiki>${$item.html().replace(/</ug, '&lt;').replace(/>/ug, '&gt;')}</nowiki>`;
+  return `\\nowiki\\_${id}_\\nowiki\\`;
+}
+
 doXml.set({
   type: 'beforeParsing',
   selector: 'nowiki',
-  hook: hook
+  hook,
 });
 
 doXml.set({
   type: 'onTemplateLoaded',
   selector: 'nowiki',
-  hook: hook
+  hook,
 });
 
-function hook($item, parsingData) {
-  let id = Math.random();
-  parsingData.structureData.nowikiTexts[id] = `<nowiki>${$item.html().replace(/</g, '&lt;').replace(/>/g, '&gt;')}</nowiki>`;
-  return `\\nowiki\\_${id}_\\nowiki\\`;
-}
-
-module.exports.restore = function(wikitext, parsingData) {
-  let result = wikitext.replace(/\\nowiki\\_(0\.\d+)_\\nowiki\\/g, ($0, $1) => {
-    return parsingData.structureData.nowikiTexts[$1];
-  });
+module.exports.restore = (wikitext, parsingData) => {
+  const result = wikitext.replace(/\\nowiki\\_(0\.\d+)_\\nowiki\\/ug, ($0, $1) => parsingData.structureData.nowikiTexts[$1]);
   return Promise.resolve(result);
 };

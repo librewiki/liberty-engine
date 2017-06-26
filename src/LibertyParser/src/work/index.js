@@ -13,27 +13,26 @@ const doTemplate = require('./doTemplate');
 const doSanitize = require('./doSanitize');
 const beautifyHtml = require('js-beautify').html;
 require('./doPartial');
-module.exports = function(wikitext, parsingData) {
-  return Promise.resolve('\n' + wikitext.trim().replace(/\r\n|\r/g, '\n') + '\n')
-  .then((intermediate) => doXml('beforeParsing', intermediate, parsingData))
-  .then((intermediate) => doXml('afterNowiki', intermediate, parsingData))
-  .then((intermediate) => doTemplate(intermediate, parsingData))
-  .then((intermediate) => doParagraph(intermediate, parsingData))
-  .then((intermediate) => doHeading(intermediate, parsingData))
-  .then((intermediate) => doTableOfContents(intermediate, parsingData))
-  .then((intermediate) => doTable(intermediate, parsingData))
-  .then((intermediate) => doLink(intermediate, parsingData))
-  .then((intermediate) => doBoldItalicHr(intermediate, parsingData))
-  .then((intermediate) => doList(intermediate, parsingData))
-  .then((intermediate) => doXml('afterParsing', intermediate, parsingData))
-  .then((intermediate) => doNowiki.restore(intermediate, parsingData))
-  .then((intermediate) => doSanitize(intermediate, parsingData))
-  .then((intermediate) => beautifyHtml(intermediate.trim()))
-  .then((html) => {
-    return {
-      html: html,
-      fullTitle: parsingData.articleMetadata.fullTitle,
-      link: parsingData.structureData.link
-    };
-  });
+
+module.exports = async (wikitext, parsingData) => {
+  let intermediate = `\n${wikitext.trim().replace(/\r\n|\r/ug, '\n')}\n`;
+  intermediate = await doXml('beforeParsing', intermediate, parsingData);
+  intermediate = await doXml('afterNowiki', intermediate, parsingData);
+  intermediate = await doTemplate(intermediate, parsingData);
+  intermediate = await doParagraph(intermediate, parsingData);
+  intermediate = await doHeading(intermediate, parsingData);
+  intermediate = await doTableOfContents(intermediate, parsingData);
+  intermediate = await doTable(intermediate, parsingData);
+  intermediate = await doLink(intermediate, parsingData);
+  intermediate = await doBoldItalicHr(intermediate, parsingData);
+  intermediate = await doList(intermediate, parsingData);
+  intermediate = await doXml('afterParsing', intermediate, parsingData);
+  intermediate = await doNowiki.restore(intermediate, parsingData);
+  intermediate = await doSanitize(intermediate, parsingData);
+  const html = await beautifyHtml(intermediate.trim());
+  return {
+    html,
+    fullTitle: parsingData.articleMetadata.fullTitle,
+    link: parsingData.structureData.link,
+  };
 };

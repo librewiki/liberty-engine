@@ -14,7 +14,9 @@ const specialPermissionConstants = require('../src/specialPermissionConstants');
 const sequelize = new Sequelize(
   dbConfig.database,
   dbConfig.username,
-  dbConfig.password, {
+  dbConfig.password,
+  {
+    logging: env === 'development',
     port: dbConfig.port,
     dialect: dbConfig.dialect,
     charset: dbConfig.charset,

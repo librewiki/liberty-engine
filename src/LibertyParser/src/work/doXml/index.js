@@ -6,24 +6,24 @@ const parserHookMap = {
   beforeParsing: new Map(),
   onTemplateLoaded: new Map(),
   afterNowiki: new Map(),
-  afterParsing: new Map()
+  afterParsing: new Map(),
 };
 
-
-module.exports = function(type, wikitext, parsingData) {
-  let $ = cheerio.load(wikitext, { decodeEntities: false, recognizeSelfClosing: true });
-  let promises = [];
-  for (let [selector, hookFunction] of parserHookMap[type]) {
-    let $items = $(selector);
+module.exports = async (type, wikitext, parsingData) => {
+  const $ = cheerio.load(wikitext, { decodeEntities: false, recognizeSelfClosing: true });
+  const promises = [];
+  for (const [selector, hookFunction] of parserHookMap[type]) {
+    const $items = $(selector);
     promises.push(
       Promise
-      .all($items.toArray().map(($item) => hookFunction($($item), parsingData)))
-      .then((results) => {
-        $items.replaceWith((i) => results[i]);
-      })
+        .all($items.toArray().map($item => hookFunction($($item), parsingData)))
+        .then((results) => {
+          $items.replaceWith(i => results[i]);
+        })
     );
   }
-  return Promise.all(promises).then(() => $.html());
+  await Promise.all(promises);
+  return $.html();
 };
 
 /**
@@ -31,6 +31,4 @@ module.exports = function(type, wikitext, parsingData) {
  * @param {string} selector
  * @param {function} hook
  */
-module.exports.set = function({ type, selector, hook }) {
-  return parserHookMap[type].set(selector, hook);
-};
+module.exports.set = ({ type, selector, hook }) => parserHookMap[type].set(selector, hook);

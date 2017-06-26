@@ -1,6 +1,6 @@
 {
   "parserOptions": {
-    "ecmaVersion": 6,
+    "ecmaVersion": 8,
     "sourceType": "script"
   },
   "env": {
@@ -8,22 +8,36 @@
     "es6": true,
     "mocha": true
   },
-  "globals": {
-  },
   "rules": {
-    "semi" : [2],
-    "prefer-arrow-callback" : [2],
-    "arrow-spacing": [2, {"before": true, "after": true}],
-    "space-before-function-paren": [2, "never"],
-    "no-confusing-arrow": [1],
-    "no-unused-vars": [1, {"argsIgnorePattern": "req|res|next|err|lexeme|params|parsingData", "varsIgnorePattern": "should"}],
+    "no-unused-vars": [2, {
+      "argsIgnorePattern": "req|res|next|err",
+    }],
+    "no-param-reassign": [0],
+    "no-restricted-syntax": [
+      "error",
+      {
+        "selector": "ForInStatement",
+        "message": "for..in loops iterate over the entire prototype chain, which is virtually never what you want. Use Object.{keys,values,entries}, and iterate over the resulting array.",
+      },
+      {
+        "selector": "LabeledStatement",
+        "message": "Labels are a form of GOTO; using them makes code confusing and hard to maintain and understand.",
+      },
+      {
+        "selector": "WithStatement",
+        "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize.",
+      },
+    ],
+    "comma-dangle": ["error", {
+      "arrays": "always-multiline",
+      "objects": "always-multiline",
+      "imports": "always-multiline",
+      "exports": "always-multiline",
+      "functions": "never",
+    }],
     "no-console": [0],
-    "brace-style": [2],
-    "camelcase": [0],
-    "keyword-spacing": [2],
-    "eqeqeq": [2],
-    "space-before-blocks": [2],
-    "strict": [2]
+    "no-await-in-loop": [0],
+    "no-shadow": [0]
   },
-  "extends": "eslint:recommended"
+  "extends": "airbnb-base"
 }

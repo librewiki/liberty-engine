@@ -20,7 +20,7 @@
   "dependencies": {
     "bcrypt": "^1.0.2",
     "body-parser": "^1.17.2",
-    "cheerio": "^1.0.0-rc.1",
+    "cheerio": "0.22.0",
     "cors": "^2.8.3",
     "debug": "^2.6.8",
     "express": "^4.15.3",

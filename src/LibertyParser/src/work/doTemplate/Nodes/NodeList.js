@@ -4,9 +4,10 @@
  */
 
 'use strict';
+
 module.exports.default = {
   RootNode: require('./RootNode.js'),
   TemplateNode: require('./TemplateNode'),
   ArgumentNode: require('./ArgumentNode'),
-  TextNode: require('./TextNode.js')
+  TextNode: require('./TextNode.js'),
 };

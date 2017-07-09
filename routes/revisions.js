@@ -1,29 +1,43 @@
 'use strict';
 
 const express = require('express');
+
 const router = express.Router();
-const { Revision } = require(global.rootdir + '/models');
-const Response = require(global.rootdir + '/src/responses');
+
+const { Revision } = require('../models');
+const Response = require('../src/responses');
 
 router.get('/',
   async (req, res, next) => {
     try {
-      const revisions = await Revision.findAll({
-        include: [Revision.associations.author, Revision.associations.article],
-        limit: 10,
-        order: [['id', 'DESC']],
-      });
-      const result = revisions.map((revision) => {
-        return {
-          id: revision.id,
-          changedLength: revision.changedLength,
-          createdAt: revision.createdAt,
-          articleFullTitle: revision.article.fullTitle,
-          summary: revision.summary,
-          authorName: revision.author? revision.author.username : null,
-          ipAddress: revision.author? null : revision.ipAddress,
-        };
-      });
+      let limit = parseInt(req.query.limit, 10) || 10;
+      const offset = req.query.offset || 0;
+      const distinct = req.query.distinct === '1';
+      if (limit > 50) {
+        limit = 50;
+      }
+      let revisions;
+      if (distinct) {
+        revisions = Revision.getRecentDistinctRevisions({
+          limit,
+        });
+      } else {
+        revisions = await Revision.findAll({
+          include: [Revision.associations.author, Revision.associations.article],
+          limit,
+          offset,
+          order: [['id', 'DESC']],
+        });
+      }
+      const result = revisions.map(revision => ({
+        id: revision.id,
+        changedLength: revision.changedLength,
+        createdAt: revision.createdAt,
+        articleFullTitle: revision.article.fullTitle,
+        summary: revision.summary,
+        authorName: revision.author ? revision.author.username : null,
+        ipAddress: revision.author ? null : revision.ipAddress,
+      }));
       new Response.Success({ revisions: result }).send(res);
     } catch (err) {
       next(err);
@@ -37,8 +51,8 @@ router.get('/:revisionId',
       const revision = await Revision.findById(req.params.revisionId, {
         include: [
           Revision.associations.author,
-          Revision.associations.wikitext
-        ]
+          Revision.associations.wikitext,
+        ],
       });
       if (!revision) {
         return new Response.ResourceNotFound().send(res);
@@ -49,13 +63,13 @@ router.get('/:revisionId',
           changedLength: revision.changedLength,
           createdAt: revision.createdAt,
           summary: revision.summary,
-          authorName: revision.author? revision.author.username : null,
-          ipAddress: revision.author? null : revision.ipAddress,
-          wikitext: revision.wikitext.text
-        }
+          authorName: revision.author ? revision.author.username : null,
+          ipAddress: revision.author ? null : revision.ipAddress,
+          wikitext: revision.wikitext.text,
+        },
       }).send(res);
     } catch (err) {
-      next(err);
+      return next(err);
     }
   }
 );

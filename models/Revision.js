@@ -12,6 +12,10 @@ class Revision extends LibertyModel {
         primaryKey: true,
         autoIncrement: true,
       },
+      articleId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
       changedLength: {
         type: DataTypes.INTEGER,
         allowNull: false,
@@ -47,9 +51,7 @@ class Revision extends LibertyModel {
     this.belongsTo(models.Wikitext, {
       foreignKey: { allowNull: true },
     });
-    this.belongsTo(models.Article, {
-      foreignKey: { allowNull: false },
-    });
+    this.belongsTo(models.Article);
     this.belongsTo(models.User, {
       as: 'author',
       foreignKey: { allowNull: true },
@@ -58,6 +60,16 @@ class Revision extends LibertyModel {
       onDelete: 'CASCADE', onUpdate: 'CASCADE',
     });
   }
+
+  static async initialize() {
+    this.caches = [];
+    const revisions = await this.findAll({
+      limit: 50,
+      order: [['id', 'DESC']],
+    });
+    revisions.forEach(rev => this.insertCache(rev.id));
+  }
+
   /**
    * Create a new revision and make it latest revision of an article.
    * @method createNew
@@ -164,9 +176,33 @@ class Revision extends LibertyModel {
       await article.update({
         latestRevisionId: newRevision.id,
       }, { transaction });
+      await this.insertCache(newRevision.id);
       return newRevision;
     });
   }
+  static getRecentDistinctRevisions({ limit = 50 }) {
+    return this.caches.slice(0, limit);
+  }
+  static async insertCache(revisionId) {
+    const revision = await Revision.findById(revisionId, {
+      include: [Revision.associations.author, Revision.associations.article],
+    });
+    let dupl;
+    for (let i = 0; i < this.caches.length; i += 1) {
+      if (this.caches[i].articleId === revision.articleId) {
+        dupl = i;
+      }
+    }
+    if (dupl !== undefined) {
+      this.caches.splice(dupl);
+    }
+    this.caches.unshift(revision);
+    if (this.caches.length > 50) {
+      this.caches.length = 50;
+    }
+  }
 }
+
+Revision.caches = [];
 
 module.exports = Revision;

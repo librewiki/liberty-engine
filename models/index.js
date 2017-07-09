@@ -73,6 +73,7 @@ models.initialize = async () => {
   await models.Setting.initialize();
   await models.SpecialPermission.initialize();
   await models.Role.initialize();
+  await models.Revision.initialize();
 };
 
 models.setDefaultInstances = async () => {

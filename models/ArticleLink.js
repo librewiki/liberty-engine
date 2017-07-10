@@ -1,7 +1,6 @@
 'use strict';
 
 const DataTypes = require('../src/DataTypes');
-
 const LibertyModel = require('./LibertyModel');
 const models = require('./');
 

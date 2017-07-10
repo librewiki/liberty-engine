@@ -1,11 +1,12 @@
 'use strict';
 
 const express = require('express');
+
 const router = express.Router();
 
-const { Role } = require(global.rootdir + '/models');
-const Response = require(global.rootdir + '/src/responses');
-const middlewares = require(global.rootdir + '/src/middlewares');
+const { Role } = require('../models');
+const Response = require('../src/responses');
+const middlewares = require('../src/middlewares');
 
 router.get('/', middlewares.userShouldHaveAnyRole(['sysop']),
   async (req, res, next) => {

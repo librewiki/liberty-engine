@@ -1,21 +1,21 @@
 'use strict';
+
 const path = require('path');
 
-module.exports = function(express, app) {
-  const index = require(global.rootdir + '/routes/index');
-  const users = require(global.rootdir + '/routes/users');
-  const authentication = require(global.rootdir + '/routes/authentication');
-  const recentChanges = require(global.rootdir + '/routes/recent-changes');
-  const siteNotice = require(global.rootdir + '/routes/site-notice');
-  const frontPage = require(global.rootdir + '/routes/front-page');
-  const articles = require(global.rootdir + '/routes/articles');
-  const namespaces = require(global.rootdir + '/routes/namespaces');
-  const roles = require(global.rootdir + '/routes/roles');
-  const revisions = require(global.rootdir + '/routes/revisions');
-  const mailConfirm = require(global.rootdir + '/routes/mail-confirm');
-  const preview = require(global.rootdir + '/routes/preview');
+module.exports = (express, app) => {
+  const index = require('../routes/index');
+  const users = require('../routes/users');
+  const authentication = require('../routes/authentication');
+  const siteNotice = require('../routes/site-notice');
+  const frontPage = require('../routes/front-page');
+  const articles = require('../routes/articles');
+  const namespaces = require('../routes/namespaces');
+  const roles = require('../routes/roles');
+  const revisions = require('../routes/revisions');
+  const mailConfirm = require('../routes/mail-confirm');
+  const preview = require('../routes/preview');
 
-  app.use('/swagger\.json', express.static(path.join(global.rootdir, './docs/swagger.json')));
+  app.use('/swagger.json', express.static(path.join(global.rootdir, './docs/swagger.json')));
   app.use('/swagger-ui', express.static(path.join(global.rootdir, './node_modules/swagger-ui/dist')));
   app.use('/swagger', (req, res) => {
     res.redirect('/swagger-ui?url=/swagger.json');
@@ -23,7 +23,6 @@ module.exports = function(express, app) {
   app.use('/', index);
   app.use('/users', users);
   app.use('/authentication', authentication);
-  app.use('/recent-changes', recentChanges);
   app.use('/site-notice', siteNotice);
   app.use('/front-page', frontPage);
   app.use('/articles', articles);

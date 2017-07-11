@@ -1,8 +1,9 @@
 'use strict';
+
 const Response = require('./responses');
 
 function permission(permission) {
-  return async function(req, res, next) {
+  return async function f(req, res, next) {
     try {
       if (await req.user.hasSpecialPermissionTo(permission)) {
         next();
@@ -16,7 +17,7 @@ function permission(permission) {
 }
 
 function userShouldHaveAnyRole(roleNames) {
-  return async function(req, res, next) {
+  return async function f(req, res, next) {
     try {
       if (await req.user.hasAnyRole(roleNames)) {
         next();

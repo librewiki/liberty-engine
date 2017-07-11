@@ -1,11 +1,12 @@
 'use strict';
 
 const express = require('express');
-const router = express.Router();
-const { User } = require(global.rootdir + '/models');
-const Response = require(global.rootdir + '/src/responses');
-const middlewares = require(global.rootdir + '/src/middlewares');
-const { GET_USER_LIST } = require(global.rootdir + '/src/specialPermissionConstants');
+
+const router = express.Router({ mergeParams: true });
+const { User } = require('../../models');
+const Response = require('../../src/responses');
+const middlewares = require('../../src/middlewares');
+const { GET_USER_LIST } = require('../../src/specialPermissionConstants');
 
 router.get('/',
   middlewares.permission(GET_USER_LIST),
@@ -15,12 +16,20 @@ router.get('/',
       if (req.query.startsWith) {
         where = {
           username: {
-            $like: `${req.query.startsWith}%`
-          }
+            $like: `${req.query.startsWith}%`,
+          },
+        };
+      }
+      if (req.query.username) {
+        where = {
+          username: req.query.username,
         };
       }
       const users = await User.findAll({
         attributes: ['id', 'username', 'email'],
+        include: [{
+          association: User.associations.roles,
+        }],
         where,
       });
       new Response.Success({ users }).send(res);
@@ -36,18 +45,22 @@ router.post('/',
       const user = await User.signUp({
         email: req.body.email,
         password: req.body.password,
-        username: req.body.username
+        username: req.body.username,
       });
       new Response.Created({
         user: {
           email: user.email,
-          username: user.username
-        }
+          username: user.username,
+        },
       }).send(res);
     } catch (err) {
       next(err);
     }
   }
 );
+
+const rolesRouter = require('./roles');
+
+router.use('/:userId/roles', rolesRouter);
 
 module.exports = router;

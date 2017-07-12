@@ -67,7 +67,10 @@ class Revision extends LibertyModel {
       limit: 50,
       order: [['id', 'DESC']],
     });
-    revisions.forEach(rev => this.insertCache(rev.id));
+    revisions.reverse();
+    for (const rev of revisions) {
+      await this.insertCache(rev.id);
+    }
   }
 
   /**
@@ -187,14 +190,15 @@ class Revision extends LibertyModel {
     const revision = await Revision.findById(revisionId, {
       include: [Revision.associations.author, Revision.associations.article],
     });
-    let dupl;
+    let dupl = null;
     for (let i = 0; i < this.caches.length; i += 1) {
       if (this.caches[i].articleId === revision.articleId) {
         dupl = i;
+        break;
       }
     }
-    if (dupl !== undefined) {
-      this.caches.splice(dupl);
+    if (dupl !== null) {
+      this.caches.splice(dupl, 1);
     }
     this.caches.unshift(revision);
     if (this.caches.length > 50) {

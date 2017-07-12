@@ -125,7 +125,7 @@ class Article extends LibertyModel {
       foreignKey: 'destinationArticleId',
     });
     Article.hasMany(models.DiscussionTopic, {
-      as: 'topics',
+      as: 'discussionTopics',
     });
   }
 

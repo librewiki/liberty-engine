@@ -81,13 +81,13 @@ router.get('/full-title/:fullTitle',
           })()
         );
       }
-      if (fields.includes('topics')) {
+      if (fields.includes('discussionTopics')) {
         promises.push(
           (async () => {
-            const topics = await article.getTopics({
+            const discussionTopics = await article.getDiscussionTopics({
               order: [['id', 'DESC']],
             });
-            result.topics = await Promise.all(topics.map(async (topic) => {
+            result.discussionTopics = await Promise.all(discussionTopics.map(async (topic) => {
               const firstComment = await topic.getFirstComment();
               const rendered = await firstComment.parseRender();
               return {
@@ -318,5 +318,9 @@ router.get('/full-title-ci/:fullTitle',
     }
   }
 );
+
+const discussionTopicsRouter = require('./discussion-topics');
+
+router.use('/full-title/:fullTitle/discussion-topics', discussionTopicsRouter);
 
 module.exports = router;

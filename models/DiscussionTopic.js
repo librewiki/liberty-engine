@@ -80,7 +80,7 @@ class DiscussionTopic extends LibertyModel {
         topicId: this.id,
       },
       order: [['id', 'ASC']],
-      includes: [models.DiscussionComment.associations.author],
+      include: [models.DiscussionComment.associations.author],
     });
   }
 }

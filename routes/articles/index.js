@@ -95,9 +95,13 @@ router.get('/full-title/:fullTitle',
                 title: topic.title,
                 createdAt: topic.createdAt,
                 updatedAt: topic.updatedAt,
-                author: firstComment.author ? firstComment.author.username : null,
-                ipAddress: firstComment.author ? null : firstComment.ipAddress,
-                html: rendered.html,
+                firstComment: {
+                  author: firstComment.author ? firstComment.author.username : null,
+                  ipAddress: firstComment.author ? null : firstComment.ipAddress,
+                  html: rendered.html,
+                  createdAt: firstComment.createdAt,
+                  updatedAt: firstComment.updatedAt,
+                },
               };
             }));
           })()

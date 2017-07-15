@@ -21,7 +21,7 @@ class DiscussionComment extends LibertyModel {
       },
       topicId: {
         type: DataTypes.INTEGER,
-        allowNull: true,
+        allowNull: false,
       },
       authorId: {
         type: DataTypes.INTEGER,
@@ -66,6 +66,31 @@ class DiscussionComment extends LibertyModel {
     const parser = new WikitextParser();
     const renderResult = await parser.parseRender({ wikitext: this.wikitext });
     return renderResult;
+  }
+
+  async getPublicObject() {
+    const rendered = await this.parseRender();
+    return {
+      author: this.author ? this.author.username : null,
+      ipAddress: this.author ? null : this.ipAddress,
+      html: rendered.html,
+      createdAt: this.createdAt,
+      updatedAt: this.updatedAt,
+    };
+  }
+
+  static createNew({ topicId, wikitext, ipAddress, author, transaction }) {
+    return this.autoTransaction(transaction, async (transaction) => {
+      const replacedText = await models.Wikitext.replaceOnSave({
+        ipAddress, author, wikitext,
+      });
+      await models.DiscussionComment.create({
+        wikitext: replacedText,
+        topicId,
+        authorId: author.id,
+        ipAddress,
+      }, { transaction });
+    });
   }
 }
 

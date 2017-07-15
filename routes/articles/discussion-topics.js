@@ -38,14 +38,14 @@ router.post('/',
       if (!req.body.title || !req.body.wikitext) {
         return new Response.BadRequest().send(res);
       }
-      const discussionTopic = await DiscussionTopic.createNew({
+      await DiscussionTopic.createNew({
         ipAddress: req.ipAddress,
         title: req.body.title,
         author: req.user,
         wikitext: req.body.wikitext,
         article,
       });
-      return new Response.Success({ discussionTopic }).send(res);
+      return new Response.Success().send(res);
     } catch (err) {
       return next(err);
     }

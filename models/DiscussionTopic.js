@@ -36,6 +36,18 @@ class DiscussionTopic extends LibertyModel {
   static getOptions() {
     return {
       paranoid: true,
+      scopes: {
+        open: {
+          where: {
+            status: 'OPEN',
+          },
+        },
+        closed: {
+          where: {
+            status: 'CLOSED',
+          },
+        },
+      },
     };
   }
   /**
@@ -52,6 +64,7 @@ class DiscussionTopic extends LibertyModel {
       as: 'comments',
       onDelete: 'CASCADE',
       onUpdate: 'CASCADE',
+      foreignKey: 'topicId',
     });
   }
 
@@ -59,17 +72,17 @@ class DiscussionTopic extends LibertyModel {
     article, title, wikitext, ipAddress, author, transaction,
   }) {
     return this.autoTransaction(transaction, async (transaction) => {
-      const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
       const newTopic = await this.create({
         title: title.trim(),
         articleId: article.id,
       }, { transaction });
-      await models.DiscussionComment.create({
-        wikitext: replacedText,
+      await models.DiscussionComment.createNew({
         topicId: newTopic.id,
-        authorId: author.id,
+        wikitext,
         ipAddress,
-      }, { transaction });
+        author,
+        transaction,
+      });
       return newTopic;
     });
   }

@@ -89,19 +89,12 @@ router.get('/full-title/:fullTitle',
             });
             result.discussionTopics = await Promise.all(discussionTopics.map(async (topic) => {
               const firstComment = await topic.getFirstComment();
-              const rendered = await firstComment.parseRender();
               return {
                 id: topic.id,
                 title: topic.title,
                 createdAt: topic.createdAt,
                 updatedAt: topic.updatedAt,
-                firstComment: {
-                  author: firstComment.author ? firstComment.author.username : null,
-                  ipAddress: firstComment.author ? null : firstComment.ipAddress,
-                  html: rendered.html,
-                  createdAt: firstComment.createdAt,
-                  updatedAt: firstComment.updatedAt,
-                },
+                firstComment: await firstComment.getPublicObject(),
               };
             }));
           })()

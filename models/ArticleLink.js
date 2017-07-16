@@ -44,6 +44,16 @@ class ArticleLink extends LibertyModel {
       onUpdate: 'CASCADE',
     });
   }
+
+  static findBackLinks(fullTitle) {
+    const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+    return this.findAll({
+      where: {
+        destinationNamespaceId: namespace.id,
+        destinationTitle: title,
+      },
+    });
+  }
 }
 
 module.exports = ArticleLink;

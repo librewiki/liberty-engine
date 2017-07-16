@@ -70,182 +70,190 @@ class Revision extends LibertyModel {
     });
     revisions.reverse();
     for (const rev of revisions) {
-      await this.insertCache(rev.id);
+      await this.insertCache({ revisionId: rev.id });
     }
   }
 
-  /**
-   * Create a new revision and make it latest revision of an article.
-   * @method createNew
-   * @async
-   * @static
-   * @param {Object} option
-   * @param {User} option.article an article to change.
-   * @param {User} option.author user writing this.
-   * @param {String} option.wikitext wikitext.
-   * @param {String} option.ipAddress IP address of request.
-   * @param {String} option.type one of 'new', 'updated', 'renamed', or 'deleted'.
-   * @param {String} option.destinationFullTitle full title to rename.
-   * @return {Promise<Revision>} Resolves new revision.
-   */
-  static async createNew({
-    article, author, ipAddress, wikitext, type, newFullTitle, summary, transaction,
+  static createToCreateArticle({
+    article, author, ipAddress, wikitext, summary, transaction,
   }) {
     return this.autoTransaction(transaction, async () => {
-      let newRevision;
-      switch (type) {
-        case 'CREATE': {
-          const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
-          const wikitextInstance = await models.Wikitext.create({
-            text: replacedText,
-          }, { transaction });
-          const parser = new EditingParser();
-          const renderResult = await parser.parseRender({ wikitext: replacedText, article });
-          const links = Array.from(renderResult.link.articles).map((fullTitle) => {
-            const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
-            return {
-              destinationNamespaceId: namespace.id,
-              destinationTitle: title,
-              sourceArticleId: article.id,
-            };
-          });
-          await models.ArticleLink.destroy({
-            where: {
-              sourceArticleId: article.id,
-            },
-            transaction,
-          });
-          await models.ArticleLink.bulkCreate(links, { transaction });
-          newRevision = await this.create({
-            authorId: author.id,
-            articleId: article.id,
-            wikitextId: wikitextInstance.id,
-            changedLength: wikitextInstance.text.length,
-            ipAddress,
-            type,
-            summary,
-          }, { transaction });
-          break;
-        }
-        case 'EDIT': {
-          const replacedText = await models.Wikitext.replaceOnSave({
-            ipAddress,
-            author,
-            wikitext,
-          });
-          const parser = new EditingParser();
-          const renderResult = await parser.parseRender({ wikitext: replacedText, article });
-          const links = Array.from(renderResult.link.articles).map((fullTitle) => {
-            const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
-            return {
-              destinationNamespaceId: namespace.id,
-              destinationTitle: title,
-              sourceArticleId: article.id,
-            };
-          });
-          await models.ArticleLink.destroy({
-            where: {
-              sourceArticleId: article.id,
-            },
-            transaction,
-          });
-          await models.ArticleLink.bulkCreate(links, { transaction });
-          const baseRevision = await article.getLatestRevision({
-            includeWikitext: true,
-            transaction,
-          });
-          const wikitextInstance = await models.Wikitext.create({ text: replacedText });
-          newRevision = await this.create({
-            authorId: author.id,
-            articleId: article.id,
-            wikitextId: wikitextInstance.id,
-            changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
-            ipAddress,
-            type,
-            summary,
-          }, { transaction });
-          break;
-        }
-        case 'RENAME': {
-          // @TODO UPDATE LINK
-          const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
-          const baseRevision = await article.getLatestRevision({
-            includeWikitext: false,
-            transaction,
-          });
-          newRevision = await this.create({
-            authorId: author.id,
-            changedLength: 0,
-            wikitextId: baseRevision.wikitextId,
-            articleId: article.id,
-            ipAddress,
-            type,
-            summary,
-            renameLog: {
-              oldNamespaceId: article.namespaceId,
-              oldTitle: article.title,
-              newNamespaceId: namespace.id,
-              newTitle: title,
-            },
-          }, {
-            include: [models.RenameLog],
-            transaction,
-          });
-          break;
-        }
-        case 'DELETE': {
-          await models.ArticleLink.destroy({
-            where: {
-              sourceArticleId: article.id,
-            },
-            transaction,
-          });
-          const baseRevision = await article.getLatestRevision({
-            includeWikitext: true,
-            transaction,
-          });
-          newRevision = await this.create({
-            authorId: author.id,
-            changedLength: -baseRevision.wikitext.text.length,
-            wikitextId: null,
-            articleId: article.id,
-            ipAddress,
-            type,
-            summary,
-          }, { transaction });
-          break;
-        }
-        default:
-          throw new TypeError('No such type');
-      }
+      const replacedText = await models.Wikitext.replaceOnSave({ ipAddress, author, wikitext });
+      const wikitextInstance = await models.Wikitext.create({
+        text: replacedText,
+      }, { transaction });
+      const parser = new EditingParser();
+      const renderResult = await parser.parseRender({ wikitext: replacedText, article });
+      const links = Array.from(renderResult.link.articles).map((fullTitle) => {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        return {
+          destinationNamespaceId: namespace.id,
+          destinationTitle: title,
+          sourceArticleId: article.id,
+        };
+      });
+      await models.ArticleLink.destroy({
+        where: {
+          sourceArticleId: article.id,
+        },
+        transaction,
+      });
+      await models.ArticleLink.bulkCreate(links, { transaction });
+      const newRevision = await this.create({
+        authorId: author.id,
+        articleId: article.id,
+        wikitextId: wikitextInstance.id,
+        changedLength: wikitextInstance.text.length,
+        ipAddress,
+        type: 'CREATE',
+        summary,
+      }, { transaction });
       await article.update({
         latestRevisionId: newRevision.id,
       }, { transaction });
-      await this.insertCache(newRevision.id);
+      await this.insertCache({ revisionId: newRevision.id, transaction });
       return newRevision;
     });
   }
+
+  static createToEditArticle({
+    article, author, ipAddress, wikitext, summary, transaction,
+  }) {
+    return this.autoTransaction(transaction, async () => {
+      const replacedText = await models.Wikitext.replaceOnSave({
+        ipAddress,
+        author,
+        wikitext,
+      });
+      const parser = new EditingParser();
+      const renderResult = await parser.parseRender({ wikitext: replacedText, article });
+      const links = Array.from(renderResult.link.articles).map((fullTitle) => {
+        const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+        return {
+          destinationNamespaceId: namespace.id,
+          destinationTitle: title,
+          sourceArticleId: article.id,
+        };
+      });
+      await models.ArticleLink.destroy({
+        where: {
+          sourceArticleId: article.id,
+        },
+        transaction,
+      });
+      await models.ArticleLink.bulkCreate(links, { transaction });
+      const baseRevision = await article.getLatestRevision({
+        includeWikitext: true,
+        transaction,
+      });
+      const wikitextInstance = await models.Wikitext.create({ text: replacedText });
+      const newRevision = await this.create({
+        authorId: author.id,
+        articleId: article.id,
+        wikitextId: wikitextInstance.id,
+        changedLength: wikitextInstance.text.length - baseRevision.wikitext.text.length,
+        ipAddress,
+        type: 'EDIT',
+        summary,
+      }, { transaction });
+      await article.update({
+        latestRevisionId: newRevision.id,
+      }, { transaction });
+      await this.insertCache({ revisionId: newRevision.id, transaction });
+      return newRevision;
+    });
+  }
+
+  static createToRenameArticle({
+    article, author, ipAddress, newFullTitle, summary, transaction,
+  }) {
+    return this.autoTransaction(transaction, async () => {
+      const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
+      const baseRevision = await article.getLatestRevision({
+        includeWikitext: false,
+        transaction,
+      });
+      const newRevision = await this.create({
+        authorId: author.id,
+        changedLength: 0,
+        wikitextId: baseRevision.wikitextId,
+        articleId: article.id,
+        ipAddress,
+        type: 'RENAME',
+        summary,
+        renameLog: {
+          oldNamespaceId: article.namespaceId,
+          oldTitle: article.title,
+          newNamespaceId: namespace.id,
+          newTitle: title,
+        },
+      }, {
+        include: [models.RenameLog],
+        transaction,
+      });
+      await article.update({
+        latestRevisionId: newRevision.id,
+      }, { transaction });
+      await this.insertCache({ revisionId: newRevision.id, transaction });
+      return newRevision;
+    });
+  }
+
+  static createToDeleteArticle({
+    article, author, ipAddress, summary, transaction,
+  }) {
+    return this.autoTransaction(transaction, async () => {
+      await models.ArticleLink.destroy({
+        where: {
+          sourceArticleId: article.id,
+        },
+        transaction,
+      });
+      const baseRevision = await article.getLatestRevision({
+        includeWikitext: true,
+        transaction,
+      });
+      const newRevision = await this.create({
+        authorId: author.id,
+        changedLength: -baseRevision.wikitext.text.length,
+        wikitextId: null,
+        articleId: article.id,
+        ipAddress,
+        type: 'DELETE',
+        summary,
+      }, { transaction });
+      await article.update({
+        latestRevisionId: newRevision.id,
+      }, { transaction });
+      await this.insertCache({ revisionId: newRevision.id, transaction });
+      return newRevision;
+    });
+  }
+
   static getRecentDistinctRevisions({ limit = 50 }) {
     return this.caches.slice(0, limit);
   }
-  static async insertCache(revisionId) {
-    const revision = await Revision.findById(revisionId, {
-      include: [Revision.associations.author, Revision.associations.article],
-    });
-    let dupl = null;
-    for (let i = 0; i < this.caches.length; i += 1) {
-      if (this.caches[i].articleId === revision.articleId) {
-        dupl = i;
-        break;
+  static async insertCache({ revisionId, transaction }) {
+    return this.autoTransaction(transaction, async () => {
+      const revision = await Revision.findById(revisionId, {
+        include: [Revision.associations.author, Revision.associations.article],
+        transaction,
+      });
+      let dupl = null;
+      for (let i = 0; i < this.caches.length; i += 1) {
+        if (this.caches[i].articleId === revision.articleId) {
+          dupl = i;
+          break;
+        }
       }
-    }
-    if (dupl !== null) {
-      this.caches.splice(dupl, 1);
-    }
-    this.caches.unshift(revision);
-    if (this.caches.length > 50) {
-      this.caches.length = 50;
-    }
+      if (dupl !== null) {
+        this.caches.splice(dupl, 1);
+      }
+      this.caches.unshift(revision);
+      if (this.caches.length > 50) {
+        this.caches.length = 50;
+      }
+    });
   }
 }
 

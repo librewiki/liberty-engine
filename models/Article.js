@@ -200,12 +200,11 @@ class Article extends LibertyModel {
         namespaceId: namespace.id,
         title,
       }, { transaction });
-      await models.Revision.createNew({
+      await models.Revision.createToCreateArticle({
         article,
         ipAddress,
         author,
         wikitext,
-        type: 'CREATE',
         summary: summary ? `(new) ${summary}` : '(new)',
         transaction,
       });
@@ -246,12 +245,11 @@ class Article extends LibertyModel {
   edit({
     ipAddress, author, wikitext, summary = '', transaction,
   }) {
-    return this.autoTransaction(transaction, () => models.Revision.createNew({
+    return this.autoTransaction(transaction, () => models.Revision.createToEditArticle({
       article: this,
       ipAddress,
       author,
       wikitext,
-      type: 'EDIT',
       summary,
       transaction,
     }));
@@ -273,11 +271,10 @@ class Article extends LibertyModel {
   }) {
     return this.autoTransaction(transaction, async () => {
       const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
-      const revision = await models.Revision.createNew({
+      const revision = await models.Revision.createToRenameArticle({
         article: this,
         ipAddress,
         author,
-        type: 'RENAME',
         newFullTitle,
         summary,
         transaction,
@@ -303,11 +300,10 @@ class Article extends LibertyModel {
    */
   delete({ ipAddress, author, summary, transaction }) {
     return this.autoTransaction(transaction, async () => {
-      const revision = await models.Revision.createNew({
+      const revision = await models.Revision.createToDeleteArticle({
         article: this,
         ipAddress,
         author,
-        type: 'DELETE',
         summary,
         transaction,
       });

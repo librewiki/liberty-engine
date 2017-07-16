@@ -16,8 +16,7 @@ const Interwiki = {
 
 const caseByNamespaceId = {
   0: async function normalCase(textToLink, rest, parsingData) {
-    const { namespace, title } = models.Namespace.splitFullTitle(textToLink);
-    parsingData.structureData.link.normals.add({ namespaceId: namespace.id, title });
+    parsingData.structureData.link.articles.add(textToLink);
     let textToShow;
     if (rest.length) {
       textToShow = rest.join('|');

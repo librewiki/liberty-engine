@@ -2,3 +2,6 @@
 
 # List of Special Permissions
 - ACCESS_ADMIN_PANEL
+
+# TODO
+- parser improving (supporting other parser, easy API)

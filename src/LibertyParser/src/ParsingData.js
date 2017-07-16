@@ -24,7 +24,7 @@ class ParsingData {
       numOfHeadings: 0,
       link: {
         categories: new Set(),
-        normals: new Set(),
+        articles: new Set(),
         files: new Set(),
         templates: new Set(),
         interwikis: new Set(),

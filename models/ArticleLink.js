@@ -13,7 +13,7 @@ class ArticleLink extends LibertyModel {
         primaryKey: true,
       },
       destinationTitle: {
-        type: DataTypes.INTEGER,
+        type: DataTypes.STRING(128),
         allowNull: false,
         primaryKey: true,
       },

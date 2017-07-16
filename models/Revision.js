@@ -2,6 +2,7 @@
 
 const LibertyModel = require('./LibertyModel');
 const DataTypes = require('../src/DataTypes');
+const EditingParser = require('../src/LibertyParser/src/Parser/EditingParser');
 const models = require('./');
 
 class Revision extends LibertyModel {
@@ -98,6 +99,23 @@ class Revision extends LibertyModel {
           const wikitextInstance = await models.Wikitext.create({
             text: replacedText,
           }, { transaction });
+          const parser = new EditingParser();
+          const renderResult = await parser.parseRender({ wikitext: replacedText, article });
+          const links = Array.from(renderResult.link.articles).map((fullTitle) => {
+            const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+            return {
+              destinationNamespaceId: namespace.id,
+              destinationTitle: title,
+              sourceArticleId: article.id,
+            };
+          });
+          await models.ArticleLink.destroy({
+            where: {
+              sourceArticleId: article.id,
+            },
+            transaction,
+          });
+          await models.ArticleLink.bulkCreate(links, { transaction });
           newRevision = await this.create({
             authorId: author.id,
             articleId: article.id,
@@ -115,6 +133,23 @@ class Revision extends LibertyModel {
             author,
             wikitext,
           });
+          const parser = new EditingParser();
+          const renderResult = await parser.parseRender({ wikitext: replacedText, article });
+          const links = Array.from(renderResult.link.articles).map((fullTitle) => {
+            const { namespace, title } = models.Namespace.splitFullTitle(fullTitle);
+            return {
+              destinationNamespaceId: namespace.id,
+              destinationTitle: title,
+              sourceArticleId: article.id,
+            };
+          });
+          await models.ArticleLink.destroy({
+            where: {
+              sourceArticleId: article.id,
+            },
+            transaction,
+          });
+          await models.ArticleLink.bulkCreate(links, { transaction });
           const baseRevision = await article.getLatestRevision({
             includeWikitext: true,
             transaction,
@@ -132,6 +167,7 @@ class Revision extends LibertyModel {
           break;
         }
         case 'RENAME': {
+          // @TODO UPDATE LINK
           const { namespace, title } = models.Namespace.splitFullTitle(newFullTitle);
           const baseRevision = await article.getLatestRevision({
             includeWikitext: false,
@@ -158,6 +194,12 @@ class Revision extends LibertyModel {
           break;
         }
         case 'DELETE': {
+          await models.ArticleLink.destroy({
+            where: {
+              sourceArticleId: article.id,
+            },
+            transaction,
+          });
           const baseRevision = await article.getLatestRevision({
             includeWikitext: true,
             transaction,

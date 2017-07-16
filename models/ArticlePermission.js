@@ -5,7 +5,7 @@ const LibertyModel = require('./LibertyModel');
 const models = require('./');
 
 class ArticlePermission extends LibertyModel {
-  static getOptions() {
+  static getAttributes() {
     return {
       articleId: {
         type: DataTypes.INTEGER,

@@ -52,6 +52,9 @@ class ArticleLink extends LibertyModel {
         destinationNamespaceId: namespace.id,
         destinationTitle: title,
       },
+      include: [{
+        association: this.associations.sourceArticle,
+      }],
     });
   }
 }

@@ -2,15 +2,12 @@
 
 process.env.NODE_ENV = 'test';
 global.LIBERTY_VERSION = '0.0.1';
-const path = require('path');
-
-global.rootdir = path.join(__dirname, '/../..');
-const models = require(`${global.rootdir}/models`);
+const models = require('../../lib/models');
 const chai = require('chai');
 
 const should = chai.should();
-const settings = require(`${global.rootdir}/config/settings.json`);
-const wikitextParser = require(`${global.rootdir}/src/LibertyParser`).wikitextParser;
+const settings = require('../../config/settings.json');
+const wikitextParser = require('../../lib/LibertyParser').wikitextParser;
 const i18next = require('i18next');
 
 describe('Parser', () => {
@@ -23,8 +20,8 @@ describe('Parser', () => {
         'LibertyParser',
       ],
       resources: {
-        en: require(`${global.rootdir}/i18n/en.json`),
-        ko: require(`${global.rootdir}/i18n/ko.json`),
+        en: require('../../i18n/en.json'),
+        ko: require('../../i18n/ko.json'),
       },
     });
     await models.install();

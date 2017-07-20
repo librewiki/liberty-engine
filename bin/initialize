@@ -2,11 +2,7 @@
 
 'use strict';
 
-const path = require('path');
-
-global.rootdir = path.join(__dirname, '/..');
-
-const models = require(`${global.rootdir}/models`);
+const models = require('../lib/models');
 
 (async () => {
   try {

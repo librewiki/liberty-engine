@@ -1,14 +1,15 @@
 #!/usr/bin/env node
+
 'use strict';
 
 const path = require('path');
+
 global.LIBERTY_VERSION = '0.0.1';
-global.rootdir = path.join(__dirname, '/..');
 process.chdir(path.join(__dirname, '..')); // root dir
 
-const models = require(global.rootdir + '/models');
+const models = require('../lib/models');
 
-(async function() {
+(async () => {
   try {
     await models.initialize();
     const key = process.argv[2];

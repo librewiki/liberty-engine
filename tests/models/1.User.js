@@ -2,10 +2,9 @@
 
 process.env.NODE_ENV = 'test';
 global.LIBERTY_VERSION = '0.0.1';
-const path = require('path');
 
-global.rootdir = path.join(__dirname, '/../..');
-const models = require(`${global.rootdir}/models`);
+const models = require('../../lib/models');
+
 const chai = require('chai');
 
 const should = chai.should();

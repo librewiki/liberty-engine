@@ -1,15 +1,25 @@
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
+
+- [Requirements](#requirements)
+- [Installation](#installation)
+- [How To Set Email Account](#how-to-set-email-account)
+- [List of Special Permissions](#list-of-special-permissions)
+- [TODO](#todo)
+
+<!-- /TOC -->
+
 # Requirements
 - The **latest** version (8+) of Node.js
 - MariaDB version 10+
 
 # Installation
 ```bash
-sudo mysql
+~$ sudo mysql
 ```
 ```sql
 create database liberty;
-create user '______(username)'@'localhost' identified by '_______(password)';
-grant all privileges on liberty.* to username@localhost;
+create user '(username)'@'localhost' identified by '(password)';
+grant all privileges on liberty.* to (username)@localhost;
 flush privileges;
 quit
 ```

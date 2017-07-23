@@ -1,6 +1,9 @@
 {
   "name": "liberty-engine",
   "version": "0.0.0",
+  "engines": {
+    "node": ">=8.2.1"
+  },
   "private": true,
   "scripts": {
     "start": "node ./bin/www",

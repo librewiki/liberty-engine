@@ -8,7 +8,7 @@ sudo mysql
 ```
 ```sql
 create database liberty;
-create user 'username'@'localhost' identified by 'password';
+create user '______(username)'@'localhost' identified by '_______(password)';
 grant all privileges on liberty.* to username@localhost;
 flush privileges;
 quit

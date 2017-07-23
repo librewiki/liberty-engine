@@ -17,6 +17,7 @@ quit
 ~$ git clone https://gitlab.com/librewiki/liberty-engine.git
 ~$ cd liberty-engine
 ~/liberty-engine$ npm i
+~/liberty-engine$ bin/install
 ```
 
 # How To Set Email Account

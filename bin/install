@@ -12,8 +12,23 @@ const validator = require('validator');
 const randomBytesAsync = promisify(crypto.randomBytes);
 const writeFileAsync = promisify(fs.writeFile);
 
+const configPath = path.join(__dirname, '..', 'config', 'config.json');
+
 (async () => {
   try {
+    let clear = true;
+    if (fs.existsSync(configPath)) {
+      const answers = await inquirer.prompt([
+        {
+          type: 'confirm',
+          name: 'clear',
+          message: `config.json is found. Do you want clear the data of your wiki?
+If you select no, it will just reset the database config.`,
+          default: false,
+        },
+      ]);
+      clear = answers.clear;
+    }
     const answers = await inquirer.prompt([
       {
         type: 'input',
@@ -83,8 +98,14 @@ const writeFileAsync = promisify(fs.writeFile);
       },
     };
     const configJSON = JSON.stringify(config, null, 2);
-    await writeFileAsync(path.join(__dirname, '..', 'config', 'config.json'), configJSON);
-    console.log('Done. Please run bin/initialize.');
+    await writeFileAsync(configPath, configJSON);
+    if (clear) {
+      // eslint-disable-next-line
+      const models = require('../lib/models');
+      await models.install();
+      await models.initialize();
+      await models.setDefaultInstances();
+    }
     process.exit(0);
   } catch (err) {
     console.log(err);

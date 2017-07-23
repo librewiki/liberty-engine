@@ -1,0 +1,93 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const fs = require('fs');
+const path = require('path');
+const crypto = require('crypto');
+const { promisify } = require('util');
+const inquirer = require('inquirer');
+const validator = require('validator');
+
+const randomBytesAsync = promisify(crypto.randomBytes);
+const writeFileAsync = promisify(fs.writeFile);
+
+(async () => {
+  try {
+    const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'dbName',
+        message: 'database name',
+      },
+      {
+        type: 'input',
+        name: 'dbUsername',
+        message: 'database username',
+      },
+      {
+        type: 'password',
+        name: 'dbPassword',
+        message: 'database password',
+      },
+      {
+        type: 'input',
+        name: 'dbHost',
+        message: 'database server host',
+        default: 'localhost',
+      },
+      {
+        type: 'input',
+        name: 'dbPort',
+        message: 'database server port',
+        default: '3306',
+        validate(value) {
+          return validator.isInt(String(value), { min: 1, max: 65535 }) || 'Please enter a valid port number';
+        },
+        filter: Number,
+      },
+    ]);
+    const secret = (await randomBytesAsync(48))
+      .toString('base64')
+      .replace(/\+/g, '-')
+      .replace(/\//g, '_')
+      .replace(/=/g, '');
+    const config = {
+      production: {
+        secret,
+        db: {
+          username: answers.dbUsername,
+          password: answers.dbPassword,
+          database: answers.dbName,
+          host: answers.dbHost,
+          port: answers.dbPort,
+          dialect: 'mysql',
+          charset: 'utf8mb4',
+          collate: 'utf8mb4_bin',
+          pool: { max: 40, min: 0, idle: 10000 },
+        },
+      },
+      development: {
+        secret,
+        db: {
+          username: answers.dbUsername,
+          password: answers.dbPassword,
+          database: answers.dbName,
+          host: answers.dbHost,
+          port: answers.dbPort,
+          dialect: 'mysql',
+          charset: 'utf8mb4',
+          collate: 'utf8mb4_bin',
+          pool: { max: 40, min: 0, idle: 10000 },
+        },
+      },
+    };
+    const configJSON = JSON.stringify(config, null, 2);
+    await writeFileAsync(path.join(__dirname, '..', 'config', 'config.json'), configJSON);
+    console.log('Done. Please run bin/initialize.');
+    process.exit(0);
+  } catch (err) {
+    console.log(err);
+    process.exit(-1);
+  }
+})();

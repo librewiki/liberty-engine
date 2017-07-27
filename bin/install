@@ -23,7 +23,7 @@ const configPath = path.join(__dirname, '..', 'config', 'config.json');
           type: 'confirm',
           name: 'clear',
           message: `config.json is found. Do you want clear the data of your wiki?
-If you select no, it will just reset the database config.`,
+If you select no, it will just reset the database configuration.`,
           default: false,
         },
       ]);

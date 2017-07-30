@@ -81,6 +81,9 @@ If you select no, it will just reset the database configuration.`,
           collate: 'utf8mb4_bin',
           pool: { max: 40, min: 0, idle: 10000 },
         },
+        mediaFileStorage: {
+          type: 'local',
+        },
       },
       development: {
         secret,
@@ -94,6 +97,9 @@ If you select no, it will just reset the database configuration.`,
           charset: 'utf8mb4',
           collate: 'utf8mb4_bin',
           pool: { max: 40, min: 0, idle: 10000 },
+        },
+        mediaFileStorage: {
+          type: 'local',
         },
       },
     };

@@ -29,6 +29,8 @@ node_modules
 # Debug log from npm
 npm-debug.log
 
-/media/**
+/media/*
+!/media/temp
+/media/temp/*
 !/media/.gitkeep
 !/media/temp/.gitkeep

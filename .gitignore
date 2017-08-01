@@ -34,3 +34,6 @@ npm-debug.log
 /media/temp/*
 !/media/.gitkeep
 !/media/temp/.gitkeep
+
+/views/*
+!/views/.gitkeep

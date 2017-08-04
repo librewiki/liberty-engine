@@ -50,20 +50,25 @@ const nginxConfig = (host, viewRoot) => `server {
 
 (async () => {
   try {
-    let clear = true;
     if (fs.existsSync(configPath)) {
       const answers = await inquirer.prompt([
         {
           type: 'confirm',
           name: 'clear',
-          message: `config.json is found. Do you want clear the data of your wiki?
-If you select no, it will just reset the database configuration.`,
+          message: 'config.json is found. Do you want clear the data of your wiki?',
           default: false,
         },
       ]);
-      clear = answers.clear;
+      if (!answers.clear) {
+        return;
+      }
     }
     const answers = await inquirer.prompt([
+      {
+        type: 'input',
+        name: 'wikiName',
+        message: 'the name of wiki',
+      },
       {
         type: 'input',
         name: 'dbName',
@@ -162,12 +167,11 @@ If you select no, it will just reset the database configuration.`,
     };
     const configJSON = JSON.stringify(config, null, 2);
     await writeFileAsync(configPath, configJSON);
-    if (clear) {
-      const models = require('../lib/models');
-      await models.install();
-      await models.initialize();
-      await models.setDefaultInstances();
-    }
+    const models = require('../lib/models');
+    await models.install();
+    await models.initialize();
+    await models.setDefaultInstances();
+    await models.Setting.set('wikiName', answers.wikiName);
     const viewLiberty = require('liberty-view-liberty');
     if (answers.serverType === NGINX_MESSAGE) {
       const nginx = nginxConfig(answers.wikiDomain, viewLiberty.root);

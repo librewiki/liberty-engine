@@ -168,10 +168,12 @@ const nginxConfig = (host, viewRoot) => `server {
     const configJSON = JSON.stringify(config, null, 2);
     await writeFileAsync(configPath, configJSON);
     const models = require('../lib/models');
-    await models.install();
+    await models.install({
+      wikiName: answers.wikiName,
+      domain: answers.domain,
+    });
     await models.initialize();
     await models.setDefaultInstances();
-    await models.Setting.set('wikiName', answers.wikiName);
     const viewLiberty = require('liberty-view-liberty');
     if (answers.serverType === NGINX_MESSAGE) {
       const nginx = nginxConfig(answers.wikiDomain, viewLiberty.root);

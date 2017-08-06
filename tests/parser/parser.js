@@ -6,9 +6,14 @@ const models = require('../../lib/models');
 const chai = require('chai');
 
 const should = chai.should();
-const settings = require('../../config/settings.json');
+const Setting = require('../../lib/models/Setting');
 const wikitextParser = require('../../lib/LibertyParser').wikitextParser;
 const i18next = require('i18next');
+
+const settings = {
+  wikiName: 'Liberty Wiki',
+  domain: 'localhost',
+};
 
 describe('Parser', () => {
   before(async () => {
@@ -24,7 +29,7 @@ describe('Parser', () => {
         ko: require('../../i18n/ko.json'),
       },
     });
-    await models.install();
+    await models.install(settings);
     await models.initialize();
   });
 
@@ -131,7 +136,7 @@ describe('Parser', () => {
       const result = await wikitextParser.parseRender({ wikitext: '{{SITENAME}}' });
       result.html.should.be.eql(
         `<p>
-    ${settings.WIKI_NAME}
+    ${Setting.get('wikiName')}
 </p>`
       );
     });
@@ -140,7 +145,7 @@ describe('Parser', () => {
       const result = await wikitextParser.parseRender({ wikitext: '{{SERVER}}' });
       result.html.should.be.eql(
         `<p>
-    ${settings.DOMAIN}
+    ${Setting.get('domain')}
 </p>`
       );
     });

@@ -9,9 +9,14 @@ const chai = require('chai');
 
 const should = chai.should();
 
+const settings = {
+  wikiName: 'Liberty Wiki',
+  domain: 'localhost',
+};
+
 describe('Article', () => {
   before(async () => {
-    await models.install();
+    await models.install(settings);
     await models.initialize();
   });
   describe('Create new', () => {

@@ -138,6 +138,11 @@ const nginxConfig = (host, viewRoot) => `server {
         name: 'adminPassword',
         message: 'Wiki admin password',
       },
+      {
+        type: 'input',
+        name: 'frontPageName',
+        message: 'Wiki front page',
+      },
     ]);
     const secret = (await randomBytesAsync(48))
       .toString('base64')
@@ -188,6 +193,7 @@ const nginxConfig = (host, viewRoot) => `server {
       domain: answers.domain,
       adminUsername: answers.adminUsername,
       adminPassword: answers.adminPassword,
+      frontPageName: answers.frontPageName,
     });
     await models.initialize();
     const viewLiberty = require('liberty-view-liberty');

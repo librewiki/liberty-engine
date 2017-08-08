@@ -124,6 +124,16 @@ const nginxConfig = (host, viewRoot) => `server {
           'do nothing',
         ],
       },
+      {
+        type: 'input',
+        name: 'adminUsername',
+        message: 'Wiki admin username',
+      },
+      {
+        type: 'password',
+        name: 'adminPassword',
+        message: 'Wiki admin password',
+      },
     ]);
     const secret = (await randomBytesAsync(48))
       .toString('base64')
@@ -172,9 +182,10 @@ const nginxConfig = (host, viewRoot) => `server {
     await models.install({
       wikiName: answers.wikiName,
       domain: answers.domain,
+      adminUsername: answers.adminUsername,
+      adminPassword: answers.adminPassword,
     });
     await models.initialize();
-    await models.setDefaultInstances();
     const viewLiberty = require('liberty-view-liberty');
     if (answers.serverType === NGINX_MESSAGE) {
       const nginx = nginxConfig(answers.wikiDomain, viewLiberty.root);

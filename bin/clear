@@ -8,7 +8,6 @@ const models = require('../lib/models');
   try {
     await models.install();
     await models.initialize();
-    await models.setDefaultInstances();
     process.exit(0);
   } catch (e) {
     console.log(e);

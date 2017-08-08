@@ -13,7 +13,7 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 const writeFileAsync = promisify(fs.writeFile);
 
 const configPath = path.join(__dirname, '..', 'config', 'config.json');
-// const rootPath = path.join(__dirname, '..');
+const rootPath = path.join(__dirname, '..');
 
 const NGINX_MESSAGE = 'nginx (nginx must be installed first)';
 
@@ -35,6 +35,10 @@ const nginxConfig = (host, viewRoot) => `server {
 
   location / {
     try_files $uri $uri/ @rewrites;
+  }
+
+  location /media/ {
+    root ${rootPath};
   }
 
   location @rewrites {

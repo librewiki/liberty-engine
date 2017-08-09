@@ -96,13 +96,13 @@ describe('Parser', () => {
     it('should be rendered correctly', async () => {
       const result = await wikitextParser.parseRender({ wikitext: '__TOC__\n==aaa==' });
       result.html.should.be.eql(
-        `<div id="toc" class="liberty-toc">
+        `<div id="toc" class="toc">
     <div id="toc-title">
         <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
     </div>
     <ul>
-        <li class="liberty-toc-level-1 liberty-toc-section-1">
-            <a href="#s-1"><span class="liberty-toc-number">1</span> <span class="liberty-toc-text">aaa</span></a>
+        <li class="toc-level-1 toc-section-1">
+            <a href="#s-1"><span class="toc-number">1</span> <span class="toc-text">aaa</span></a>
         </li>
     </ul>
 </div>
@@ -114,13 +114,13 @@ describe('Parser', () => {
     it('should be rendered correctly (unicode)', async () => {
       const result = await wikitextParser.parseRender({ wikitext: '__TOC__\n==Iñtërnâtiônàlizætiøn☃💩==' });
       result.html.should.be.eql(
-        `<div id="toc" class="liberty-toc">
-    <div id="toc-title">
+        `<div id="toc" class="toc">
+    <div id="toc-title" class="toc-title">
         <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
     </div>
     <ul>
-        <li class="liberty-toc-level-1 liberty-toc-section-1">
-            <a href="#s-1"><span class="liberty-toc-number">1</span> <span class="liberty-toc-text">Iñtërnâtiônàlizætiøn☃💩</span></a>
+        <li class="toc-level-1 toc-section-1">
+            <a href="#s-1"><span class="toc-number">1</span> <span class="toc-text">Iñtërnâtiônàlizætiøn☃💩</span></a>
         </li>
     </ul>
 </div>

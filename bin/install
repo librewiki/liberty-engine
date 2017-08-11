@@ -181,7 +181,7 @@ const nginxConfig = (host, viewRoot) => `server {
           dialect: 'mysql',
           charset: 'utf8mb4',
           collate: 'utf8mb4_bin',
-          pool: { max: 40, min: 0, idle: 10000 },
+          pool: { max: 400, min: 0, idle: 10000 },
         },
         mediaFileStorage: {
           type: 'local',

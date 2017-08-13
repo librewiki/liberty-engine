@@ -11,6 +11,7 @@
 # Requirements
 - The **latest** version (8+) of Node.js
 - MariaDB version 10+
+- Redis
 
 # Installation
 ```bash

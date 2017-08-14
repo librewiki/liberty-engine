@@ -109,6 +109,11 @@ const nginxConfig = (host, viewRoot) => `server {
         filter: Number,
       },
       {
+        type: 'password',
+        name: 'redisPassword',
+        message: 'Redis password',
+      },
+      {
         type: 'input',
         name: 'wikiDomain',
         message: 'Wiki server domain name',
@@ -169,6 +174,9 @@ const nginxConfig = (host, viewRoot) => `server {
         mediaFileStorage: {
           type: 'local',
         },
+        redis: {
+          password: answers.redisPassword,
+        },
       },
       development: {
         secret,
@@ -186,6 +194,9 @@ const nginxConfig = (host, viewRoot) => `server {
         mediaFileStorage: {
           type: 'local',
         },
+        redis: {
+          password: answers.redisPassword,
+        },
       },
     };
     const configJSON = JSON.stringify(config, null, 2);
@@ -198,6 +209,12 @@ const nginxConfig = (host, viewRoot) => `server {
       adminPassword: answers.adminPassword,
       frontPageName: answers.frontPageName,
     });
+    await models.sequelize.query(`
+      ALTER TABLE search
+      DROP INDEX search_content,
+      ADD FULLTEXT INDEX search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
+    `);
+
     await models.initialize();
     const viewLiberty = require('liberty-view-liberty');
     if (answers.serverType === NGINX_MESSAGE) {

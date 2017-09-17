@@ -210,11 +210,10 @@ const nginxConfig = (host, viewRoot) => `server {
       frontPageName: answers.frontPageName,
     });
     await models.sequelize.query(`
-      ALTER TABLE search
-      DROP INDEX search_content,
-      ADD FULLTEXT INDEX search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
+      ALTER TABLE articleSearch
+      DROP INDEX article_search_content,
+      ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
     `);
-
     await models.initialize();
     const viewLiberty = require('liberty-view-liberty');
     if (answers.serverType === NGINX_MESSAGE) {

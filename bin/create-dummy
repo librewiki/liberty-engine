@@ -1,0 +1,40 @@
+#!/usr/bin/env node
+
+/**
+ * Creates a lot of (100,000) articles.
+ */
+
+'use strict';
+
+const models = require('../lib/models');
+
+(async () => {
+  try {
+    await models.initialize();
+    const user = await models.User.findById(1);
+    let promises = [];
+    await models.sequelize.transaction(async (t) => {
+      for (let i = 0; i < 100000; i += 1) {
+        console.log(i, ' start');
+        promises.push(
+          models.Article.createNew({
+            ipAddress: '192.111.23.4',
+            fullTitle: `Test${i}`,
+            author: user,
+            wikitext: `== HEADING == \n [[Test${i - 1}]] [[Test${i - 3}]]`,
+            transaction: t,
+          }).then(() => console.log(i, ' end'))
+        );
+        if (promises.length === 100) {
+          await Promise.all(promises);
+          promises = [];
+        }
+      }
+      await Promise.all(promises);
+    });
+    process.exit(0);
+  } catch (e) {
+    console.log(e);
+    process.exit(-1);
+  }
+})();

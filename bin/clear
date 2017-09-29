@@ -37,7 +37,7 @@ const inquirer = require('inquirer');
       {
         type: 'input',
         name: 'frontPageName',
-        message: 'wiki frontPageName',
+        message: 'wiki front page',
       },
     ]);
     await models.install({
@@ -53,7 +53,7 @@ const inquirer = require('inquirer');
       ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
     `);
     await models.initialize();
-    await models.setTestInstances();
+    // await models.setTestInstances();
     process.exit(0);
   } catch (e) {
     console.log(e);

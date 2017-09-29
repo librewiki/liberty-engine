@@ -23,14 +23,29 @@ const inquirer = require('inquirer');
         name: 'adminPassword',
         message: 'Wiki admin password',
       },
+      {
+        type: 'input',
+        name: 'wikiName',
+        message: 'wiki name',
+      },
+      {
+        type: 'input',
+        name: 'wikiDomain',
+        message: 'Wiki server domain name',
+        default: 'localhost',
+      },
+      {
+        type: 'input',
+        name: 'frontPageName',
+        message: 'wiki frontPageName',
+      },
     ]);
-    await models.initialize();
     await models.install({
-      wikiName: models.Setting.get('wikiName'),
-      domain: models.Setting.get('domain'),
+      wikiName: answers.wikiName,
+      domain: answers.wikiDomain,
       adminUsername: answers.adminUsername,
       adminPassword: answers.adminPassword,
-      frontPageName: models.Setting.get('frontPage'),
+      frontPageName: answers.frontPageName,
     });
     await models.sequelize.query(`
       ALTER TABLE articleSearch
@@ -38,6 +53,7 @@ const inquirer = require('inquirer');
       ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
     `);
     await models.initialize();
+    await models.setTestInstances();
     process.exit(0);
   } catch (e) {
     console.log(e);

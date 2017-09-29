@@ -19,43 +19,6 @@ const NGINX_MESSAGE = 'nginx (nginx must be installed first)';
 
 const colors = require('colors/safe');
 
-const nginxConfig = (host, viewRoot) => `server {
-  listen 80 default_server;
-  listen [::]:80 default_server;
-
-  root ${viewRoot};
-
-  index index.html;
-
-  server_name ${host};
-
-  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-  proxy_set_header X-Forwarded-Proto $scheme;
-
-  location /api/ {
-    proxy_pass http://localhost:3001/;
-  }
-
-  location / {
-    try_files $uri $uri/ @rewrites;
-  }
-
-  location /media/ {
-    root ${rootPath};
-  }
-
-  location @rewrites {
-    rewrite ^(.+)$ /index.html last;
-  }
-
-  location ~* \\.(?:ico|css|js|gif|jpe?g|png)$ {
-    expires max;
-    add_header Pragma public;
-    add_header Cache-Control "public, must-revalidate, proxy-revalidate";
-  }
-
-}`;
-
 (async () => {
   try {
     if (fs.existsSync(configPath)) {
@@ -118,23 +81,6 @@ const nginxConfig = (host, viewRoot) => `server {
         name: 'wikiDomain',
         message: 'Wiki server domain name',
         default: 'localhost',
-      },
-      {
-        type: 'list',
-        name: 'view',
-        message: 'Pick a view skin',
-        choices: [
-          'liberty',
-        ],
-      },
-      {
-        type: 'list',
-        name: 'serverType',
-        message: 'Pick a HTTP server',
-        choices: [
-          NGINX_MESSAGE,
-          'do nothing',
-        ],
       },
       {
         type: 'input',
@@ -215,12 +161,6 @@ const nginxConfig = (host, viewRoot) => `server {
       ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
     `);
     await models.initialize();
-    const viewLiberty = require('liberty-view-liberty');
-    if (answers.serverType === NGINX_MESSAGE) {
-      const nginx = nginxConfig(answers.wikiDomain, viewLiberty.root);
-      console.log(colors.green('Use below to configure Nginx.'));
-      console.log(`\n${nginx}\n`);
-    }
     console.log(colors.green('done'));
     process.exit(0);
   } catch (err) {

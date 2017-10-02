@@ -14,6 +14,9 @@
     },
     "mediaFileStorage": {
       "type": "local"
+    },
+    "redis": {
+      "password": ""
     }
   },
   "test": {
@@ -31,6 +34,9 @@
     }
     "mediaFileStorage": {
       "type": "local"
+    },
+    "redis": {
+      "password": ""
     }
   },
   "production": {
@@ -48,6 +54,9 @@
     }
     "mediaFileStorage": {
       "type": "local"
+    },
+    "redis": {
+      "password": ""
     }
   }
 }

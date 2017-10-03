@@ -9,6 +9,10 @@
 
 const models = require('../lib/models');
 const inquirer = require('inquirer');
+const path = require('path');
+const fs = require('fs');
+
+const mediaFilePath = path.join(__dirname, '..', 'media');
 
 (async () => {
   try {
@@ -53,6 +57,16 @@ const inquirer = require('inquirer');
       ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
     `);
     await models.initialize();
+    fs.readdirSync(path.join(__dirname, '..', 'media'))
+      .filter(file => (file.indexOf('.') !== 0) && (!['removed', 'temp', '.gitkeep'].includes(file)))
+      .forEach((file) => {
+        fs.renameSync(path.join(mediaFilePath, file), path.join(mediaFilePath, 'removed', file));
+      });
+    fs.readdirSync(path.join(__dirname, '..', 'media', 'temp'))
+      .filter(file => (file.indexOf('.') !== 0) && (!['.gitkeep'].includes(file)))
+      .forEach((file) => {
+        fs.unlinkSync(path.join(mediaFilePath, 'temp', file));
+      });
     // await models.setTestInstances();
     process.exit(0);
   } catch (e) {

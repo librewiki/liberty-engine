@@ -30,10 +30,16 @@ node_modules
 npm-debug.log
 
 /media/*
+
 !/media/temp
+!/media/removed
+
 /media/temp/*
+/media/removed/*
+
 !/media/.gitkeep
 !/media/temp/.gitkeep
+!/media/removed/.gitkeep
 
 /views/*
 !/views/.gitkeep

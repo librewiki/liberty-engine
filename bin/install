@@ -13,6 +13,7 @@ const randomBytesAsync = promisify(crypto.randomBytes);
 const writeFileAsync = promisify(fs.writeFile);
 
 const configPath = path.join(__dirname, '..', 'config', 'config.json');
+const mediaFilePath = path.join(__dirname, '..', 'media');
 
 const colors = require('colors/safe');
 
@@ -158,6 +159,16 @@ const colors = require('colors/safe');
       ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
     `);
     await models.initialize();
+    fs.readdirSync(path.join(__dirname, '..', 'media'))
+      .filter(file => (file.indexOf('.') !== 0) && (!['removed', 'temp', '.gitkeep'].includes(file)))
+      .forEach((file) => {
+        fs.renameSync(path.join(mediaFilePath, file), path.join(mediaFilePath, 'removed', file));
+      });
+    fs.readdirSync(path.join(__dirname, '..', 'media', 'temp'))
+      .filter(file => (file.indexOf('.') !== 0) && (!['.gitkeep'].includes(file)))
+      .forEach((file) => {
+        fs.unlinkSync(path.join(mediaFilePath, 'temp', file));
+      });
     console.log(colors.green('done'));
     process.exit(0);
   } catch (err) {

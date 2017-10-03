@@ -29,6 +29,7 @@
     "cors": "^2.8.3",
     "debug": "^2.6.8",
     "express": "^4.15.3",
+    "express-validator": "^4.2.1",
     "helmet": "^3.8.0",
     "i18next": "^8.4.0",
     "inquirer": "^3.2.0",

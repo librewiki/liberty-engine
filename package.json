@@ -8,7 +8,7 @@
   "scripts": {
     "start": "node ./bin/www",
     "pro": "pm2 start ecosystem.config.js --env production",
-    "test": "node_modules/.bin/mocha --recursive -u exports tests",
+    "test": "node_modules/.bin/mocha --recursive -u exports tests/api",
     "mkdoc": "yuidoc -c ./docs/yui.json",
     "docserver": "yuidoc --server -c ./docs/yui.json"
   },

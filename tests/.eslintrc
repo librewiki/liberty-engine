@@ -37,7 +37,9 @@
     }],
     "no-console": [0],
     "no-await-in-loop": [0],
-    "no-shadow": [0]
+    "no-shadow": [0],
+    "import/no-extraneous-dependencies": ['error', {"devDependencies": true }],
+    "no-unused-expressions": [0]
   },
   "extends": "airbnb-base"
 }

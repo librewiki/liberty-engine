@@ -41,6 +41,7 @@ describe('API index', () => {
       adminPassword: 'adminPassword',
       frontPageName: 'Front Page',
     });
+    await models.initialize();
   });
 
 

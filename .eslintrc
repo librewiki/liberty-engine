@@ -37,7 +37,11 @@
     "no-console": [0],
     "no-await-in-loop": [0],
     "no-shadow": [0],
-    "global-require": [0]
+    "global-require": [0],
+    'prefer-const': ['error', {
+      destructuring: 'all',
+      ignoreReadBeforeAssign: true,
+    }],
   },
   "extends": "airbnb-base"
 }

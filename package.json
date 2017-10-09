@@ -51,6 +51,6 @@
     "striptags": "^3.0.1",
     "swagger-ui": "^3.0.20",
     "uuid": "^3.1.0",
-    "validator": "^8.0.0"
+    "validator": "^9.0.0"
   }
 }

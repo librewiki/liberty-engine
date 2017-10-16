@@ -47,7 +47,7 @@
     "nodemailer": "^4.0.1",
     "promise-redis": "0.0.5",
     "sanitize-html": "^1.14.1",
-    "sequelize": "^4.4.2",
+    "sequelize": "^4.14.0",
     "string-replace-async": "^1.2.0",
     "striptags": "^3.0.1",
     "swagger-ui": "^3.0.20",

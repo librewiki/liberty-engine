@@ -12,7 +12,7 @@
 - The **latest** version (8+) of Node.js
 - MariaDB version 10+
   - Mroonga storage engine for fulltext search. `sudo apt install mariadb-plugin-mroonga`
-- Redis
+- Redis (optional)
 
 # Installation
 ```bash

@@ -1,0 +1,3 @@
+[submodule "view"]
+	path = view
+	url = git@gitlab.com:librewiki/liberty-view-ssr.git

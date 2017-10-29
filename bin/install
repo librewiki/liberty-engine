@@ -2,15 +2,16 @@
 
 'use strict';
 
-const fs = require('fs');
+const {
+  existsSync, writeFileSync, readdirSync, renameSync, unlinkSync, readFileSync,
+} = require('fs');
 const path = require('path');
 const crypto = require('crypto');
 const { promisify } = require('util');
 const inquirer = require('inquirer');
-const validator = require('validator');
+const { execSync } = require('child_process');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
-const writeFileAsync = promisify(fs.writeFile);
 
 const configPath = path.join(__dirname, '..', 'config', 'config.json');
 const mediaFilePath = path.join(__dirname, '..', 'media');
@@ -19,12 +20,12 @@ const colors = require('colors/safe');
 
 (async () => {
   try {
-    if (fs.existsSync(configPath)) {
+    if (existsSync(configPath)) {
       const answers = await inquirer.prompt([
         {
           type: 'confirm',
           name: 'clear',
-          message: 'config.json is found. Do you want clear the data of your wiki?',
+          message: 'config.json is found. Do you want to clear the data of your wiki?',
           default: false,
         },
       ]);
@@ -32,12 +33,21 @@ const colors = require('colors/safe');
         return;
       }
     }
-    const answers = await inquirer.prompt([
+    const { createDbUser, createDatabase } = await inquirer.prompt([
       {
-        type: 'input',
-        name: 'wikiName',
-        message: 'the name of wiki',
+        type: 'confirm',
+        name: 'createDatabase',
+        message: 'Do you want to create new database?',
+        default: true,
       },
+      {
+        type: 'confirm',
+        name: 'createDbUser',
+        message: 'Do you want to create mysql user?',
+        default: true,
+      },
+    ]);
+    const { dbName, dbUsername, dbPassword } = await inquirer.prompt([
       {
         type: 'input',
         name: 'dbName',
@@ -53,26 +63,21 @@ const colors = require('colors/safe');
         name: 'dbPassword',
         message: 'database password',
       },
+    ]);
+    if (createDatabase) {
+      execSync(`sudo mysql -e "create database ${dbName};"`);
+    }
+    if (createDbUser) {
+      execSync(`sudo mysql -e "create user '${dbUsername}'@'localhost' identified by '${dbPassword}';"`);
+    }
+    execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'localhost';"`);
+    execSync('sudo mysql -e "flush privileges;"');
+    console.log(colors.green('User/DB setup is complete.'));
+    const answers = await inquirer.prompt([
       {
         type: 'input',
-        name: 'dbHost',
-        message: 'database server host',
-        default: 'localhost',
-      },
-      {
-        type: 'input',
-        name: 'dbPort',
-        message: 'database server port',
-        default: '3306',
-        validate(value) {
-          return validator.isInt(String(value), { min: 1, max: 65535 }) || 'Please enter a valid port number';
-        },
-        filter: Number,
-      },
-      {
-        type: 'password',
-        name: 'redisPassword',
-        message: 'Redis password',
+        name: 'wikiName',
+        message: 'the name of wiki',
       },
       {
         type: 'input',
@@ -105,11 +110,11 @@ const colors = require('colors/safe');
       production: {
         secret,
         db: {
-          username: answers.dbUsername,
-          password: answers.dbPassword,
-          database: answers.dbName,
-          host: answers.dbHost,
-          port: answers.dbPort,
+          username: dbUsername,
+          password: dbPassword,
+          database: dbName,
+          host: 'localhost',
+          port: '3306',
           dialect: 'mysql',
           charset: 'utf8mb4',
           collate: 'utf8mb4_bin',
@@ -118,37 +123,31 @@ const colors = require('colors/safe');
         mediaFileStorage: {
           type: 'local',
         },
-        redis: {
-          password: answers.redisPassword,
-        },
       },
       development: {
         secret,
         db: {
-          username: answers.dbUsername,
-          password: answers.dbPassword,
-          database: answers.dbName,
-          host: answers.dbHost,
-          port: answers.dbPort,
+          username: dbUsername,
+          password: dbPassword,
+          database: dbName,
+          host: 'localhost',
+          port: '3306',
           dialect: 'mysql',
           charset: 'utf8mb4',
           collate: 'utf8mb4_bin',
-          pool: { max: 400, min: 0, idle: 10000 },
+          pool: { max: 40, min: 0, idle: 10000 },
         },
         mediaFileStorage: {
           type: 'local',
         },
-        redis: {
-          password: answers.redisPassword,
-        },
       },
     };
     const configJSON = JSON.stringify(config, null, 2);
-    await writeFileAsync(configPath, configJSON);
+    writeFileSync(configPath, configJSON);
     const models = require('../lib/models');
     await models.install({
       wikiName: answers.wikiName,
-      domain: answers.domain,
+      domain: answers.wikiDomain,
       adminUsername: answers.adminUsername,
       adminPassword: answers.adminPassword,
       frontPageName: answers.frontPageName,
@@ -156,19 +155,28 @@ const colors = require('colors/safe');
     await models.sequelize.query(`
       ALTER TABLE articleSearch
       DROP INDEX article_search_content,
-      ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
+      ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigit"'
     `);
     await models.initialize();
-    fs.readdirSync(path.join(__dirname, '..', 'media'))
+    readdirSync(path.join(__dirname, '..', 'media'))
       .filter(file => (file.indexOf('.') !== 0) && (!['removed', 'temp', '.gitkeep'].includes(file)))
       .forEach((file) => {
-        fs.renameSync(path.join(mediaFilePath, file), path.join(mediaFilePath, 'removed', file));
+        renameSync(path.join(mediaFilePath, file), path.join(mediaFilePath, 'removed', file));
       });
-    fs.readdirSync(path.join(__dirname, '..', 'media', 'temp'))
+    readdirSync(path.join(__dirname, '..', 'media', 'temp'))
       .filter(file => (file.indexOf('.') !== 0) && (!['.gitkeep'].includes(file)))
       .forEach((file) => {
-        fs.unlinkSync(path.join(mediaFilePath, 'temp', file));
+        unlinkSync(path.join(mediaFilePath, 'temp', file));
       });
+    const nginxTemplate = readFileSync(path.join(__dirname, 'nginx-template'), 'utf8');
+    const nginxConfig = nginxTemplate
+      .replace(/\{\{server_name\}\}/g, answers.wikiDomain)
+      .replace(/\{\{root_path\}\}/g, path.join(__dirname, '..'));
+    const tempPath = path.join(__dirname, 'libertyengine');
+    if (existsSync(tempPath)) unlinkSync(tempPath);
+    writeFileSync(tempPath, nginxConfig);
+    execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/libertyengine /etc/nginx/sites-enabled/libertyengine`);
+    execSync('sudo service nginx reload');
     console.log(colors.green('done'));
     process.exit(0);
   } catch (err) {

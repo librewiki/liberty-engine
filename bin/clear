@@ -54,7 +54,7 @@ const mediaFilePath = path.join(__dirname, '..', 'media');
     await models.sequelize.query(`
       ALTER TABLE articleSearch
       DROP INDEX article_search_content,
-      ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigixt"'
+      ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigit"'
     `);
     await models.initialize();
     fs.readdirSync(path.join(__dirname, '..', 'media'))

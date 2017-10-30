@@ -12,7 +12,7 @@
     "status": "pm2 status ecosystem.config.js",
     "stop": "pm2 stop ecosystem.config.js",
     "delete": "pm2 delete ecosystem.config.js",
-    "upgrade": "git pull && git submodule update && npm i --ignore-scripts && cd view && npm i && node_modules/.bin/nuxt build",
+    "upgrade": "git submodule update && npm i --ignore-scripts && cd view && npm i && node_modules/.bin/nuxt build",
     "log": "pm2 log --lines 100",
     "test": "node_modules/.bin/mocha --recursive -u exports tests/api",
     "mkdoc": "yuidoc -c ./docs/yui.json",

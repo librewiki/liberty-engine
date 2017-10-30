@@ -82,7 +82,7 @@ const colors = require('colors/safe');
       {
         type: 'input',
         name: 'wikiDomain',
-        message: 'Wiki server domain name',
+        message: 'Wiki server domain name (e.g., www.wiki.com)',
         default: 'localhost',
       },
       {
@@ -175,7 +175,7 @@ const colors = require('colors/safe');
     const tempPath = path.join(__dirname, 'libertyengine');
     if (existsSync(tempPath)) unlinkSync(tempPath);
     writeFileSync(tempPath, nginxConfig);
-    execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/libertyengine /etc/nginx/sites-enabled/libertyengine`);
+    execSync(`sudo rm -f /etc/nginx/sites-available/libertyengine && sudo rm -f /etc/nginx/sites-enabled/libertyengine && sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/libertyengine /etc/nginx/sites-enabled/libertyengine`);
     execSync('sudo service nginx reload');
     console.log(colors.green('done'));
     process.exit(0);

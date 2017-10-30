@@ -17,17 +17,18 @@
 
 # Installation (Ubuntu / Debian)
 ```bash
-#install dependencies
+# install dependencies
 sudo apt update
 sudo apt install mariadb-server
 sudo apt install mariadb-plugin-mroonga
 sudo apt install nginx
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt install nodejs
-#install LibertyEngine
+# install LibertyEngine
 git clone https://gitlab.com/librewiki/liberty-engine.git
 cd liberty-engine
 npm i
+# if you are logged in as root, use "npm i --unsasfe-perm" instead.
 ```
 
 # Start

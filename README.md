@@ -28,7 +28,7 @@ sudo apt install nodejs
 git clone https://gitlab.com/librewiki/liberty-engine.git
 cd liberty-engine
 npm i
-# if you are logged in as root, use "npm i --unsasfe-perm" instead.
+npm run setup
 ```
 
 # Start

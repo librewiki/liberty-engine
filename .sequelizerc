@@ -1,0 +1,6 @@
+const path = require('path');
+
+module.exports = {
+  'config': path.resolve('config', 'sequelize-migration-config.js'),
+  'migrations-path': path.resolve('db-migrations')
+}

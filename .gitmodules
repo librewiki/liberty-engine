@@ -1,3 +1,3 @@
 [submodule "view"]
 	path = view
-	url = git@gitlab.com:librewiki/liberty-engine-view.git
+	url = https://github.com/librewiki/liberty-engine-view.git

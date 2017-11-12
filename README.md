@@ -45,7 +45,6 @@ npm stop
 ```bash
 git pull
 npm run upgrade
-npm restart
 ```
 
 # TODO

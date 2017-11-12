@@ -48,10 +48,5 @@ npm run upgrade
 npm restart
 ```
 
-# How To Set Email Account
-```node
-bin/config mail "{\"host\":\"smtp.gmail.com\",\"port\":587,\"secure\":false,\"user\":\"mailaddress\",\"password\":\"password\"}"
-```
-
 # TODO
 - parser improving (supporting other parser, easy API)

@@ -1,12 +1,10 @@
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 -->
-
 - [Requirements](#requirements)
-- [Installation](#installation)
-- [How To Set Email Account](#how-to-set-email-account)
-- [List of Special Permissions](#list-of-special-permissions)
+- [Installation (Ubuntu / Debian)](#installation-ubuntu-debian)
+- [Start](#start)
+- [Stop](#stop)
+- [Upgrade](#upgrade)
+- [Development](#development)
 - [TODO](#todo)
-
-<!-- /TOC -->
 
 # Requirements
 - The **latest** version (8+) of Node.js
@@ -45,6 +43,11 @@ npm stop
 ```bash
 git pull
 npm run upgrade
+```
+
+# Development
+```bash
+npm run dev # runs API development server at http://localhost:3001
 ```
 
 # TODO

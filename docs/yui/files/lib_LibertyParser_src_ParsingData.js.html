@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>modules/WikiRenderer/Preprocessor/Nodes/NodeList.js - LibertyEngine</title>
+    <title>lib/LibertyParser/src/ParsingData.js - LibertyEngine</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,30 +78,50 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>modules_WikiRenderer_Preprocessor_Nodes_NodeList.js Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: lib/LibertyParser/src/ParsingData.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
 
-        <div class="foundat">
-            Defined in: <a href="../files/lib_LibertyParser_src_work_doTemplate_Nodes_NodeList.js.html#l1"><code>lib&#x2F;LibertyParser&#x2F;src&#x2F;work&#x2F;doTemplate&#x2F;Nodes&#x2F;NodeList.js:1</code></a>
-        </div>
+class ParsingData {
+  /**
+   * constructor
+   *
+   * @param  {Object} articleMetadata
+   * @param  {Object} wikiMetadata
+   * @return {DataForParsing}
+   */
+  constructor(articleMetadata, wikiMetadata, parserSupporter) {
+    this.articleMetadata = articleMetadata;
+    this.wikiMetadata = wikiMetadata;
+    this.parserSupporter = parserSupporter;
+    this.structureData = {
+      nowikiTexts: [],
+      section: {
+        title: &#x27;(root)&#x27;,
+        relativeLevel: -1,
+        absoluteLevel: -1,
+        subsections: [],
+      },
+      tocSerialNumber: 0,
+      numOfHeadings: 0,
+      link: {
+        articles: new Set(),
+        files: new Set(),
+        templates: new Set(),
+        interwikis: new Set(),
+        categories: new Set(),
+      },
+      numOfExternalLinks: 0,
+      templateRecursionNumber: 0,
+    };
+  }
+}
 
-</div>
+module.exports = ParsingData;
 
-
-<div class="box intro">
-    <p>List of node clases used for prerendering.</p>
-
-</div>
-
-
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-    </div>
-
-
-    <div class="yui3-u-1-2">
-    </div>
+    </pre>
 </div>
                     </div>
                 </div>

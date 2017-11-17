@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>modules/WikiRenderer/Preprocessor/Nodes/NodeList.js - LibertyEngine</title>
+    <title>lib/models/DiscussionTopic.js - LibertyEngine</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,30 +78,117 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>modules_WikiRenderer_Preprocessor_Nodes_NodeList.js Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: lib/models/DiscussionTopic.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
 
-        <div class="foundat">
-            Defined in: <a href="../files/lib_LibertyParser_src_work_doTemplate_Nodes_NodeList.js.html#l1"><code>lib&#x2F;LibertyParser&#x2F;src&#x2F;work&#x2F;doTemplate&#x2F;Nodes&#x2F;NodeList.js:1</code></a>
-        </div>
+const DataTypes = require(&#x27;../DataTypes&#x27;);
+const LibertyModel = require(&#x27;./LibertyModel&#x27;);
+const models = require(&#x27;./&#x27;);
 
-</div>
+class DiscussionTopic extends LibertyModel {
+  static getAttributes() {
+    return {
+      /**
+       * Primary key.
+       *
+       * @property id
+       * @type Number
+       */
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      articleId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
+      title: {
+        type: DataTypes.STRING,
+        allowNull: false,
+      },
+      status: {
+        type: DataTypes.ENUM(&#x27;OPEN&#x27;, &#x27;PAUSED&#x27;, &#x27;CLOSED&#x27;),
+        allowNull: false,
+        defaultValue: &#x27;OPEN&#x27;,
+      },
+    };
+  }
+  static getOptions() {
+    return {
+      paranoid: true,
+      scopes: {
+        open: {
+          where: {
+            status: &#x27;OPEN&#x27;,
+          },
+        },
+        closed: {
+          where: {
+            status: &#x27;CLOSED&#x27;,
+          },
+        },
+      },
+      indexes: [{
+        fields: [&#x27;updatedAt&#x27;],
+      }],
+    };
+  }
 
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+    this.belongsTo(models.Article, {
+      onDelete: &#x27;CASCADE&#x27;,
+      onUpdate: &#x27;CASCADE&#x27;,
+    });
+    this.hasMany(models.DiscussionComment, {
+      as: &#x27;comments&#x27;,
+      onDelete: &#x27;CASCADE&#x27;,
+      onUpdate: &#x27;CASCADE&#x27;,
+      foreignKey: &#x27;topicId&#x27;,
+    });
+  }
 
-<div class="box intro">
-    <p>List of node clases used for prerendering.</p>
+  static createNew({
+    article, title, wikitext, ipAddress, author, transaction,
+  }) {
+    return this.autoTransaction(transaction, async (transaction) =&gt; {
+      const newTopic = await this.create({
+        title: title.trim(),
+        articleId: article.id,
+      }, { transaction });
+      await models.DiscussionComment.createNew({
+        topic: newTopic,
+        wikitext,
+        ipAddress,
+        author,
+        transaction,
+      });
+      return newTopic;
+    });
+  }
 
-</div>
+  async getFirstComment() {
+    return models.DiscussionComment.findOne({
+      where: {
+        topicId: this.id,
+      },
+      order: [[&#x27;id&#x27;, &#x27;ASC&#x27;]],
+      include: [models.DiscussionComment.associations.author],
+    });
+  }
+}
 
+module.exports = DiscussionTopic;
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-    </div>
-
-
-    <div class="yui3-u-1-2">
-    </div>
+    </pre>
 </div>
                     </div>
                 </div>

@@ -25,7 +25,8 @@
     "eslint-config-airbnb-base": "^12.1.0",
     "eslint-plugin-import": "^2.8.0",
     "mocha": "^3.5.3",
-    "sinon": "^1.17.7"
+    "sinon": "^1.17.7",
+    "yuidocjs": "^0.10.2"
   },
   "dependencies": {
     "bcrypt": "^1.0.3",

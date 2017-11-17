@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>modules/WikiRenderer/Preprocessor/Nodes/NodeList.js - LibertyEngine</title>
+    <title>lib/models/Wikitext.js - LibertyEngine</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,30 +78,74 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>modules_WikiRenderer_Preprocessor_Nodes_NodeList.js Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: lib/models/Wikitext.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
 
-        <div class="foundat">
-            Defined in: <a href="../files/lib_LibertyParser_src_work_doTemplate_Nodes_NodeList.js.html#l1"><code>lib&#x2F;LibertyParser&#x2F;src&#x2F;work&#x2F;doTemplate&#x2F;Nodes&#x2F;NodeList.js:1</code></a>
-        </div>
+const DataTypes = require(&#x27;../DataTypes&#x27;);
+const LibertyModel = require(&#x27;./LibertyModel&#x27;);
 
-</div>
+const nowikiRegex1 = /\\nowiki\\/g;
+const nowikiRegex2 = /&lt;(pre|nowiki|math)(?:(?:\s+\w+(?:\s*=\s*(?:(?:&quot;[^&quot;]*&quot;)|(?:&#x27;[^&#x27;]*&#x27;)|[^&gt;\s]+))?)*)\s*(?:\/?)&gt;((?:.|\n)*?)&lt;\/\1&gt;/gi;
+const annotRegex = /&lt;!--((?:.|\n)*?)--&gt;/g;
+const moment = require(&#x27;moment&#x27;);
 
+class Wikitext extends LibertyModel {
+  static getAttributes() {
+    return {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
+      text: {
+        type: DataTypes.TEXT(&#x27;medium&#x27;),
+        allowNull: false,
+      },
+    };
+  }
 
-<div class="box intro">
-    <p>List of node clases used for prerendering.</p>
+  /**
+   * Replace wikitext when it is saved.
+   * @method replaceOnSave
+   * @async
+   * @static
+   * @param {Object} option
+   * @param {User} option.ipAddress ip.
+   * @param {User} option.article an article to change.
+   * @param {User} option.author user writing this.
+   * @param {String} option.wikitext wikitext.
+   * @param {String} option.status one of &#x27;new&#x27;, &#x27;normal&#x27;, &#x27;moved&#x27;, or &#x27;deleted&#x27;.
+   * @return {Promise&lt;String&gt;} Returns a replaced wikitext.
+   */
+  static async replaceOnSave({ ipAddress, author, wikitext }) {
+    const date = moment().format();
+    const nowikiArr = [];
+    const newText = wikitext
+      .replace(/\r\n/g, &#x27;\n&#x27;)
+      .replace(/\r/g, &#x27;\n&#x27;)
+      .replace(nowikiRegex1, &#x27;\\Nowiki\\&#x27;)
+      .replace(nowikiRegex2, ($0) =&gt; {
+        const x = nowikiArr.push($0);
+        return &#x60;\\nowiki\\_${x - 1}_\\nowiki\\&#x60;;
+      })
+      .replace(annotRegex, ($0) =&gt; {
+        const x = nowikiArr.push($0);
+        return &#x60;\\nowiki\\_${x - 1}_\\nowiki\\&#x60;;
+      });
+    const signature = await author.getSignature(ipAddress);
+    return newText.replace(/~~~~~/g, date)
+      .replace(/~~~~/g, &#x60;${signature} ${date}&#x60;)
+      .replace(/~~~/g, signature)
+      .replace(/\\nowiki\\_(\d+)_\\nowiki\\/g, ($0, $1) =&gt; nowikiArr[$1]);
+  }
+}
 
-</div>
+module.exports = Wikitext;
 
-
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-    </div>
-
-
-    <div class="yui3-u-1-2">
-    </div>
+    </pre>
 </div>
                     </div>
                 </div>

@@ -1,14 +1,13 @@
 {
-  "name": "The Foo API",
-  "description": "The Foo API: a library for doing X, Y, and Z",
-  "version": "1.2.1",
-  "url": "http://example.com/",
+  "name": "LibertyEngine",
+  "description": "LibertyEngine",
+  "version": "0.0.1",
+  "url": "https://github.com/librewiki/liberty-engine/",
   "options": {
     "linkNatives": true,
     "outdir": "./docs/yui",
     "paths": [
-      "./models",
-      "./src"
+      "./lib"
     ]
   }
 }

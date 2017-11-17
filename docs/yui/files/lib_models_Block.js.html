@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>modules/WikiRenderer/Preprocessor/Nodes/NodeList.js - LibertyEngine</title>
+    <title>lib/models/Block.js - LibertyEngine</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,30 +78,143 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>modules_WikiRenderer_Preprocessor_Nodes_NodeList.js Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: lib/models/Block.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
 
-        <div class="foundat">
-            Defined in: <a href="../files/lib_LibertyParser_src_work_doTemplate_Nodes_NodeList.js.html#l1"><code>lib&#x2F;LibertyParser&#x2F;src&#x2F;work&#x2F;doTemplate&#x2F;Nodes&#x2F;NodeList.js:1</code></a>
-        </div>
+const DataTypes = require(&#x27;../DataTypes&#x27;);
+const LibertyModel = require(&#x27;./LibertyModel&#x27;);
+const { Op } = require(&#x27;sequelize&#x27;);
+const ip = require(&#x27;ip&#x27;);
+/*
+ * @TODO clear expired objects automatically
+ */
+class Block extends LibertyModel {
+  static getAttributes() {
+    return {
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
 
-</div>
+      userId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
 
+      ipStart: {
+        ...DataTypes.ipAddress(&#x27;ipStart&#x27;),
+        allowNull: true,
+      },
 
-<div class="box intro">
-    <p>List of node clases used for prerendering.</p>
+      ipEnd: {
+        ...DataTypes.ipAddress(&#x27;ipEnd&#x27;),
+        allowNull: true,
+      },
 
-</div>
+      expiration: {
+        type: DataTypes.DATE,
+        allowNull: true,
+      },
 
+      anonymousOnly: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-    </div>
+      noUserCreation: {
+        type: DataTypes.BOOLEAN,
+        allowNull: false,
+        defaultValue: false,
+      },
 
+      reason: {
+        type: DataTypes.STRING(200),
+        allowNull: false,
+      },
+    };
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {}
 
-    <div class="yui3-u-1-2">
-    </div>
+  static getOptions() {
+    return {
+      timestamp: false,
+      indexes: [
+        {
+          fields: [&#x27;ipStart&#x27;],
+        },
+        {
+          fields: [&#x27;ipEnd&#x27;],
+        },
+        {
+          fields: [&#x27;expiration&#x27;],
+        },
+      ],
+      scopes: {
+        containing(ipAddress) {
+          const buffer = ip.toBuffer(ipAddress);
+          return {
+            where: {
+              ipStart: {
+                [Op.lte]: buffer,
+              },
+              ipEnd: {
+                [Op.gte]: buffer,
+              },
+            },
+          };
+        },
+        valid: {
+          where: {
+            expiration: {
+              [Op.or]: [
+                {
+                  [Op.gt]: Date.now(),
+                },
+                {
+                  [Op.eq]: null,
+                },
+              ],
+            },
+          },
+        },
+      },
+    };
+  }
+
+  static async isBlockedIp(ipAddress) {
+    const blocks = await Block.scope([&#x27;valid&#x27;, { method: [&#x27;containing&#x27;, ipAddress] }]).findAll();
+    if (blocks.length) {
+      const options = {
+        anonymousOnly: true,
+        noUserCreation: false,
+      };
+      for (const block of blocks) {
+        if (!block.anonymousOnly) {
+          options.anonymousOnly = false;
+        }
+        if (block.noUserCreation) {
+          options.noUserCreation = true;
+        }
+      }
+      return options;
+    }
+    return false;
+  }
+}
+
+module.exports = Block;
+
+    </pre>
 </div>
                     </div>
                 </div>

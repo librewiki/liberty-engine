@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="utf-8">
-    <title>modules/WikiRenderer/Preprocessor/Nodes/NodeList.js - LibertyEngine</title>
+    <title>lib/models/RevisionArchive.js - LibertyEngine</title>
     <link rel="stylesheet" href="http://yui.yahooapis.com/3.9.1/build/cssgrids/cssgrids-min.css">
     <link rel="stylesheet" href="../assets/vendor/prettify/prettify-min.css">
     <link rel="stylesheet" href="../assets/css/main.css" id="site_styles">
@@ -78,30 +78,116 @@
             <div class="apidocs">
                 <div id="docs-main">
                     <div class="content">
-<h1>modules_WikiRenderer_Preprocessor_Nodes_NodeList.js Module</h1>
-<div class="box clearfix meta">
+<h1 class="file-heading">File: lib/models/RevisionArchive.js</h1>
 
+<div class="file">
+    <pre class="code prettyprint linenums">
+&#x27;use strict&#x27;;
 
-        <div class="foundat">
-            Defined in: <a href="../files/lib_LibertyParser_src_work_doTemplate_Nodes_NodeList.js.html#l1"><code>lib&#x2F;LibertyParser&#x2F;src&#x2F;work&#x2F;doTemplate&#x2F;Nodes&#x2F;NodeList.js:1</code></a>
-        </div>
+const LibertyModel = require(&#x27;./LibertyModel&#x27;);
+const DataTypes = require(&#x27;../DataTypes&#x27;);
+const models = require(&#x27;./&#x27;);
 
-</div>
+class RevisionArchive extends LibertyModel {
+  static getAttributes() {
+    return {
+      /**
+       * Primary key.
+       *
+       * @property id
+       * @type Number
+       */
+      id: {
+        type: DataTypes.INTEGER,
+        primaryKey: true,
+        autoIncrement: true,
+      },
 
+      articleId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
 
-<div class="box intro">
-    <p>List of node clases used for prerendering.</p>
+      namespaceId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
 
-</div>
+      title: {
+        type: DataTypes.STRING(128),
+        allowNull: false,
+      },
 
+      fullTitle: {
+        type: DataTypes.VIRTUAL,
+        get() {
+          if (
+            this.getDataValue(&#x27;namespaceId&#x27;) === null
+            || this.getDataValue(&#x27;namespaceId&#x27;) === undefined
+            || this.getDataValue(&#x27;title&#x27;) === null
+            || this.getDataValue(&#x27;title&#x27;) === undefined
+          ) {
+            return undefined;
+          }
+          return models.Namespace.joinNamespaceIdTitle(this.getDataValue(&#x27;namespaceId&#x27;), this.getDataValue(&#x27;title&#x27;));
+        },
+      },
 
-<div class="yui3-g">
-    <div class="yui3-u-1-2">
-    </div>
+      revisionId: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+      },
 
+      revisionCreatedAt: {
+        type: DataTypes.DATE,
+        allowNull: false,
+      },
 
-    <div class="yui3-u-1-2">
-    </div>
+      changedLength: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
+
+      type: {
+        type: DataTypes.ENUM(&#x27;CREATE&#x27;, &#x27;EDIT&#x27;, &#x27;RENAME&#x27;),
+        validation: {
+          isIn: [[&#x27;CREATE&#x27;, &#x27;EDIT&#x27;, &#x27;RENAME&#x27;]],
+        },
+        allowNull: false,
+      },
+
+      summary: {
+        type: DataTypes.STRING(200),
+        allowNull: false,
+        defaultValue: &#x27;&#x27;,
+      },
+
+      authorId: {
+        type: DataTypes.INTEGER,
+        allowNull: true,
+      },
+
+      ipAddress: DataTypes.ipAddress(),
+    };
+  }
+  static getOptions() {
+    return {
+      timestamps: false,
+    };
+  }
+  /**
+   * Describes associations.
+   * @method associate
+   * @static
+   */
+  static associate() {
+  }
+}
+
+module.exports = RevisionArchive;
+
+    </pre>
 </div>
                     </div>
                 </div>

@@ -4,7 +4,7 @@ const striptags = require('striptags');
 const ArrayMap = require('../../lib/utils/ArrayMap');
 
 function registerFootnote($item, parsingData) {
-  const footnoteGroups = parsingData.structureData.footnoteGroups;
+  const { footnoteGroups } = parsingData.structureData;
   const lastFootnoteGroup = footnoteGroups[footnoteGroups.length - 1];
   const footnoteName = $item.attr('name');
   const content = $item.html().trim();
@@ -41,7 +41,7 @@ function registerFootnote($item, parsingData) {
 }
 
 function showFootnotes($item, parsingData) {
-  const footnoteGroups = parsingData.structureData.footnoteGroups;
+  const { footnoteGroups } = parsingData.structureData;
   const lastFootnoteGroup = footnoteGroups[footnoteGroups.length - 1];
   footnoteGroups.push(new ArrayMap());
   const rows = [];

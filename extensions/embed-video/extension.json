@@ -1,0 +1,6 @@
+{
+  "name": "embed-video",
+  "type": "parser-hook",
+  "author": "Nessun Kim",
+  "description": "allow to embed youtube video using <youtube>"
+}

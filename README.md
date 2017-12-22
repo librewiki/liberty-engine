@@ -1,3 +1,7 @@
+# LibertyEngine
+[![Build Status](https://travis-ci.org/librewiki/liberty-engine.svg?branch=master)](https://travis-ci.org/librewiki/liberty-engine)
+
+## Table of Contents
 - [Requirements](#requirements)
 - [Installation (Ubuntu / Debian)](#installation-ubuntu-debian)
 - [Start](#start)
@@ -6,14 +10,14 @@
 - [Development](#development)
 - [TODO](#todo)
 
-# Requirements
+## Requirements
 - The **latest** version (8+) of Node.js
 - MariaDB version 10+
   - Mroonga storage engine for fulltext search. `sudo apt install mariadb-plugin-mroonga`
 - Nginx
 - Redis (optional)
 
-# Installation (Ubuntu / Debian)
+## Installation (Ubuntu / Debian)
 ```bash
 # install dependencies
 sudo apt update
@@ -29,26 +33,26 @@ npm i
 npm run setup
 ```
 
-# Start
+## Start
 ```bash
 npm start
 ```
 
-# Stop
+## Stop
 ```bash
 npm stop
 ```
 
-# Upgrade
+## Upgrade
 ```bash
 git pull
 npm run upgrade
 ```
 
-# Development
+## Development
 ```bash
 npm run dev # runs API development server at http://localhost:3001
 ```
 
-# TODO
+## TODO
 - parser improving (supporting other parser, easy API)

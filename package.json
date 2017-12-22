@@ -16,7 +16,8 @@
     "log": "pm2 log --lines 100",
     "test": "node_modules/.bin/mocha --recursive -u exports tests/api",
     "mkdoc": "yuidoc -c ./docs/yui.json",
-    "docserver": "yuidoc --server -c ./docs/yui.json"
+    "docserver": "yuidoc --server -c ./docs/yui.json",
+    "lint": "eslint ./lib"
   },
   "devDependencies": {
     "chai": "^3.5.0",

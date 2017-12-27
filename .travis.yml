@@ -7,4 +7,5 @@ cache:
 before_script:
   - npm i
 script:
+  - touch config/config.json
   - npm run lint

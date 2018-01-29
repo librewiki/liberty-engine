@@ -8,7 +8,7 @@ const chai = require('chai');
 const should = chai.should();
 const Setting = require('../../lib/models/Setting');
 const wikitextParser = require('../../lib/LibertyParser').wikitextParser;
-const i18next = require('i18next');
+const i18n = require('../../i18n');
 
 const settings = {
   wikiName: 'Liberty Wiki',
@@ -17,18 +17,6 @@ const settings = {
 
 describe('Parser', () => {
   before(async () => {
-    i18next.init({
-      debug: false,
-      lng: 'en',
-      fallbackLng: 'en',
-      ns: [
-        'LibertyParser',
-      ],
-      resources: {
-        en: require('../../i18n/en.json'),
-        ko: require('../../i18n/ko.json'),
-      },
-    });
     await models.install(settings);
     await models.initialize();
   });
@@ -83,7 +71,7 @@ describe('Parser', () => {
       const result = await wikitextParser.parseRender({ wikitext: '__TOC__\n==aaa==' });
       result.html.should.be.eql(`<div id="toc" class="toc">
     <div id="toc-title">
-        <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
+        <h2>${i18n.t('LibertyParser:TableOfContents')}</h2>
     </div>
     <ul>
         <li class="toc-level-1 toc-section-1">
@@ -99,7 +87,7 @@ describe('Parser', () => {
       const result = await wikitextParser.parseRender({ wikitext: '__TOC__\n==Iñtërnâtiônàlizætiøn☃💩==' });
       result.html.should.be.eql(`<div id="toc" class="toc">
     <div id="toc-title" class="toc-title">
-        <h2>${i18next.t('LibertyParser:TableOfContents')}</h2>
+        <h2>${i18n.t('LibertyParser:TableOfContents')}</h2>
     </div>
     <ul>
         <li class="toc-level-1 toc-section-1">

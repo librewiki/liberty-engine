@@ -1,7 +1,6 @@
 'use strict';
 
 process.env.NODE_ENV = 'test';
-global.LIBERTY_VERSION = '0.0.1';
 
 const models = require('../../lib/models');
 

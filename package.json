@@ -1,8 +1,8 @@
 {
   "name": "liberty-engine",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "engines": {
-    "node": ">=8.2.1"
+    "node": ">=8"
   },
   "private": true,
   "scripts": {

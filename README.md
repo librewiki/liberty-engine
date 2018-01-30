@@ -53,6 +53,3 @@ npm run upgrade
 ```bash
 npm run dev # runs API development server at http://localhost:3001
 ```
-
-## TODO
-- parser improving (supporting other parser, easy API)

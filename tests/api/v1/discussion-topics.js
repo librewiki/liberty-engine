@@ -14,7 +14,7 @@ const models = require('../../../lib/models');
 let child;
 const host = 'http://localhost:6001';
 
-describe('discussion-topics API', () => {
+describe.only('discussion-topics API', () => {
   before('run api server', async () => {
     const env = Object.create(process.env);
     env.NODE_ENV = 'test';
@@ -45,7 +45,7 @@ describe('discussion-topics API', () => {
   });
 
 
-  describe.only('GET /discussion-topics', () => {
+  describe('GET /discussion-topics', () => {
     it('should success (200) with empty array when no discussion exists', async () => {
       const res = await chai.request(host).get('/v1/discussion-topics').send();
       expect(res).to.have.status(200);

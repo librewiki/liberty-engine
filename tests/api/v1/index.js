@@ -6,7 +6,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { spawn } = require('child_process');
 
-const expect = chai.expect;
+const { expect } = chai;
 
 chai.use(chaiHttp);
 const models = require('../../../lib/models');

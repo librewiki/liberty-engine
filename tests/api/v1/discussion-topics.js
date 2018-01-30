@@ -6,7 +6,7 @@ const chai = require('chai');
 const chaiHttp = require('chai-http');
 const { spawn } = require('child_process');
 
-const expect = chai.expect;
+const { expect } = chai;
 
 chai.use(chaiHttp);
 const models = require('../../../lib/models');
@@ -14,7 +14,8 @@ const models = require('../../../lib/models');
 let child;
 const host = 'http://localhost:6001';
 
-describe.only('discussion-topics API', () => {
+describe('discussion-topics API', function a() {
+  this.timeout(20000);
   before('run api server', async () => {
     const env = Object.create(process.env);
     env.NODE_ENV = 'test';
@@ -208,8 +209,7 @@ describe.only('discussion-topics API', () => {
     });
 
 
-    it('should success (200) with recent 10 topics', async function f() {
-      this.timeout(20000);
+    it('should success (200) with recent 10 topics', async () => {
       const admin = await models.User.findById(1);
       const article = await models.Article.createNew({
         ipAddress: '0.0.0.0',

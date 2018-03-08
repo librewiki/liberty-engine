@@ -157,6 +157,22 @@ const colors = require('colors/safe');
       DROP INDEX article_search_content,
       ADD FULLTEXT INDEX article_search_content (content ASC)  COMMENT 'parser "TokenBigramIgnoreBlankSplitSymbolAlphaDigit"'
     `);
+    await models.sequelize.query('DROP TABLE IF EXISTS SequelizeMeta');
+    await models.sequelize.query(`
+      CREATE TABLE SequelizeMeta (
+        name varchar(255) COLLATE utf8_unicode_ci NOT NULL,
+        PRIMARY KEY (name),
+        UNIQUE KEY name (name),
+        UNIQUE KEY SequelizeMeta_name_unique (name)
+      ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci
+    `);
+    const migrations = readdirSync(path.join(__dirname, '..', 'db-migrations'));
+    for (const migration of migrations) {
+      await models.sequelize.query(`
+        INSERT INTO SequelizeMeta (name) VALUES (${models.sequelize.escape(migration)})
+      `);
+    }
+
     await models.initialize();
     readdirSync(path.join(__dirname, '..', 'media'))
       .filter(file => (file.indexOf('.') !== 0) && (!['removed', 'temp', '.gitkeep'].includes(file)))

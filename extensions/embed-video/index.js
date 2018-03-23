@@ -11,7 +11,7 @@ function kakaotvHook($item) {
   const id = $item.text();
   const width = Number($item.attr('width')) || 640;
   const height = Number($item.attr('height')) || 360;
-  return `<iframe class="embed-video embed-video-kakaotv" width="${width}" height="${height}"src="//tv.kakao.com/embed/player/cliplink/${id}" allowfullscreen frameborder="0" scrolling="no"></iframe>`;
+  return `<iframe class="embed-video embed-video-kakaotv" width="${width}" height="${height}" src="//tv.kakao.com/embed/player/cliplink/${id}" allowfullscreen frameborder="0" scrolling="no"></iframe>`;
 }
 
 module.exports.import = (helper) => {

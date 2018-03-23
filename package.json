@@ -7,7 +7,7 @@
   "private": true,
   "scripts": {
     "setup": "git submodule init && git submodule update && bin/install && cd view && npm i --unsafe-perm && node_modules/.bin/nuxt build",
-    "dev": "bin/www",
+    "dev": "NODE_ENV=development bin/www",
     "start": "pm2 start ecosystem.config.js",
     "status": "pm2 status ecosystem.config.js",
     "stop": "pm2 stop ecosystem.config.js",

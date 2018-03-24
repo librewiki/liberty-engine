@@ -18,3 +18,13 @@ i18next.init({
 
 module.exports = i18next;
 module.exports.availableLanguages = ['en', 'ko'];
+
+const matches = (name, target, options = {}) => {
+  const keys = i18next.t(name, { returnObjects: true, ...options });
+  if (Array.isArray(keys)) {
+    return keys.includes(target);
+  }
+  return keys === target;
+};
+
+module.exports.matches = matches;

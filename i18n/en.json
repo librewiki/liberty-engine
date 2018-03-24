@@ -1,5 +1,23 @@
 {
   "LibertyParser": {
-    "TableOfContents": "Table of Contents"
+    "TableOfContents": "Table of Contents",
+    "FileLinkOption": {
+      "thumb": ["thumb", "thumbnail"],
+      "frame": ["frame", "framed", "enframed"],
+      "frameless": ["frameless"],
+      "border": ["border"],
+      "baseline": ["baseline"],
+      "sub": ["sub"],
+      "super": ["super"],
+      "top": ["top"],
+      "text-top": ["text-top"],
+      "middle": ["middle"],
+      "bottom": ["bottom"],
+      "text-bottom": ["text-bottom"],
+      "left": ["left"],
+      "right": ["right"],
+      "center": ["center"],
+      "none": ["none"]
+    }
   }
 }

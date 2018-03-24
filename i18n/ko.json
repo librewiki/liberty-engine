@@ -1,5 +1,9 @@
 {
   "LibertyParser": {
-    "TableOfContents": "목차"
+    "TableOfContents": "목차",
+    "FileLinkOption": {
+      "thumb": ["섬네일", "썸네일", "thumb", "thumbnail"],
+      "frame": ["프레임", "frame", "framed", "enframed"]
+    }
   }
 }

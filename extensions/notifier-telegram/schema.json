@@ -1,0 +1,10 @@
+{
+  "fields": [
+    {
+      "type": "input",
+      "inputType": "text",
+      "label": "token",
+      "model": "token"
+    }
+  ]
+}

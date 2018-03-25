@@ -43,3 +43,5 @@ npm-debug.log
 
 /views/*
 !/views/.gitkeep
+
+package-lock.json

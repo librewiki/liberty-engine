@@ -4,7 +4,7 @@
 
 const path = require('path');
 
-global.LIBERTY_VERSION = '0.3.5';
+global.LIBERTY_VERSION = '0.4.0';
 process.chdir(path.join(__dirname, '..')); // root dir
 
 const models = require('../lib/models');

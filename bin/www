@@ -2,7 +2,7 @@
 
 'use strict';
 
-global.LIBERTY_VERSION = '0.0.1';
+global.LIBERTY_VERSION = '0.4.0';
 
 /**
  * Module dependencies.

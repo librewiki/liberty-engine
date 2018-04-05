@@ -14,6 +14,10 @@ server {
   server_name {{server_name}};
   gzip on;
   charset utf-8;
+
+  add_header Content-Security-Policy "frame-ancestors 'none'";
+  add_header X-Frame-Options "DENY";
+
   location / {
     proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
     proxy_set_header Upgrade $http_upgrade;

@@ -10,6 +10,7 @@ let bot;
 
 const initializeBot = () => {
   const token = models.Setting.get('notifier-telegram:token');
+  if (!token) return;
   bot = new TelegramBot(token, { polling: true });
   bot.onText(/\/start/, async (msg) => {
     const chatIds = models.Setting.get('notifier-telegram:chatIds') || [];

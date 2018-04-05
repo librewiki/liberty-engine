@@ -2,10 +2,9 @@ server {
   #to enable ssl, uncomment below lines and give ssl cert keys.
 
   #listen 443 ssl http2;
-
   #ssl_certificate ...
   #ssl_certificate_key ...
-
+  #add_header Strict-Transport-Security "max-age=63072000; includeSubdomains; preload";
   #if ($scheme != "https") {
   #  return 301 https://$host$request_uri;
   #}

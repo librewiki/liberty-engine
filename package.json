@@ -15,6 +15,7 @@
     "upgrade": "pm2 kill && git submodule update && npm i --unsafe-perm && node_modules/.bin/sequelize db:migrate && cd view && npm i --unsafe-perm && node_modules/.bin/nuxt build && cd .. && npm run start",
     "log": "pm2 log --lines 100",
     "test": "node_modules/.bin/mocha --recursive -u exports tests/api",
+    "benchmark": "node_modules/.bin/mocha --recursive -u exports tests/benchmark",
     "mkdoc": "yuidoc -c ./docs/yui.json",
     "docserver": "yuidoc --server -c ./docs/yui.json",
     "lint": "eslint ./lib"

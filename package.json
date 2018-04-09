@@ -59,7 +59,6 @@
     "sanitize-html": "^1.18.2",
     "sequelize": "^4.33.4",
     "sequelize-cli": "^4.0.0",
-    "string-replace-async": "^1.2.1",
     "striptags": "^3.1.1",
     "swagger-ui": "^3.4.1",
     "uuid": "^3.2.1",

@@ -1,3 +1,0 @@
-[ magnet:www.asdf ]
-//www.asdf.com
-[[wikipedia:asdf]]

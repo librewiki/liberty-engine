@@ -1,5 +1,0 @@
-<p>
-    <a class="external" target="_blank" href="magnet:www.asdf" rel="noreferrer noopener">1</a>
-    <a class="external" target="_blank" href="//www.asdf.com" rel="noreferrer noopener">//www.asdf.com</a>
-    <a class="new" href="wikipedia%3Aasdf">wikipedia:asdf</a>
-</p>

@@ -44,4 +44,6 @@ npm-debug.log
 /views/*
 !/views/.gitkeep
 
+/ecosystem.config.js
+
 package-lock.json

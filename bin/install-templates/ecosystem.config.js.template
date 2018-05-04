@@ -6,7 +6,8 @@ module.exports = {
     script: './bin/www',
     env: {
       NODE_ENV: 'production',
-      PORT: 3001,
+      VIEW_PORT: '{{view_port}}',
+      PORT: '{{api_port}}',
     },
   }, {
     name: 'LibertyEngine:View',
@@ -14,7 +15,8 @@ module.exports = {
     args: 'start view',
     env: {
       NODE_ENV: 'production',
-      PORT: 3000,
+      PORT: '{{view_port}}',
+      API_PORT: '{{api_port}}',
     },
   }],
 };

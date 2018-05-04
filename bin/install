@@ -13,6 +13,7 @@ const { execSync } = require('child_process');
 
 const randomBytesAsync = promisify(crypto.randomBytes);
 
+const rootPath = path.join(__dirname, '..');
 const configPath = path.join(__dirname, '..', 'config', 'config.json');
 const mediaFilePath = path.join(__dirname, '..', 'media');
 
@@ -84,6 +85,18 @@ const colors = require('colors/safe');
         name: 'wikiDomain',
         message: 'Wiki server domain name (e.g., www.wiki.com)',
         default: 'localhost',
+      },
+      {
+        type: 'input',
+        name: 'apiPort',
+        message: 'Port of the *internal* api server',
+        default: '3001',
+      },
+      {
+        type: 'input',
+        name: 'viewPort',
+        message: 'Port of the *internal* view server',
+        default: '3000',
       },
       {
         type: 'input',
@@ -184,10 +197,17 @@ const colors = require('colors/safe');
       .forEach((file) => {
         unlinkSync(path.join(mediaFilePath, 'temp', file));
       });
-    const nginxTemplate = readFileSync(path.join(__dirname, 'nginx-template'), 'utf8');
+    const ecosystemTemplate = readFileSync(path.join(__dirname, 'install-templates', 'ecosystem.config.js.template'), 'utf8');
+    const ecosystemConfig = ecosystemTemplate
+      .replace(/\{\{api_port\}\}/g, answers.apiPort)
+      .replace(/\{\{view_port\}\}/g, answers.viewPort);
+    writeFileSync(path.join(rootPath, 'ecosystem.config.js'), ecosystemConfig);
+    const nginxTemplate = readFileSync(path.join(__dirname, 'install-templates', 'nginx.template'), 'utf8');
     const nginxConfig = nginxTemplate
       .replace(/\{\{server_name\}\}/g, answers.wikiDomain)
-      .replace(/\{\{root_path\}\}/g, path.join(__dirname, '..'));
+      .replace(/\{\{root_path\}\}/g, path.join(__dirname, '..'))
+      .replace(/\{\{api_port\}\}/g, answers.apiPort)
+      .replace(/\{\{view_port\}\}/g, answers.viewPort);
     const tempPath = path.join(__dirname, answers.wikiDomain);
     if (existsSync(tempPath)) unlinkSync(tempPath);
     writeFileSync(tempPath, nginxConfig);

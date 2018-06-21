@@ -34,17 +34,23 @@ const colors = require('colors/safe');
         return;
       }
     }
-    const { createDbUser, createDatabase } = await inquirer.prompt([
+    const { createDbUser, createDatabase, grantDbuser } = await inquirer.prompt([
       {
         type: 'confirm',
         name: 'createDatabase',
-        message: 'Do you want to create new database?',
+        message: 'Do you want to create new database? (sudo)',
         default: true,
       },
       {
         type: 'confirm',
         name: 'createDbUser',
-        message: 'Do you want to create mysql user?',
+        message: 'Do you want to create mysql user? (sudo)',
+        default: true,
+      },
+      {
+        type: 'confirm',
+        name: 'grantDbUser',
+        message: 'Do you want to grant privileges on mysql user? (sudo)',
         default: true,
       },
     ]);
@@ -71,8 +77,10 @@ const colors = require('colors/safe');
     if (createDbUser) {
       execSync(`sudo mysql -e "create user '${dbUsername}'@'localhost' identified by '${dbPassword}';"`);
     }
-    execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'localhost';"`);
-    execSync('sudo mysql -e "flush privileges;"');
+    if (grantDbuser) {
+      execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'localhost';"`);
+      execSync('sudo mysql -e "flush privileges;"');
+    }
     console.log(colors.green('User/DB setup is complete.'));
     const answers = await inquirer.prompt([
       {
@@ -211,9 +219,20 @@ const colors = require('colors/safe');
     const tempPath = path.join(__dirname, answers.wikiDomain);
     if (existsSync(tempPath)) unlinkSync(tempPath);
     writeFileSync(tempPath, nginxConfig);
-    execSync(`sudo rm -f /etc/nginx/sites-available/${answers.wikiDomain} && sudo rm -f /etc/nginx/sites-enabled/${answers.wikiDomain}`);
-    execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/${answers.wikiDomain} /etc/nginx/sites-enabled/${answers.wikiDomain}`);
-    execSync('sudo service nginx reload');
+    const { nginxMoveCopy } = await inquirer.prompt([
+      {
+        type: 'confirm',
+        name: 'nginxMoveCopy',
+        message: `Nginx config has been created on ${tempPath}.
+Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-enabled ? (sudo)`,
+        default: true,
+      },
+    ]);
+    if (nginxMoveCopy) {
+      execSync(`sudo rm -f /etc/nginx/sites-available/${answers.wikiDomain} && sudo rm -f /etc/nginx/sites-enabled/${answers.wikiDomain}`);
+      execSync(`sudo mv ${tempPath} /etc/nginx/sites-available && sudo ln -s /etc/nginx/sites-available/${answers.wikiDomain} /etc/nginx/sites-enabled/${answers.wikiDomain}`);
+      execSync('sudo service nginx reload');
+    }
     console.log(colors.green('done'));
     process.exit(0);
   } catch (err) {

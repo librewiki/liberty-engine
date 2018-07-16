@@ -7,10 +7,10 @@
 
 'use strict';
 
-const models = require('../lib/models');
 const inquirer = require('inquirer');
 const path = require('path');
 const fs = require('fs');
+const models = require('../lib/models');
 
 const mediaFilePath = path.join(__dirname, '..', 'media');
 

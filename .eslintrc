@@ -27,13 +27,6 @@
         "message": "`with` is disallowed in strict mode because it makes code impossible to predict and optimize."
       }
     ],
-    "comma-dangle": ["error", {
-      "arrays": "always-multiline",
-      "objects": "always-multiline",
-      "imports": "always-multiline",
-      "exports": "always-multiline",
-      "functions": "never"
-    }],
     "no-console": [0],
     "no-await-in-loop": [0],
     "no-shadow": [0],

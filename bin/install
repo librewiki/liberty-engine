@@ -236,7 +236,7 @@ Do you want to move this to the /etc/nginx/sites-available and /etc/nginx/sites-
     console.log(colors.green('done'));
     process.exit(0);
   } catch (err) {
-    console.log(err);
-    process.exit(-1);
+    console.error(err);
+    process.exit(1);
   }
 })();

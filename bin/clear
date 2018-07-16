@@ -70,7 +70,7 @@ const mediaFilePath = path.join(__dirname, '..', 'media');
     // await models.setTestInstances();
     process.exit(0);
   } catch (e) {
-    console.log(e);
+    console.error(e);
     process.exit(-1);
   }
 })();

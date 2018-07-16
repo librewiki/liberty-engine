@@ -18,7 +18,7 @@ const models = require('../lib/models');
     console.log(`done. ${key} = ${val}`);
     process.exit(0);
   } catch (err) {
-    console.log(err);
-    process.exit(0);
+    console.error(err);
+    process.exit(1);
   }
 })();

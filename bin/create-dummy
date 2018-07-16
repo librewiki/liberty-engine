@@ -23,7 +23,7 @@ const models = require('../lib/models');
             author: user,
             wikitext: `== HEADING == \n [[Test${i - 1}]] [[Test${i - 3}]]`,
             transaction: t,
-          }).then(() => console.log(i, ' end'))
+          }).then(() => console.log(i, ' end')),
         );
         if (promises.length === 100) {
           await Promise.all(promises);
@@ -34,7 +34,7 @@ const models = require('../lib/models');
     });
     process.exit(0);
   } catch (e) {
-    console.log(e);
-    process.exit(-1);
+    console.error(e);
+    process.exit(1);
   }
 })();

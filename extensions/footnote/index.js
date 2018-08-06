@@ -7,6 +7,7 @@ function registerFootnote($item, parsingData) {
   const { footnoteGroups } = parsingData.structureData;
   const lastFootnoteGroup = footnoteGroups[footnoteGroups.length - 1];
   const footnoteName = $item.attr('name');
+  $item.find('ref').remove();
   const content = $item.html().trim();
 
   if (footnoteName === undefined) {

@@ -1,0 +1,194 @@
+#!/usr/bin/env node
+
+'use strict';
+
+const crypto = require('crypto');
+const { promisify } = require('util');
+const sax = require('sax');
+const moment = require('moment');
+const models = require('../lib/models');
+
+const randomBytesAsync = promisify(crypto.randomBytes);
+const saxStream = sax.createStream(true, { trim: true });
+
+let thisPage = null;
+let thisRevision = null;
+let context = null;
+let count = 0;
+
+const pages = [];
+const redirections = [];
+
+async function createArticle(page) {
+  let article = null;
+  let user;
+  if (page.redirection) {
+    redirections.push(page);
+    return;
+  }
+  console.log(page.fullTitle, count);
+  count += 1;
+  for (const revision of page.revisions) {
+    if (revision.ip) {
+      user = models.User.anonymous;
+    } else {
+      const username = `_mw_${revision.username}`;
+      const randomPassword = (await randomBytesAsync(48)).toString('hex');
+      const randomEmail = `${(await randomBytesAsync(10)).toString('hex')}@mw.import`;
+      [user] = await models.User.findOrCreate({
+        where: {
+          username,
+        },
+        defaults: {
+          username,
+          password: randomPassword,
+          email: randomEmail,
+          emailConfirmed: false,
+          confirmCode: null,
+          confirmCodeExpiry: null,
+        },
+      });
+    }
+    if (article === null) {
+      article = await models.Article.createNew({
+        fullTitle: page.fullTitle,
+        ipAddress: revision.ip || '0.0.0.0',
+        author: user,
+        wikitext: revision.wikitext,
+        summary: revision.summary || '',
+        createdAt: revision.createdAt,
+      });
+    } else {
+      await article.edit({
+        ipAddress: revision.ip || '0.0.0.0',
+        author: user,
+        wikitext: revision.wikitext,
+        summary: revision.summary || '',
+        createdAt: revision.createdAt,
+      });
+    }
+  }
+}
+
+async function createRedirections() {
+  for (const page of redirections) {
+    const article = await models.Article.findByFullTitle(page.redirection);
+    const revision = page.revisions[page.revisions.length - 1];
+    let user;
+    if (revision.ip) {
+      user = models.User.anonymous;
+    } else {
+      const username = `_mw_${revision.username}`;
+      const randomPassword = (await randomBytesAsync(48)).toString('hex');
+      const randomEmail = `${(await randomBytesAsync(10)).toString('hex')}@mw.import`;
+      [user] = await models.User.findOrCreate({
+        where: {
+          username,
+        },
+        defaults: {
+          username,
+          password: randomPassword,
+          email: randomEmail,
+          emailConfirmed: false,
+          confirmCode: null,
+          confirmCodeExpiry: null,
+        },
+      });
+    }
+    await article.addNewRedirection({
+      ipAddress: revision.ip || '0.0.0.0',
+      fullTitle: page.fullTitle,
+      user,
+      createdAt: revision.createdAt,
+    });
+  }
+}
+
+saxStream.on('error', (e) => {
+  console.error(e);
+  process.exit(1);
+});
+
+saxStream.on('opentag', (node) => {
+  context = node.name;
+  switch (context) {
+    case 'page': {
+      thisPage = {
+        redirection: null,
+        fullTitle: null,
+        revisions: [],
+      };
+      pages.push(thisPage);
+      if (pages.length % 1000 === 0) console.log(pages.length);
+      break;
+    }
+    case 'redirect': {
+      thisPage.redirection = node.attributes.title;
+      break;
+    }
+    case 'revision': {
+      thisRevision = {
+        username: null,
+        ip: null,
+        summary: null,
+        wikitext: '',
+      };
+      thisPage.revisions.push(thisRevision);
+      break;
+    }
+    default:
+  }
+});
+
+saxStream.on('text', (text) => {
+  switch (context) {
+    case 'redirect': {
+      thisPage.redirection = text;
+      break;
+    }
+    case 'title': {
+      thisPage.fullTitle = text;
+      break;
+    }
+    case 'ip': {
+      thisRevision.ip = text;
+      break;
+    }
+    case 'username': {
+      thisRevision.username = text;
+      break;
+    }
+    case 'comment': {
+      thisRevision.summary = text;
+      break;
+    }
+    case 'text': {
+      thisRevision.wikitext = text;
+      break;
+    }
+    case 'timestamp': {
+      thisRevision.createdAt = moment(text);
+      break;
+    }
+    default:
+  }
+});
+
+saxStream.on('end', async () => {
+  try {
+    for (const page of pages) {
+      await createArticle(page);
+    }
+    await createRedirections();
+    console.log('done');
+    process.exit(0);
+  } catch (err) {
+    console.error(err);
+    process.exit(1);
+  }
+});
+
+(async function fn() {
+  await models.initialize();
+  process.stdin.pipe(saxStream);
+}());

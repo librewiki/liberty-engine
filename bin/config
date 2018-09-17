@@ -4,7 +4,8 @@
 
 const path = require('path');
 
-global.LIBERTY_VERSION = '0.4.0';
+global.LIBERTY_VERSION = require('../package.json').version;
+
 process.chdir(path.join(__dirname, '..')); // root dir
 
 const models = require('../lib/models');

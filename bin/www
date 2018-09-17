@@ -2,14 +2,14 @@
 
 'use strict';
 
-global.LIBERTY_VERSION = '0.4.0';
+global.LIBERTY_VERSION = require('../package.json').version;
 
 /**
  * Module dependencies.
  */
 
-const app = require('../lib/app');
 const http = require('http');
+const app = require('../lib/app');
 
 /**
  * Normalize a port into a number, string, or false.

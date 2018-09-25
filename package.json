@@ -28,7 +28,8 @@
     "eslint-plugin-import": "^2.13.0",
     "jison": "^0.4.18",
     "mocha": "^5.2.0",
-    "pegjs": "^0.10.0"
+    "pegjs": "^0.10.0",
+    "swagger-ui": "^3.19.0"
   },
   "dependencies": {
     "bcrypt": "^3.0.0",
@@ -61,7 +62,7 @@
     "sequelize": "^4.38.0",
     "sequelize-cli": "^4.0.0",
     "striptags": "^3.1.1",
-    "swagger-ui": "^3.17.1",
+    "swagger-ui": "",
     "uuid": "^3.3.2",
     "validator": "^10.4.0"
   }

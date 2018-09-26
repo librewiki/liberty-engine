@@ -11,6 +11,7 @@
   - [Upgrade](#upgrade)
   - [Development](#development)
   - [Migration from Mediawiki (experimental)](#migration-from-mediawiki-experimental)
+  - [When Mroonga related error occurs](#when-mroonga-related-error-occurs)
 
 ## Requirements
 - The **latest** version (10+) of Node.js
@@ -59,4 +60,10 @@ npm run dev # runs API development server at http://localhost:3001
 ## Migration from Mediawiki (experimental)
 ```bash
 bin/import-from-mw < your_mw_dump_file.xml
+```
+
+## When Mroonga related error occurs
+```bash
+sudo mysql
+mysql> INSTALL SONAME 'ha_mroonga';
 ```

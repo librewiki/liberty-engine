@@ -34,7 +34,7 @@ const colors = require('colors/safe');
         return;
       }
     }
-    const { createDbUser, createDatabase, grantDbuser } = await inquirer.prompt([
+    const { createDbUser, createDatabase, grantDbUser } = await inquirer.prompt([
       {
         type: 'confirm',
         name: 'createDatabase',
@@ -77,7 +77,7 @@ const colors = require('colors/safe');
     if (createDbUser) {
       execSync(`sudo mysql -e "create user '${dbUsername}'@'localhost' identified by '${dbPassword}';"`);
     }
-    if (grantDbuser) {
+    if (grantDbUser) {
       execSync(`sudo mysql -e "grant all privileges on ${dbName}.* to '${dbUsername}'@'localhost';"`);
       execSync('sudo mysql -e "flush privileges;"');
     }

@@ -57,7 +57,7 @@ describe('Performance tests', function a() {
   describe.only('Slow parsing', () => {
     it('test 1: fetching sequentially', async () => {
       console.log('Creating articles...');
-      const admin = await models.User.findById(1);
+      const admin = await models.User.findByPk(1);
       await models.Article.createNew({
         ipAddress: '0.0.0.0',
         fullTitle: 'Test',
@@ -80,7 +80,7 @@ describe('Performance tests', function a() {
     });
     it('test 2: fetching simultaneously. Parsing the light one should not be blocked', async () => {
       console.log('Creating articles...');
-      const admin = await models.User.findById(1);
+      const admin = await models.User.findByPk(1);
       await models.Article.createNew({
         ipAddress: '0.0.0.0',
         fullTitle: 'Test',

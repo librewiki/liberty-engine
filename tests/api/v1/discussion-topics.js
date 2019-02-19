@@ -55,7 +55,7 @@ describe('discussion-topics API', function a() {
 
 
     it('should success (200) with a new topic', async () => {
-      const admin = await models.User.findById(1);
+      const admin = await models.User.findByPk(1);
       const article = await models.Article.createNew({
         ipAddress: '0.0.0.0',
         fullTitle: 'Test Article',
@@ -70,7 +70,7 @@ describe('discussion-topics API', function a() {
         wikitext: 'Just test\n* hi\n* hello',
         article,
       });
-      const topic = await models.DiscussionTopic.findById(1);
+      const topic = await models.DiscussionTopic.findByPk(1);
       const res = await chai.request(host).get('/v1/discussion-topics').send();
       expect(res).to.have.status(200);
       expect(res.body).to.eql({
@@ -94,7 +94,7 @@ describe('discussion-topics API', function a() {
 
 
     it('should success (200) with a topic having two comments', async () => {
-      const admin = await models.User.findById(1);
+      const admin = await models.User.findByPk(1);
       const article = await models.Article.createNew({
         ipAddress: '0.0.0.0',
         fullTitle: 'Test Article',
@@ -109,14 +109,14 @@ describe('discussion-topics API', function a() {
         wikitext: 'Just test\n* hi\n* hello',
         article,
       });
-      let topic = await models.DiscussionTopic.findById(1);
+      let topic = await models.DiscussionTopic.findByPk(1);
       await models.DiscussionComment.createNew({
         wikitext: 'Just test2\n* hi\n* hello',
         topic,
         author: admin,
         ipAddress: '0.0.0.0',
       });
-      topic = await models.DiscussionTopic.findById(1);
+      topic = await models.DiscussionTopic.findByPk(1);
       const res = await chai.request(host).get('/v1/discussion-topics').send();
       expect(res).to.have.status(200);
       expect(res.body).to.eql({
@@ -140,7 +140,7 @@ describe('discussion-topics API', function a() {
 
 
     it('should success (200) with two topics', async () => {
-      const admin = await models.User.findById(1);
+      const admin = await models.User.findByPk(1);
       const article = await models.Article.createNew({
         ipAddress: '0.0.0.0',
         fullTitle: 'Test Article',
@@ -162,16 +162,16 @@ describe('discussion-topics API', function a() {
         wikitext: 'Just test\n* hi\n* hello',
         article,
       });
-      let topic = await models.DiscussionTopic.findById(1);
+      let topic = await models.DiscussionTopic.findByPk(1);
       await models.DiscussionComment.createNew({
         wikitext: 'Just test2\n* hi\n* hello',
         topic,
         author: admin,
         ipAddress: '0.0.0.0',
       });
-      topic = await models.DiscussionTopic.findById(1);
+      topic = await models.DiscussionTopic.findByPk(1);
       await new Promise(r => setTimeout(r, 1010));
-      const topic2 = await models.DiscussionTopic.findById(2);
+      const topic2 = await models.DiscussionTopic.findByPk(2);
       const res = await chai.request(host).get('/v1/discussion-topics').send();
       expect(res).to.have.status(200);
       expect(res.body).to.eql({
@@ -210,7 +210,7 @@ describe('discussion-topics API', function a() {
 
 
     it('should success (200) with recent 10 topics', async () => {
-      const admin = await models.User.findById(1);
+      const admin = await models.User.findByPk(1);
       const article = await models.Article.createNew({
         ipAddress: '0.0.0.0',
         fullTitle: 'Test Article',
@@ -233,14 +233,14 @@ describe('discussion-topics API', function a() {
 
       await models.DiscussionComment.createNew({
         wikitext: 'Just test2\n* hi\n* hello',
-        topic: await models.DiscussionTopic.findById(12),
+        topic: await models.DiscussionTopic.findByPk(12),
         author: admin,
         ipAddress: '0.0.0.0',
       });
 
       await models.DiscussionComment.createNew({
         wikitext: 'Just test2\n* hi\n* hello',
-        topic: await models.DiscussionTopic.findById(3),
+        topic: await models.DiscussionTopic.findByPk(3),
         author: admin,
         ipAddress: '0.0.0.0',
       });

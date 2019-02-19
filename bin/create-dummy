@@ -11,7 +11,7 @@ const models = require('../lib/models');
 (async () => {
   try {
     await models.initialize();
-    const user = await models.User.findById(1);
+    const user = await models.User.findByPk(1);
     let promises = [];
     await models.sequelize.transaction(async (t) => {
       for (let i = 0; i < 100000; i += 1) {

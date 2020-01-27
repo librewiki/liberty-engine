@@ -24,7 +24,7 @@
     "chai": "^4.2.0",
     "chai-http": "^4.2.1",
     "eslint": "^5.14.1",
-    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-airbnb-base": "^14.0.0",
     "eslint-plugin-import": "^2.16.0",
     "jison": "^0.4.18",
     "mocha": "^5.2.0",

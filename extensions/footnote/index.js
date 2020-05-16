@@ -73,10 +73,15 @@ function hook($item, parsingData) {
   return registerFootnote($item, parsingData);
 }
 
+function handleNoReferences(intermediate, parsingData) {
+  return intermediate + showFootnotes(null, parsingData);
+}
+
 module.exports.import = (helper) => {
   helper.parserHook.setXmlHook({
     type: 'afterParsing',
     selector: 'ref,references',
     hook,
   });
+  helper.parserHook.setHook({ type: 'afterParsing', hook: handleNoReferences });
 };

@@ -43,6 +43,9 @@ function registerFootnote($item, parsingData) {
 
 function showFootnotes($item, parsingData) {
   const { footnoteGroups } = parsingData.structureData;
+  if (!footnoteGroups || !footnoteGroups.length) {
+    return '';
+  }
   const lastFootnoteGroup = footnoteGroups[footnoteGroups.length - 1];
   footnoteGroups.push(new ArrayMap());
   const rows = [];
